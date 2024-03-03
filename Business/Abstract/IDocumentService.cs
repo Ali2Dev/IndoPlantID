@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Business.Abstract
 {
@@ -18,5 +19,6 @@ namespace Business.Abstract
         void Delete(Document document);
 
         void Update(Document document);
+        void PostFileAsync(IFormFile fileData);
     }
 }

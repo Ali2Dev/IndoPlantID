@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web.Controllers
 {
@@ -17,5 +18,16 @@ namespace Web.Controllers
             var result = _documentService.GetAll();
             return View(result);
         }
+
+
+        [HttpPost]
+        public ActionResult UploadImage([Required] IFormFile file)
+        {
+            _documentService.PostFileAsync(file);
+            if (file == null) { throw new DocumentCtr_NullReferenceException(); }
+
+            return RedirectToAction("Index", "Test");
+        }
     }
 }
+public class DocumentCtr_NullReferenceException : NullReferenceException { };

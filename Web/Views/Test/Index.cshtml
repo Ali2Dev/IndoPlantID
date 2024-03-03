@@ -1,28 +1,59 @@
 ﻿@model List<Document>
 
-@{
+
     <table class="table table-striped table-hover">
         <thead>
 
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Title</th>
-            </tr>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Title</th>
+        </tr>
         </thead>
 
         <tbody>
 
-            @foreach (var item in Model)
-            {
-                <tr>
+        @foreach (var item in Model)
+        {
+            <tr>
 
-                    <th scope="row">@item.Id</th>
+                <th scope="row">@item.Id</th>
 
-                    <td>@item.Title</td>
+                <td>@item.Title</td>
 
-                </tr>
-            }
+            </tr>
+        }
         </tbody>
 
     </table>
-}
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Foto Upload</h2>
+        
+        <div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
+        </div>
+
+        <form asp-controller="Test" asp-action="UploadImage" method="post" enctype="multipart/form-data">
+
+           <div class="row mb-3">
+                <label class="col-md-4 col-form-label" >Fotoğraf yükleyin:</label>
+                <div class="col-md-8">
+                    <input class="form-control" type="file" name="file" />
+                </div>
+            </div>
+
+
+            <div class="row mb-3">
+
+                <div class="col-md-8 offset-md-4">
+                    <button type="submit" class="btn btn-primary">Yükle</button>
+                </div>
+            </div>
+
+
+
+        </form>
+    </div>
+</div>
+
