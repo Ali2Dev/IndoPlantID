@@ -6,7 +6,7 @@ using DataAccess.Concrete;
 using Entities.Concrete;
 
 DocumentManager documentManager = new DocumentManager(new EfDocumentDal());
-documentManager.Add(new Document { Title = "Selam2" });
+documentManager.Add(new Document { Title = "Selam8" });
 
 foreach (var item in documentManager.GetAll())
 {
