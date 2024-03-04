@@ -56,7 +56,7 @@ namespace Web.Controllers
 
             await file.CopyToAsync(stream);
 
-            _documentService.PostFileAsync(file, newPicturePath);
+            _documentService.PostFileAsync(file, randomFileName);
 
             //using (var memoryStream = new MemoryStream())
             //{
