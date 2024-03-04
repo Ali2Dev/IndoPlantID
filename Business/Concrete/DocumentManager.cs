@@ -57,7 +57,7 @@ namespace Business.Concrete
                     StoragePath = path,
                     Title = fileData.FileName,
                     Content = fileData.ContentDisposition,
-                    CreatedDate = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy"))
+                    CreatedDate = DateTime.Now
                 };
 
                 document.DocumentExtension = Path.GetExtension(document.Title);
