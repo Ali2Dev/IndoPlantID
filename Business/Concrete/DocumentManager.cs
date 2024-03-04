@@ -48,27 +48,26 @@ namespace Business.Concrete
             _documentDal.Update(document);
         }
 
-        public async void PostFileAsync(IFormFile fileData)
+        public async void PostFileAsync(IFormFile fileData, string path)
         {
             try
             {
                 var document = new Document()
                 {
+                    StoragePath = path,
                     Title = fileData.FileName,
-                    DocumentType = 1,
-                    Content = fileData.ContentDisposition
-
+                    Content = fileData.ContentDisposition,
+                    CreatedDate = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy"))
                 };
 
                 document.DocumentExtension = Path.GetExtension(document.Title);
 
+                //using (var stream = new MemoryStream())
+                //{
+                //    fileData.CopyTo(stream);
 
-                using (var stream = new MemoryStream())
-                {
-                    fileData.CopyTo(stream);
-
-                    document.Documentfile = stream.ToArray();
-                }
+                //    document.Documentfile = stream.ToArray();
+                //}
 
                 _documentDal.Add(document);
 

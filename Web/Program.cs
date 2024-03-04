@@ -1,11 +1,17 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Business.DependencyResolvers.Autofac;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddMvc().AddSessionStateTempDataProvider();
+builder.Services.AddSession();
+
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 
 //AutoFac
 builder.Host.UseServiceProviderFactory
@@ -14,6 +20,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerB
 
 
 var app = builder.Build();
+
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

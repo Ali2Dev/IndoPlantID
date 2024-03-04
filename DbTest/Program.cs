@@ -5,10 +5,11 @@ using Business.Concrete;
 using DataAccess.Concrete;
 using Entities.Concrete;
 
-DocumentManager documentManager = new DocumentManager(new EfDocumentDal());
-documentManager.Add(new Document { Title = "Selam8" });
+//DocumentManager documentManager = new DocumentManager(new EfDocumentDal());
+//documentManager.Add(new Document { Title = "Selam8" });
 
-foreach (var item in documentManager.GetAll())
-{
-    Console.WriteLine(item.Title);
-}
+//foreach (var item in documentManager.GetAll())
+//{
+//    Console.WriteLine(item.Title);
+//}
+Console.WriteLine("hello");

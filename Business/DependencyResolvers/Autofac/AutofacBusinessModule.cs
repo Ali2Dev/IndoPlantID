@@ -10,6 +10,7 @@ using Business.Concrete;
 using Castle.DynamicProxy;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
+using Microsoft.Extensions.FileProviders;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -18,7 +19,7 @@ namespace Business.DependencyResolvers.Autofac
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<DocumentManager>().As<IDocumentService>().SingleInstance();
-            builder.RegisterType<EfDocumentDal>().As<IDocumentDal>().SingleInstance();
+            builder.RegisterType<EfDocumentDal>().As<IDocumentDal>().SingleInstance();          
 
             //builder.Register(context => new MapperConfiguration(cfg =>
             //{
