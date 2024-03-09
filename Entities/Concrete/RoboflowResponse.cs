@@ -16,6 +16,6 @@ namespace Entities.Concrete
         public int? Confidence { get; set; }
 
         public string? PlantName { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

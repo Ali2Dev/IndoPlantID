@@ -6,13 +6,44 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Business.Abstract;
+using DataAccess.Abstract;
 using Entities.Concrete;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Business.Concrete
 {
+
     public class RoboflowManager : IRoboflowService
     {
+        private readonly IRoboflowDal _roboflowDal;
+
+        public RoboflowManager(IRoboflowDal roboflowDal)
+        {
+            _roboflowDal = roboflowDal;
+        }
+
+        public List<RoboflowResponse> GetAll()
+        {
+            return _roboflowDal.GetAll();
+        }
+
+        public RoboflowResponse GetById(int id)
+        {
+            return _roboflowDal.Get(x => x.RoboflowResponseId == id);
+        }
+
+        public void Add(RoboflowResponse entity)
+        {
+            _roboflowDal.Add(entity);
+        }
+
+        public void Delete(RoboflowResponse entity)
+        {
+            _roboflowDal.Delete(entity);
+        }
+
+
+
         public RoboflowResponse GetResponse(byte[] image, string fileName)
         {
             string encoded = Convert.ToBase64String(image);
@@ -46,8 +77,10 @@ namespace Business.Concrete
                         Confidence = (int)((prediction.confidence - (int)prediction.confidence) * 100),
                         ClassId = prediction.class_id,
                         PlantName = prediction.@class,
-                        UpdatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now
                     };
+
+                    _roboflowDal.Add(roboFlowResponse);
 
                     return roboFlowResponse;
                 }

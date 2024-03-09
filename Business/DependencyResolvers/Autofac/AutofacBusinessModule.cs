@@ -23,6 +23,7 @@ namespace Business.DependencyResolvers.Autofac
 
             //Roboflow
             builder.RegisterType<RoboflowManager>().As<IRoboflowService>().SingleInstance();
+            builder.RegisterType<EfRoboflowDal>().As<IRoboflowDal>().SingleInstance();
 
             //builder.Register(context => new MapperConfiguration(cfg =>
             //{

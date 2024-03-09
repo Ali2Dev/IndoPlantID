@@ -31,9 +31,9 @@
         <h2>Yüklediğiniz Fotoğraf</h2>
         <img class="img-fluid" id="preview" src="" alt="Önizleme" style="display:none; width="40%" />
 
-      @*   @if (Model.FileContent != null)
+        @*   @if (Model.FileContent != null)
         {
-            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.FileContent)" alt="Uploaded Image" width="50%" />            
+        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.FileContent)" alt="Uploaded Image" width="50%" />
         } *@
 
     </div>
@@ -57,11 +57,15 @@
 
                 <div class="col-md-8 offset-md-4">
                     <button type="submit" class="btn btn-primary">Yükle</button>
+
+                    <a class="btn btn-warning ms-4" href="https://demo.roboflow.com/ev-bitkisi-tanima/1?publishable_key=rf_eBE2SLq9dEZYXkDRdsjU75PtjQt1" target="_blank"><i class="bi bi-camera me-3 fs-5"></i>Kamerayı Aç</a>
+
                 </div>
             </div>
-        </form>
-
     </div>
+    </form>
+
+</div>
 </div>
 
 @if (Model.RoboflowResponse != null)
@@ -77,6 +81,8 @@
 
     </div>
 }
+
+
 
 
 

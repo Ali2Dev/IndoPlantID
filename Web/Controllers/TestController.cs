@@ -41,7 +41,7 @@ namespace Web.Controllers
             // ViewModel'i yarat ve response ile doldur
             var viewModel = new DocumentViewModel
             {
-                RoboflowResponse = response,  // Bu değişken artık kapsam içinde olduğu için burada kullanılabilir
+                RoboflowResponse = response,
                 Documents = documents
             };
 
