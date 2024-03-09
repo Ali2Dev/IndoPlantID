@@ -5,7 +5,7 @@ namespace Web.Models
 {
     public class DocumentViewModel
     {
-        public byte[] FileContent { get; set; }
+        public RoboflowResponse RoboflowResponse { get; set; }
         public List<Document> Documents { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using DataAccess.Concrete.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(IndoPlantDb))]
-    partial class IndoPlantDbModelSnapshot : ModelSnapshot
+    [Migration("20240309100008_migRoboflow2Fix")]
+    partial class migRoboflow2Fix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,10 +67,10 @@ namespace DataAccess.Migrations
                     b.Property<int?>("ClassId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Confidence")
-                        .HasColumnType("int");
+                    b.Property<double?>("Confidence")
+                        .HasColumnType("float");
 
-                    b.Property<string>("PlantName")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")

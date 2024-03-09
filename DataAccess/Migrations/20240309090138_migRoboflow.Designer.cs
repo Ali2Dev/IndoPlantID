@@ -4,6 +4,7 @@ using DataAccess.Concrete.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(IndoPlantDb))]
-    partial class IndoPlantDbModelSnapshot : ModelSnapshot
+    [Migration("20240309090138_migRoboflow")]
+    partial class migRoboflow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,34 +54,6 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Documents");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.RoboflowResponse", b =>
-                {
-                    b.Property<int>("RoboflowResponseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoboflowResponseId"), 1L, 1);
-
-                    b.Property<int?>("ClassId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Confidence")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PlantName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("RoboflowResponseId");
-
-                    b.ToTable("RoboflowResponses");
                 });
 #pragma warning restore 612, 618
         }

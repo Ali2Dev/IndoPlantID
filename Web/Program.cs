@@ -1,6 +1,8 @@
 using Autofac;
 using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
+using Business.Abstract;
+using Business.Concrete;
 using Business.DependencyResolvers.Autofac;
 using Microsoft.Extensions.FileProviders;
 
@@ -12,6 +14,7 @@ builder.Services.AddMvc().AddSessionStateTempDataProvider();
 builder.Services.AddSession();
 
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
+
 
 //AutoFac
 builder.Host.UseServiceProviderFactory

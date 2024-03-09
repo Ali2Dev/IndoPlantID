@@ -3,6 +3,8 @@ using Castle.Core.Resource;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using System.ComponentModel.DataAnnotations;
+using Entities.Concrete;
+using System.Text.Json;
 using Web.Models;
 
 namespace Web.Controllers
@@ -11,40 +13,45 @@ namespace Web.Controllers
     {
         private IDocumentService _documentService;
         private IFileProvider _fileProvider;
+        private readonly IRoboflowService _roboflowService;
 
-        public TestController(IDocumentService documentService, IFileProvider fileProvider)
+        public TestController(IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService)
         {
             _documentService = documentService;
             _fileProvider = fileProvider;
+            _roboflowService = roboflowService;
         }
 
         public IActionResult Index()
         {
             var documents = _documentService.GetAll();
 
-            //var uploadedFileBase64 = TempData["UploadedFile"] as string;
-            //byte[] uploadedFile = null;
+            // RoboflowResponse tipinde response değişkenini null olarak başlat
+            RoboflowResponse response = null;
 
-            //if (!string.IsNullOrEmpty(uploadedFileBase64))
-            //{
-            //    uploadedFile = Convert.FromBase64String(uploadedFileBase64);
-            //}
+            // Geçici veriden JSON formatındaki modeli al
+            var jsonModel = TempData["ResultModel"] as string;
 
-            //var viewModel = new DocumentViewModel
-            //{
-            //    FileContent = uploadedFile,
-            //    Documents = documents
-            //};
+            if (!string.IsNullOrEmpty(jsonModel))
+            {
+                // JSON formatındaki modeli RoboflowResponseModel türüne dönüştür
+                response = JsonSerializer.Deserialize<RoboflowResponse>(jsonModel);
+            }
 
-            return View(documents);
+            // ViewModel'i yarat ve response ile doldur
+            var viewModel = new DocumentViewModel
+            {
+                RoboflowResponse = response,  // Bu değişken artık kapsam içinde olduğu için burada kullanılabilir
+                Documents = documents
+            };
+
+            return View(viewModel);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> UploadImage([Required] IFormFile file)
+        public async Task<IActionResult> UploadImage([Required] IFormFile file)
         {
-            
-
             var wwwrootFolder = _fileProvider.GetDirectoryContents("wwwroot//uploads");
 
             var randomFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(file.FileName)}";
@@ -52,20 +59,21 @@ namespace Web.Controllers
             var newPicturePath =
                 Path.Combine(wwwrootFolder.First(x => x.Name == "images").PhysicalPath!, randomFileName);
 
-            using var stream = new FileStream(newPicturePath, FileMode.Create);
+            using (var stream = new FileStream(newPicturePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
 
-            await file.CopyToAsync(stream);
+            }
 
             _documentService.PostFileAsync(file, randomFileName);
 
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    file.CopyTo(memoryStream);
-            //    var fileBytes = memoryStream.ToArray();
-            //    TempData["UploadedFile"] = Convert.ToBase64String(fileBytes);
-            //}
+            byte[] imageArray = System.IO.File.ReadAllBytes(newPicturePath);
 
-            //if (file == null) { throw new DocumentCtr_NullReferenceException(); }
+            var result = _roboflowService.GetResponse(imageArray, randomFileName);
+
+            var jsonModel = JsonSerializer.Serialize(result);
+
+            TempData["ResultModel"] = jsonModel;
 
             return RedirectToAction("Index", "Test");
         }
