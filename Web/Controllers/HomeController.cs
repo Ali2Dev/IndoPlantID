@@ -61,7 +61,13 @@ namespace Web.Controllers
 
             if (signInResult.IsLockedOut)
             {
-                ModelState.AddModelErrorList(new List<string>() { "1 Dakika boyunca giriş yapamazsınız." });
+                var serverDateTime = DateTime.UtcNow;
+                var lockoutEndDateTimeOffset = await _userManager.GetLockoutEndDateAsync(userResult);
+
+                var lockoutEndDateUtc = lockoutEndDateTimeOffset.Value.UtcDateTime;
+                var result = Math.Abs(Convert.ToInt16((serverDateTime - lockoutEndDateUtc).TotalSeconds));
+
+                ModelState.AddModelErrorList(new List<string>() { $"{result} saniye boyunca giriş yapamazsınız." });
                 return View();
             }
 
