@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Web</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />
@@ -31,7 +31,14 @@
                     </ul>
                     <ul class="navbar-nav flex-grow-1 justify-content-end">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                            <a class="nav-link text-danger me-2" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-warning me-3" asp-area="" asp-controller="Home" asp-action="SignUp">Üye ol</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-success text-white" asp-area="" asp-controller="Home" asp-action="SignIn">Giriş yap</a>
                         </li>
                     </ul>
                 </div>

@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewData["Title"] = "GetAllDocuments";
+}
+
+@model List<Document>
+
+<h1>GetAllDocuments</h1>
+
+
+
+<div class="text-center">
+    <h1 class="display-6">Yüklenen Fotolar</h1>
+</div>
+
+
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+
+
+        <div class="col-md-3">
+
+            <div class="card mb-4" style="width: 18rem;">
+                <img src="~/uploads/images/@item.StoragePath" class="card-img-top" width="100%" height="200px">
+                <div class="card-body">
+                    <p class="card-text">Created: @item.CreatedDate.ToString()</p>
+                </div>
+            </div>
+
+        </div>
+
+    }
+
+</div>
+
+<style>
+    .card-img-top {
+        object-fit: cover;
+    }
+</style>
+
+

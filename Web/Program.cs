@@ -4,12 +4,27 @@ using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
 using Business.DependencyResolvers.Autofac;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Web.Extensions;
+using Web.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Identity Db
+builder.Services.AddDbContext<IndoPlantIdentityDb>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionIdentity"));
+});
+
+
+
+//Extensions
+builder.Services.ConfigureIdentityExtension();
+
 builder.Services.AddMvc().AddSessionStateTempDataProvider();
 builder.Services.AddSession();
 
@@ -20,6 +35,21 @@ builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.
 builder.Host.UseServiceProviderFactory
     (new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new AutofacBusinessModule()));
+
+
+
+//Cookie
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    var cookieBuilder = new CookieBuilder();
+    cookieBuilder.Name = "IndoPlantCookie";
+
+    options.LoginPath = new PathString("/Home/Signin");
+    options.Cookie = cookieBuilder;
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    options.SlidingExpiration = true;
+
+});
 
 
 var app = builder.Build();
