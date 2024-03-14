@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Web.Extensions;
 using Web.Identity.ViewModels;
 using Web.Identity;
+using Web.Identity.Services.Abstract;
 using Web.Models;
 
 namespace Web.Controllers
@@ -14,14 +15,16 @@ namespace Web.Controllers
         private readonly UserManager<AppUser> _userManager;
 
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IEmailService _emailService;
 
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -119,6 +122,96 @@ namespace Web.Controllers
 
 
         }
+
+
+        public IActionResult ForgotMyPassword()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotMyPassword(ForgotMyPasswordViewModel request)
+        {
+            // http://localhost:5185?userId=1=&token=aaaaaaaaaaaa
+
+            bool userFound = false;
+
+            var hasUser = await _userManager.FindByEmailAsync(request.Email);
+
+            if (hasUser == null)
+            {
+                TempData["UserFound"] = userFound;
+                ModelState.AddModelError(string.Empty, "Bu e-mail ile bir kullanıcı bulunamadı.");
+                return View();
+            }
+
+            string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
+
+            var passwordResetLink =
+                Url.Action("ResetPassword", "Home", new { userId = hasUser.Id, token = passwordResetToken }, HttpContext.Request.Scheme);
+
+            //Send an email
+            await _emailService.SendResetPasswordEmailAsync(passwordResetLink!, hasUser.Email!, hasUser.UserName!);
+
+            userFound = true;
+            TempData["UserFound"] = userFound;
+
+            return RedirectToAction(nameof(ForgotMyPassword));
+
+        }
+
+        public IActionResult ResetPassword(string userId, string token)
+        {
+            TempData["userId"] = userId;
+            TempData["token"] = token;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel request)
+        {
+            bool isPasswordUpdated = false;
+
+            if (TempData["userId"] == null || TempData["token"] == null)
+            {
+                // userId veya token null ise hata sayfasına yönlendir.
+                return RedirectToAction("Error");
+            }
+
+            // TempData'dan okunan değerlerin string olarak kabul edileceğinden emin olun
+            string userId = TempData["userId"].ToString()!;
+            string token = TempData["token"].ToString()!;
+
+            var hasUser = await _userManager.FindByIdAsync(userId);
+
+            if (hasUser == null)
+            {
+                TempData["isPasswordUpdated"] = isPasswordUpdated;
+                ModelState.AddModelError(string.Empty, "Kullanıcı bulunamadı.");
+                return View();
+            }
+
+            var result = await _userManager.ResetPasswordAsync(hasUser, token, request.Password);
+
+            if (result.Succeeded)
+            {
+                isPasswordUpdated = true;
+                TempData["isPasswordUpdated"] = isPasswordUpdated;
+
+                //Sen an email - PasswordUpdatedInfo
+                await _emailService.SendResetPasswordIsSuccessfulAsync(hasUser.UserName!, hasUser.Email!);
+            }
+            else
+            {
+                ModelState.AddModelErrorList(result.Errors.Select(x => x.Description).ToList());
+            }
+
+            return View();
+        }
+
+
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

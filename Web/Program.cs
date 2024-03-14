@@ -4,10 +4,14 @@ using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
 using Business.DependencyResolvers.Autofac;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Web.Extensions;
 using Web.Identity;
+using Web.Identity.ModelOptions;
+using Web.Identity.Services.Abstract;
+using Web.Identity.Services.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +25,12 @@ builder.Services.AddDbContext<IndoPlantIdentityDb>(options =>
 });
 
 
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.FromMinutes(20);
+});
+
+
 
 //Extensions
 builder.Services.ConfigureIdentityExtension();
@@ -30,6 +40,10 @@ builder.Services.AddSession();
 
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 
+
+//EmailService
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 //AutoFac
 builder.Host.UseServiceProviderFactory
@@ -44,7 +58,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     var cookieBuilder = new CookieBuilder();
     cookieBuilder.Name = "IndoPlantCookie";
 
-    options.LoginPath = new PathString("/Home/Signin");
+    options.LoginPath = new PathString("/Home/SignIn");
     options.Cookie = cookieBuilder;
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
     options.SlidingExpiration = true;
@@ -69,6 +83,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

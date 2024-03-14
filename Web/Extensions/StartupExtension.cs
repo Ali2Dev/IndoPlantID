@@ -2,6 +2,9 @@
 using System;
 using Web.Identity;
 using Web.Identity.CustomValidations;
+using Web.Identity.ModelOptions;
+using Web.Identity.Services.Abstract;
+using Web.Identity.Services.Concrete;
 using Web.Localizations;
 
 namespace Web.Extensions
@@ -10,6 +13,15 @@ namespace Web.Extensions
     {
         public static void ConfigureIdentityExtension(this IServiceCollection services)
         {
+
+            //Token süresi
+            services.Configure<DataProtectionTokenProviderOptions>(option =>
+            {
+                option.TokenLifespan = TimeSpan.FromMinutes(15);
+            });
+
+
+
 
             services.AddIdentity<AppUser, AppRole>(options =>
             {
@@ -30,6 +42,7 @@ namespace Web.Extensions
             }).AddPasswordValidator<PasswordValidator>().
                 AddUserValidator<UserValidator>().
                 AddErrorDescriber<LocalizationIdentityErrorDescriber>().
+                AddDefaultTokenProviders(). //Token (ForgotMyPassword)
                 AddEntityFrameworkStores<IndoPlantIdentityDb>();
         }
     }

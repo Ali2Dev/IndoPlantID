@@ -16,12 +16,12 @@
         <form class="border p-4 rounded-1 " asp-controller="Home" asp-action="SignIn" asp-route-returnurl="@Context.Request.Query["returnUrl"]" method="post">
             <div class="mb-3">
                 <label for="Email" class="form-label" asp-for="Email"></label>
-                <input class="form-control" asp-for="Email">
+                <input value="azizvefa23@gmail.com" class="form-control" asp-for="Email">
                 <span class="text-danger" asp-validation-for="Email"></span>
             </div>
             <div class="mb-3">
                 <label for="Password" class="form-label" asp-for="Password"></label>
-                <input type="password" class="form-control" asp-for="Password">
+                <input value="Aziz23." type="password" class="form-control" asp-for="Password">
             </div>
 
             <div class="row">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    @* <a class="float-end" asp-controller="Home" asp-action="ForgetPassword">Şifremi Unuttum</a> *@
+                    <a class="float-end" asp-controller="Home" asp-action="ForgotMyPassword">Şifremi Unuttum</a>
                 </div>
             </div>
             <div class="text-center">
