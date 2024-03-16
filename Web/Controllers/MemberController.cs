@@ -48,6 +48,7 @@ namespace Web.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel request)
         {
 
+            TempData["SuccessMessage"] = false;
 
             if (!ModelState.IsValid)
             {
