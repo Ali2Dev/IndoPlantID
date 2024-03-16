@@ -101,7 +101,9 @@ namespace Web.Controllers
             {
                 UserName = request.Username,
                 Email = request.Email,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber,
+                FirstName = request.FirstName,
+                LastName = request.LastName
             }, request.PasswordConfirmed);
 
             if (identityResult.Succeeded)
@@ -199,7 +201,7 @@ namespace Web.Controllers
                 isPasswordUpdated = true;
                 TempData["isPasswordUpdated"] = isPasswordUpdated;
 
-                //Sen an email - PasswordUpdatedInfo
+                //Send an email - PasswordUpdatedInfo
                 await _emailService.SendResetPasswordIsSuccessfulAsync(hasUser.UserName!, hasUser.Email!);
             }
             else

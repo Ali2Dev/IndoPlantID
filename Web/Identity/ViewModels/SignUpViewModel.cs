@@ -30,6 +30,15 @@ namespace Web.Identity.ViewModels
         [Display(Name = "Email:")]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Ad alanı boş bırakılamaz.")]
+        [Display(Name = "Ad:")]
+        public string FirstName { get; set; }
+
+
+        [Required(ErrorMessage = "Soyad alanı boş bırakılamaz.")]
+        [Display(Name = "Soyad:")]
+        public string LastName { get; set; }
+
 
         [Required(ErrorMessage = "Bu kısım boş olamaz.")]
         [Display(Name = "Telefon:")]
