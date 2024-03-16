@@ -27,7 +27,7 @@ namespace Web.Extensions
             {
                 //User
                 options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnoprstuvwxyz123456789_";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPRSTUVWXYZ1234567890_";
 
                 //Password
                 //options.Password.RequiredLength = 12;
