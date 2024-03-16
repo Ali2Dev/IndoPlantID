@@ -66,13 +66,21 @@
             </div>
 
             <div class="mt-5 text-center" id="infoToUpdate">
-                <strong class="text-danger">*</strong> <a class="text-dark" asp-action="UserSettings">Bu bilgileri değiştirmek için buraya tıklayabilirsin</a>
+                <strong class="text-danger">*</strong> <a class="text-dark" asp-action="EditUser">Bu bilgileri değiştirmek için buraya tıklayabilirsin</a>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="text-center col-md-6 offset-md-3 ui medium fluid image">
-                <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" ; />
+                @if (ViewData["PictureUrl"] == null)
+                {
+                    <img class="rounded-circle" src="~/uploads/userPictures/defaultUserPhoto.jpg" ; />
+                }
+                else
+                {
+                    <img class="rounded-circle" src="~/uploads/userPictures/@ViewData["PictureUrl"]" ; />
+                }
+                
             </div>
         </div>
 

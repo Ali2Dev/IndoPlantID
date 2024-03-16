@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using System.Collections.Generic;
+using System.Security.Claims;
 using Web.Extensions;
 using Web.Identity;
 using Web.Identity.Services.Abstract;
@@ -15,12 +17,14 @@ namespace Web.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
+        private readonly IFileProvider _fileProvider;
 
-        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IEmailService emailService)
+        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IEmailService emailService, IFileProvider fileProvider)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _emailService = emailService;
+            _fileProvider = fileProvider;
         }
         public async Task<IActionResult> Index()
         {
@@ -35,6 +39,7 @@ namespace Web.Controllers
                 EmailConfirmed = currentUser!.EmailConfirmed,
                 TwoFactorEnabled = currentUser!.TwoFactorEnabled
             };
+            ViewData["PictureUrl"] = currentUser.Picture;
 
             return View(userViewModel);
         }
@@ -48,7 +53,6 @@ namespace Web.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel request)
         {
 
-            TempData["SuccessMessage"] = false;
 
             if (!ModelState.IsValid)
             {
@@ -87,6 +91,74 @@ namespace Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> EditUser()
+        {
+            var currentUser = await _userManager.FindByNameAsync(User?.Identity?.Name!);
+
+            var editUserViewModel = new EditUserViewModel()
+            {
+                UserName = currentUser!.UserName!,
+                Email = currentUser!.Email!,
+                Phone = currentUser!.PhoneNumber!
+            };
+
+            ViewData["PictureUrl"] = currentUser.Picture;
+
+            return View(editUserViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+            currentUser!.UserName = request.UserName;
+            currentUser.Email = request.Email;
+            currentUser.PhoneNumber = request.Phone;
+
+
+            if (request.File != null && request.File.Length > 0)
+            {
+                var wwwrootFolder = _fileProvider.GetDirectoryContents("wwwroot//uploads");
+
+                var randomFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(request.File.FileName)}";
+                //jpg,png vs
+                var newPicturePath =
+                    Path.Combine(wwwrootFolder.First(x => x.Name == "userPictures").PhysicalPath!, randomFileName);
+
+                using var stream = new FileStream(newPicturePath, FileMode.Create);
+
+                await request.File.CopyToAsync(stream);
+
+                currentUser.Picture = randomFileName;
+            }
+
+            var updatedUserResult = await _userManager.UpdateAsync(currentUser);
+
+            if (!updatedUserResult.Succeeded)
+            {
+                ModelState.AddModelErrorList(updatedUserResult.Errors);
+
+                ViewData["PictureUrl"] = currentUser.Picture;
+
+                return View();
+            }
+
+            await _userManager.UpdateSecurityStampAsync(currentUser);
+
+            await _signInManager.SignOutAsync();
+
+            await _signInManager.SignInAsync(currentUser, true);
+
+            TempData["SuccessMessage"] = "Kullanıcı bilgileri güncellendi";
+
+            return RedirectToAction("EditUser","Member");
+        }
 
         public async Task<IActionResult> LogOut()
         {
