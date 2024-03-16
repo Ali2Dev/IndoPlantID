@@ -9,10 +9,26 @@
     <div class="row">
         <div class="col-md-6 ">
             <div class="ui floating message mb-5">
-                <p class="fs-6"><strong>Merhaba @User.Identity.Name</strong>, hesap detaylarını burada görüntüleyebilirsin.</p>
+                <p class="fs-6"><strong>Merhaba @Model.FirstName</strong>, hesap detaylarını burada görüntüleyebilirsin.</p>
             </div>
             
-           
+            <div class="ui form">
+                <div class="two fields ">
+
+                    <div class="field">
+                        <label>İsim:</label>
+                        <input value="@Model.FirstName" readonly="" type="text" wfd-id="id56">
+                    </div>
+
+                    <div class="field">
+                        <label>Soyisim:</label>
+                        <input value="@Model.LastName" readonly="" type="email" wfd-id="id57">
+                    </div>
+
+                </div>
+            </div>
+            
+
 
             <div class="ui form">
                 <div class="two fields ">

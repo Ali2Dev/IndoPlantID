@@ -8,19 +8,43 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h2>Kullanıcı Bilgi Güncelleme </h2>
+            <h2 class="mb-4">Kullanıcı Bilgi Güncelleme</h2>
 
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-info alert-dismissible" role="alert">
                     @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+
             }
 
             <div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
             </div>
 
             <form asp-controller="Member" asp-action="EditUser" method="post" enctype="multipart/form-data">
+                
+                
+                <div class="row mb-3">
+                    <label class="col-md-4 col-form-label" asp-for="FirstName"></label>
+                    <div class="col-md-8">
+
+                        <input type="text" asp-for="FirstName" class="form-control" required>
+                        <span class="text-danger" asp-validation-for="FirstName"></span>
+                    </div>
+                </div>
+
+
+                <div class="row mb-3">
+                    <label class="col-md-4 col-form-label" asp-for="LastName"></label>
+                    <div class="col-md-8">
+
+                        <input type="text" asp-for="LastName" class="form-control" required>
+                        <span class="text-danger" asp-validation-for="LastName"></span>
+                    </div>
+                </div>
+                
+
 
                 <div class="row mb-3">
                     <label class="col-md-4 col-form-label" asp-for="UserName"></label>
@@ -50,18 +74,26 @@
                 <div class="row mb-3">
                     <label class="col-md-4 col-form-label" asp-for="File"></label>
                     <div class="col-md-8">
-                        <input class="form-control" type="file" asp-for="File" />
+                        <input class="form-control" type="file" asp-for="File"/>
                         <span class="text-danger" asp-validation-for="File"></span>
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-8 offset-md-4">
-                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                <div class="row mt-5 mb-5">
+                    <div class="col-md-8 text-center">
+                        <button type="submit" class="ui blue button">Güncelle</button>
                     </div>
                 </div>
 
             </form>
+            
+            <hr/>
+            <div class="row mt-5 mb-5">
+                <h2>Şifre Güncelleme</h2>
+                <a asp-controller="Member" asp-action="ChangePassword">
+                    <button class="ui red button">Şifre değiştir</button>
+                </a>
+            </div>
         </div>
 
         <div class="col-md-6">

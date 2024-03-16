@@ -30,14 +30,18 @@ namespace Web.Identity.ViewModels
         [Display(Name = "Email:")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Ad alanı boş bırakılamaz.")]
-        [Display(Name = "Ad:")]
+        [MinLength(2, ErrorMessage = "Bu alan 2 karakterden az olamaz.")]
+        [MaxLength(25, ErrorMessage = "Bu alan 25 karakterden fazla olamaz.")]
+        [Required(ErrorMessage = "Bu kısım boş olamaz.")]
+        [Display(Name = "İsim:")]
         public string FirstName { get; set; }
 
-
-        [Required(ErrorMessage = "Soyad alanı boş bırakılamaz.")]
-        [Display(Name = "Soyad:")]
+        [MinLength(2, ErrorMessage = "Bu alan 2 karakterden az olamaz.")]
+        [MaxLength(25, ErrorMessage = "Bu alan 25 karakterden fazla olamaz.")]
+        [Required(ErrorMessage = "Bu kısım boş olamaz.")]
+        [Display(Name = "Soy isim:")]
         public string LastName { get; set; }
+
 
 
         [Required(ErrorMessage = "Bu kısım boş olamaz.")]

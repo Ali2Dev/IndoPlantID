@@ -33,6 +33,8 @@ namespace Web.Controllers
 
             var userViewModel = new UserViewModel
             {
+                FirstName = currentUser!.FirstName,
+                LastName = currentUser!.LastName,
                 UserName = currentUser!.UserName,
                 Email = currentUser!.Email,
                 PhoneNumber = currentUser!.PhoneNumber,
@@ -97,9 +99,12 @@ namespace Web.Controllers
 
             var editUserViewModel = new EditUserViewModel()
             {
+
                 UserName = currentUser!.UserName!,
                 Email = currentUser!.Email!,
-                Phone = currentUser!.PhoneNumber!
+                Phone = currentUser!.PhoneNumber!,
+                FirstName = currentUser!.FirstName,
+                LastName = currentUser!.LastName
             };
 
             ViewData["PictureUrl"] = currentUser.Picture;
@@ -118,8 +123,10 @@ namespace Web.Controllers
             var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
 
             currentUser!.UserName = request.UserName;
-            currentUser.Email = request.Email;
-            currentUser.PhoneNumber = request.Phone;
+            currentUser!.Email = request.Email;
+            currentUser!.PhoneNumber = request.Phone;
+            currentUser.FirstName = request.FirstName;
+            currentUser.LastName = request.LastName;
 
 
             if (request.File != null && request.File.Length > 0)
@@ -157,7 +164,7 @@ namespace Web.Controllers
 
             TempData["SuccessMessage"] = "Kullanıcı bilgileri güncellendi";
 
-            return RedirectToAction("EditUser","Member");
+            return RedirectToAction("EditUser", "Member");
         }
 
         public async Task<IActionResult> LogOut()
