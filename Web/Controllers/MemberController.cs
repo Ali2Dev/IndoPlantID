@@ -16,10 +16,11 @@ namespace Web.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
 
-        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
+        public MemberController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IEmailService emailService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _emailService = emailService;
         }
         public async Task<IActionResult> Index()
         {
@@ -46,8 +47,11 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel request)
         {
+
+
             if (!ModelState.IsValid)
             {
+
                 return View();
             }
 
@@ -58,6 +62,7 @@ namespace Web.Controllers
             if (!checkOldPassword)
             {
                 ModelState.AddModelError(string.Empty, "Eski şifreniz yanlış");
+
                 return View();
             }
 
@@ -65,6 +70,7 @@ namespace Web.Controllers
 
             if (!resultChangePassword.Succeeded)
             {
+
                 ModelState.AddModelErrorList(resultChangePassword.Errors);
                 return View();
             }
@@ -73,7 +79,7 @@ namespace Web.Controllers
             await _signInManager.SignOutAsync();
             await _signInManager.PasswordSignInAsync(currentUser, request.NewPassword, true, false);
 
-            //TempData["SuccessMessage"] = true;
+            TempData["SuccessMessage"] = true;
 
             await _emailService.SendResetPasswordIsSuccessfulAsync(currentUser.UserName!, currentUser.Email!);
 

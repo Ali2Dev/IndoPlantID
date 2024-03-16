@@ -181,7 +181,7 @@ namespace Web.Controllers
                 return RedirectToAction("Error");
             }
 
-            // TempData'dan okunan değerlerin string olarak kabul edileceğinden emin olun
+
             string userId = TempData["userId"].ToString()!;
             string token = TempData["token"].ToString()!;
 
