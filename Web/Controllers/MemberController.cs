@@ -46,8 +46,14 @@ namespace Web.Controllers
             return View(userViewModel);
         }
 
-        public IActionResult ChangePassword()
+        public async Task<IActionResult> ChangePassword()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+                ViewData["PictureUrl"] = currentUser.Picture;
+            }
             return View();
         }
 

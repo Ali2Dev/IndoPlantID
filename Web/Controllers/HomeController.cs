@@ -27,8 +27,20 @@ namespace Web.Controllers
             _emailService = emailService;
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
+
+        public async Task<IActionResult> Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+                ViewData["PictureUrl"] = currentUser.Picture;
+            }
+
             return View();
         }
 

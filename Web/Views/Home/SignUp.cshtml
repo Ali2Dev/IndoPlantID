@@ -71,7 +71,12 @@
             <div class="row mb-3">
                 <label for="Password" class="col-sm-2 col-form-label" asp-for="Password"></label>
                 <div class="col-sm-10">
-                    <input type="password" class="form-control" asp-for="Password" required>
+                    <div class="input-group">
+                        <input type="password" class="form-control inp-password" asp-for="Password" required>
+                        <button class="border btn-password-eye" type="button">
+                            <i class="bi bi-eye-slash fs-6"></i>
+                        </button>
+                    </div>
                     <span asp-validation-for="Password" class="text-danger"></span>
 
                 </div>
@@ -79,7 +84,12 @@
             <div class="row mb-3">
                 <label for="ConfirmPassword" class="col-sm-2 col-form-label" asp-for="PasswordConfirmed"></label>
                 <div class="col-sm-10">
-                    <input type="password" class="form-control" asp-for="PasswordConfirmed" required>
+                    <div class="input-group">
+                        <input type="password" class="form-control inp-password" asp-for="PasswordConfirmed" required>
+                        <button class="border btn-password-eye" type="button">
+                            <i class="bi bi-eye-slash fs-6"></i>
+                        </button>
+                    </div>
                     <span asp-validation-for="PasswordConfirmed" class="text-danger"></span>
 
                 </div>

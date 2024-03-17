@@ -5,6 +5,8 @@ using Microsoft.Extensions.FileProviders;
 using System.ComponentModel.DataAnnotations;
 using Entities.Concrete;
 using System.Text.Json;
+using Microsoft.AspNetCore.Identity;
+using Web.Identity;
 using Web.Models;
 
 namespace Web.Controllers
@@ -14,16 +16,25 @@ namespace Web.Controllers
         private IDocumentService _documentService;
         private IFileProvider _fileProvider;
         private readonly IRoboflowService _roboflowService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public TestController(IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService)
+        public TestController(IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, UserManager<AppUser> userManager)
         {
             _documentService = documentService;
             _fileProvider = fileProvider;
             _roboflowService = roboflowService;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+                ViewData["PictureUrl"] = currentUser.Picture;
+            }
+
             var documents = _documentService.GetAll();
 
             // RoboflowResponse tipinde response değişkenini null olarak başlat
