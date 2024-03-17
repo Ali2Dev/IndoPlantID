@@ -11,14 +11,14 @@ using Web.Models;
 
 namespace Web.Controllers
 {
-    public class TestController : Controller
+    public class TestController : BaseController
     {
         private IDocumentService _documentService;
         private IFileProvider _fileProvider;
         private readonly IRoboflowService _roboflowService;
         private readonly UserManager<AppUser> _userManager;
 
-        public TestController(IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, UserManager<AppUser> userManager)
+        public TestController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService) : base(userManager)
         {
             _documentService = documentService;
             _fileProvider = fileProvider;
@@ -28,12 +28,7 @@ namespace Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-
-                ViewData["PictureUrl"] = currentUser.Picture;
-            }
+            await GetUserPicture();
 
             var documents = _documentService.GetAll();
 

@@ -9,7 +9,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         //Identity
         private readonly UserManager<AppUser> _userManager;
@@ -19,27 +19,18 @@ namespace Web.Controllers
 
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
+        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, ILogger<HomeController> logger) : base(userManager)
         {
-            _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _logger = logger;
         }
 
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-
-                ViewData["PictureUrl"] = currentUser.Picture;
-            }
+            await GetUserPicture();
 
             return View();
         }
