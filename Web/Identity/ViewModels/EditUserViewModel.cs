@@ -26,8 +26,10 @@ namespace Web.Identity.ViewModels
         [Display(Name = "Email :")]
         public string Email { get; set; } = null!;
 
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Geçersiz telefon numarası formatı.")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Bu alan 10 karakter uzunluğunda olmalıdır.")]
         [Required(ErrorMessage = "Bu kısım boş olamaz.")]
-        [Display(Name = "Telefon :")]
+        [Display(Name = "Telefon:")]
         public string Phone { get; set; } = null!;
 
         [Display(Name = "Profil resmi :")]
