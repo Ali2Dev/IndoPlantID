@@ -59,6 +59,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     cookieBuilder.Name = "IndoPlantCookie";
 
     options.LoginPath = new PathString("/Home/SignIn");
+    options.LogoutPath = new PathString("/Member/Logout");
+    options.AccessDeniedPath = new PathString("/Account/AccessDenied");
     options.Cookie = cookieBuilder;
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
     options.SlidingExpiration = true;

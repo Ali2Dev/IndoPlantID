@@ -1,0 +1,65 @@
+﻿@model UpdateRoleViewModel
+
+@{
+    ViewData["Title"] = "Rol Güncelle";
+}
+
+<h1>Rol Güncelle</h1>
+
+
+<div class="row">
+    <div class="col-md-6">
+
+        @if (TempData["RoleUpdated"] as bool? ?? false)
+        {
+            <div class="ui success message">
+                <i class="close icon"></i>
+                <div class="mt-2">
+                    <p>Rol başarıyla güncellendi.</p>
+                </div>
+            </div>
+        }
+        <div asp-validation-summary=ModelOnly class="ui negative message w-75">
+            <i class="close icon"></i>
+            <div class="header">
+                HATA
+            </div>
+            <p></p>
+        </div>
+
+        <form asp-action="UpdateRole" method="post">
+            
+            <input type="hidden" asp-for="Id"/>
+
+            <div class="ui form">
+                <div class="two fields ">
+
+                    <div class="field">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" type="text" wfd-id="id57" required>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="mt-4">
+                <button class="ui blue button" type="submit">Güncelle</button>
+                <a class="ui black button ms-4" asp-area="Admin" asp-controller="Role" asp-action="RoleList">Rollere git</a>
+            </div>
+        </form>
+
+       
+        
+      
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,10 +1,16 @@
-﻿@if (User.Identity!.IsAuthenticated)
+﻿@using System.Security.Claims
+@if (User.Identity!.IsAuthenticated)
 {
     
     var userName = User.Identity.Name;
     if (userName.Length > 10)
     {
         userName = userName.Substring(0, 10) + "..";
+    }
+
+    @if (User.HasClaim(x => x.Type == ClaimTypes.Role && x.Value == "Admin"))
+    {
+        <a class="text-danger me-4" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
     }
 
     <div class="ui compact menu">

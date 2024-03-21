@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Web.Identity;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
         IDocumentService _documentService;
@@ -48,5 +50,46 @@ namespace Web.Areas.Admin.Controllers
 
             return View(userViewModelList);
         }
+
+        public async Task<IActionResult> UserList()
+        {
+            var userList = await _userManager.Users.ToListAsync();
+
+            var userViewModelList = userList.Select(x => new UserViewModel
+            {
+                Id = x.Id,
+                UserPicture = x.Picture,
+                Username = x.UserName,
+                Email = x.Email,
+                PhoneNumber = x.PhoneNumber,
+                FullName = x.FullName,
+                IsEmailConfirmed = x.EmailConfirmed,
+                IsTwoFactorEnabled = x.TwoFactorEnabled
+
+            }).ToList();
+
+            return View(userViewModelList);
+        }
+
+        public async Task<IActionResult> AdminList()
+        {
+            var adminList = await _userManager.GetUsersInRoleAsync("Admin");
+
+            var userViewModelList = adminList.Select(x => new UserViewModel
+            {
+                Id = x.Id,
+                UserPicture = x.Picture,
+                Username = x.UserName,
+                Email = x.Email,
+                PhoneNumber = x.PhoneNumber,
+                FullName = x.FullName,
+                IsEmailConfirmed = x.EmailConfirmed,
+                IsTwoFactorEnabled = x.TwoFactorEnabled
+
+            }).ToList();
+
+            return View(userViewModelList);
+        }
+
     }
 }

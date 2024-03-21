@@ -1,30 +1,44 @@
 ﻿@{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Admin - Anasayfa";
 }
 
 <div class="text-center mb-5">
-    <h1 class="fw-light">Admin Dashboard</h1>
+    <h1 class="fw-light">Admin Anasayfa</h1>
 </div>
 
 <div class="container">
-
-
+ 
+    
     <div class="row">
-
-        <a class="col-md-3 text-center mb-4 hover" asp-area="Admin" asp-controller="Dashboard" asp-action="GetAllDocuments">
-            <div class=" rounded-1 bg-danger text-white fs-5 py-4">
-                Tüm resimleri görüntüle
-            </div>
-            
-        </a>
         
-        <a class="col-md-3 text-center mb-4 hover" asp-area="Admin" asp-controller="Dashboard" asp-action="GetAllUsers">
-            <div class=" rounded-1 bg-primary text-white fs-5 py-4">
-                Tüm kullanıcılar
+        <a class="col-md-3 text-center mb-4 hover" asp-area="Admin" asp-controller="Role" asp-action="RoleList">
+            <div class="border  rounded-1 bg-danger text-white fs-5 py-4">
+                Tüm roller
             </div>
         </a>
         
+        <a class="col-md-3 text-center mb-4 hover" asp-area="Admin" asp-controller="Role" asp-action="CreateRole">
+            <div class="border rounded-1 bg-warning text-dark fw-bold fs-5 py-4">
+                CreateRole
+
+            </div>
+        </a>
+        
+       
+        <a class="col-md-3 text-center mb-4 hover" asp-area="Admin" asp-controller="Dashboard" asp-action="UserList">
+            <div class="border rounded-1 bg-primary text-white fs-5 py-4">
+                UserList
+            </div>
+        </a>
+        <a class="col-md-3 text-center mb-4 hover" asp-area="Admin" asp-controller="Dashboard" asp-action="AdminList">
+            <div class="border rounded-1 bg-info text-white fs-5 py-4">
+                AdminList
+            </div>
+        </a>
         
 
+       
+        
+      
     </div>
 </div>

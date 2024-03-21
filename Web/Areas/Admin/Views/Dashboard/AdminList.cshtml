@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Admin Listesi";
+}
+@model List<UserViewModel>
+
+<div class="text-center">
+    <h1 class="fw-light">Admin Listesi</h1>
+</div>
+
+
+<div class="container mt-4">
+    <table class="ui very basic collapsing celled table selectable text-center">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Photo</th>
+                <th>FullName</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>PhoneNumber</th>
+                <th>EmailConfirmed</th>
+                <th>2-FactorEnabled</th>
+                <th>RoleOperation</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>
+
+                        @if (@item.UserPicture != null)
+                        {
+                            <img class="ui avatar image" src="~/uploads/userPictures/@item.UserPicture" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-fill fs-3"></i>
+                        }
+                    </td>
+                    <td>@item.FullName</td>
+                    <td>@item.Username</td>
+                    <td>@item.Email</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>
+                        @if (@item.IsEmailConfirmed)
+                        {
+                            <div class="text-center">
+                                <i class="bi bi-person-fill-check text-primary fs-4"></i>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center">
+                                <i class="bi bi-person-fill-x text-danger fs-4"></i>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @if (@item.IsTwoFactorEnabled)
+                        {
+                            <div class="text-center">
+                                <i class="bi bi-person-fill-check text-primary fs-4"></i>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center">
+                                <i class="bi bi-person-fill-x text-danger fs-4"></i>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <a class="ui inverted blue button" asp-area="Admin" asp-controller="Role" asp-action="AssignRoleToUser" asp-route-userId="@item.Id">Rol ata</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>
