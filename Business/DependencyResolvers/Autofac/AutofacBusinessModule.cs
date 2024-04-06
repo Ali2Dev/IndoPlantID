@@ -25,6 +25,8 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<RoboflowManager>().As<IRoboflowService>().SingleInstance();
             builder.RegisterType<EfRoboflowDal>().As<IRoboflowDal>().SingleInstance();
 
+            builder.RegisterType<PlantNetManager>().As<IPlantNetService>().SingleInstance();
+
             //builder.Register(context => new MapperConfiguration(cfg =>
             //{
             //    // Configure your AutoMapper mappings here

@@ -17,13 +17,15 @@ namespace Web.Controllers
         private IFileProvider _fileProvider;
         private readonly IRoboflowService _roboflowService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IPlantNetService _plantNetService;
 
-        public TestController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService) : base(userManager)
+        public TestController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, IPlantNetService plantNetService = null) : base(userManager)
         {
             _documentService = documentService;
             _fileProvider = fileProvider;
             _roboflowService = roboflowService;
             _userManager = userManager;
+            _plantNetService = plantNetService;
         }
 
         public async Task<IActionResult> Index()
@@ -36,7 +38,7 @@ namespace Web.Controllers
             RoboflowResponse response = null;
 
             // Geçici veriden JSON formatındaki modeli al
-            var jsonModel = TempData["ResultModel"] as string;
+            var jsonModel = TempData["RoboflowTempData"] as string;
 
             if (!string.IsNullOrEmpty(jsonModel))
             {
@@ -65,23 +67,47 @@ namespace Web.Controllers
             var newPicturePath =
                 Path.Combine(wwwrootFolder.First(x => x.Name == "images").PhysicalPath!, randomFileName);
 
-            using (var stream = new FileStream(newPicturePath, FileMode.Create))
+            byte[] fileBytes;
+            using (var memoryStream = new MemoryStream())
             {
-                await file.CopyToAsync(stream);
-
+                await file.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
             }
 
-            _documentService.PostFileAsync(file, randomFileName);
+            var plantNetResult = await _plantNetService.IdentifyPlant(fileBytes);
 
-            byte[] imageArray = System.IO.File.ReadAllBytes(newPicturePath);
+            if (!plantNetResult.IsPlantDetected)
+            {
+                TempData["PlantNetTempData"] = plantNetResult.JsonResponse;
 
-            var result = _roboflowService.GetResponse(imageArray, randomFileName);
+                return RedirectToAction("Index", "Test");                
+            }
 
-            var jsonModel = JsonSerializer.Serialize(result);
+            else
+            {
+                using (var stream = new FileStream(newPicturePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
 
-            TempData["ResultModel"] = jsonModel;
+                }
 
-            return RedirectToAction("Index", "Test");
+                byte[] imageArray = System.IO.File.ReadAllBytes(newPicturePath);
+
+                _documentService.PostFileAsync(file, randomFileName);
+
+                var roboflowResult = _roboflowService.GetResponse(imageArray, randomFileName);
+
+                var jsonModel = JsonSerializer.Serialize(roboflowResult);
+
+                TempData["RoboflowTempData"] = jsonModel;
+
+                TempData["PlantNetTempData"] = plantNetResult.JsonResponse;
+
+                return RedirectToAction("Index", "Test");
+            }
+
+
+            
         }
     }
 }
