@@ -1,5 +1,8 @@
 ﻿@model DocumentViewModel
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
 
 <table class="table table-striped table-hover">
     <thead>
@@ -101,7 +104,9 @@
 }
 
 
-
+<div class="text-center">
+    <div id="map"></div>
+</div>
 
 
 
@@ -115,4 +120,43 @@
         };
         reader.readAsDataURL(event.target.files[0]);
     });
+</script>
+@section Scripts {
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+    // MAP İŞLEMLERİ
+    var map = L.map('map').setView([0, 0], 2);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+
+    var locationData = JSON.parse('@Html.Raw(TempData["LocationData"])');
+
+    // JavaScript objesini kullanarak haritaya marker ekleyin
+    locationData.forEach(function (loc) {
+        var marker = L.marker([loc.lat, loc.lon]).addTo(map)
+            .bindPopup(loc.name);
+    });
+
+    // var parisAndIstanbulCoordinates = {
+    //     "Paris": { lat: 48.8588897, lng: 2.3200410217200766 },
+    //     "İstanbul": { lat: 41.006381, lng: 28.9758715 },
+    // };
+
+
+    // for (var region in parisAndIstanbulCoordinates) {
+    //     var coords = parisAndIstanbulCoordinates[region];
+    //     L.marker([coords.lat, coords.lng]).addTo(map)
+    //         .bindPopup(region);
+    // };
 </script>

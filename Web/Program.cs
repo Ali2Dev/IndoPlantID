@@ -50,7 +50,11 @@ builder.Host.UseServiceProviderFactory
     (new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new AutofacBusinessModule()));
 
-
+// http client
+builder.Services.AddHttpClient<OpenStreetMapManager>(c =>
+{
+    c.DefaultRequestHeaders.Add("User-Agent", "request");
+});
 
 //Cookie
 builder.Services.ConfigureApplicationCookie(options =>

@@ -27,6 +27,10 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<PlantNetManager>().As<IPlantNetService>().SingleInstance();
 
+            builder.RegisterType<TrefleIOManager>().As<ITrefleIOService>().SingleInstance();
+
+            builder.RegisterType<OpenStreetMapManager>().As<IOpenStreetMapService>().SingleInstance();
+
             //builder.Register(context => new MapperConfiguration(cfg =>
             //{
             //    // Configure your AutoMapper mappings here

@@ -18,14 +18,18 @@ namespace Web.Controllers
         private readonly IRoboflowService _roboflowService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IPlantNetService _plantNetService;
+        private readonly IOpenStreetMapService _openStreetMapService;
+        private readonly ITrefleIOService _trefleIOService;
 
-        public TestController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, IPlantNetService plantNetService = null) : base(userManager)
+        public TestController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, IPlantNetService plantNetService , IOpenStreetMapService openStreetMapService, ITrefleIOService trefleIOService) : base(userManager)
         {
             _documentService = documentService;
             _fileProvider = fileProvider;
             _roboflowService = roboflowService;
             _userManager = userManager;
             _plantNetService = plantNetService;
+            _openStreetMapService = openStreetMapService;
+            _trefleIOService = trefleIOService;
         }
 
         public async Task<IActionResult> Index()
@@ -102,11 +106,36 @@ namespace Web.Controllers
                     var jsonModel = JsonSerializer.Serialize(roboflowResult);
 
                     TempData["RoboflowTempData"] = jsonModel;
+
+                    var trefleIdResult = await _trefleIOService.SearchPlantIdsAsync(plantNetResult.GlobalName);
+
+                    var firstId = trefleIdResult.First();
+
+                    var regions = await _trefleIOService.GetPlantRegionsAsync(firstId);
+
+                    var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
+
+                    var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
+
+                    TempData["LocationData"] = locationJson;
                 }
                 else 
                 {
                     TempData["RoboflowFailed"] = "Üzgünüz , modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk";  
-                    TempData["PlantNetTempData"] = plantNetResult.GlobalName; 
+
+                    TempData["PlantNetTempData"] = plantNetResult.GlobalName;
+
+                    var trefleIdResult = await _trefleIOService.SearchPlantIdsAsync(plantNetResult.GlobalName);
+
+                    var firstId = trefleIdResult.First();
+
+                    var regions = await _trefleIOService.GetPlantRegionsAsync(firstId);
+
+                    var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
+
+                    var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
+
+                    TempData["LocationData"] = locationJson;
                 }
 
 
