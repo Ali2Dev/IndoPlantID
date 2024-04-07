@@ -66,6 +66,12 @@ namespace Business.Concrete
                     // Deserialize JSON response to RootObject model
                     var rootObject = JsonSerializer.Deserialize<RootObject>(responseContent);
 
+                    if (rootObject.predictions == null || rootObject.predictions.Count == 0)  //YENİ
+                    {
+                        // No predictions found, return null or any other value you desire
+                        return null;
+                    }
+
                     // Get the first prediction
                     var prediction = rootObject.predictions[0];
 
@@ -90,6 +96,7 @@ namespace Business.Concrete
                     throw new Exception("Error parsing JSON response", ex);
                 }
             }
+
 
             throw new InvalidOperationException("Empty response received from server");
 

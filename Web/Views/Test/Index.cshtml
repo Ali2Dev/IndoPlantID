@@ -82,6 +82,16 @@
     </div>
 }
 
+
+
+@if (TempData["RoboflowFailed"] != null)  
+{
+    <div class="text-center">
+        <h1 class="display-6">:(</h1>
+        <h6>@TempData["RoboflowFailed"]</h6>
+    </div>
+}
+
 @if (TempData["PlantNetTempData"]!= null)
 {
 <div class="text-center">

@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.Concrete;
+using Newtonsoft.Json;
 
 namespace Business.Concrete
 {
@@ -45,7 +46,20 @@ namespace Business.Concrete
                 if (httpResponse.StatusCode == HttpStatusCode.OK)
                 {
                     response.IsPlantDetected = true;
+
                     response.JsonResponse = await httpResponse.Content.ReadAsStringAsync();
+
+                    // JSON yanıtını nesnelere dönüştür
+                    var queryResult = JsonConvert.DeserializeObject<PlantNetQueryResult>(response.JsonResponse);
+
+                    // En yüksek skorlu bitkiyi al
+                    var highestScoringSpecies = queryResult.Results.OrderByDescending(r => r.Score).FirstOrDefault();
+                    if (highestScoringSpecies != null)
+                    {
+                        // Global adı al
+                        response.GlobalName = highestScoringSpecies.Species.ScientificNameWithoutAuthor;
+                    }
+
                 }
                 else
                 {

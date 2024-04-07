@@ -97,11 +97,18 @@ namespace Web.Controllers
 
                 var roboflowResult = _roboflowService.GetResponse(imageArray, randomFileName);
 
-                var jsonModel = JsonSerializer.Serialize(roboflowResult);
+                if (roboflowResult!=null)  
+                {
+                    var jsonModel = JsonSerializer.Serialize(roboflowResult);
 
-                TempData["RoboflowTempData"] = jsonModel;
+                    TempData["RoboflowTempData"] = jsonModel;
+                }
+                else 
+                {
+                    TempData["RoboflowFailed"] = "Üzgünüz , modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk";  
+                    TempData["PlantNetTempData"] = plantNetResult.GlobalName; 
+                }
 
-                TempData["PlantNetTempData"] = plantNetResult.JsonResponse;
 
                 return RedirectToAction("Index", "Test");
             }

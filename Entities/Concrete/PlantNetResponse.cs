@@ -11,5 +11,7 @@ namespace Entities.Concrete
     {
         public string? JsonResponse { get; set; }
         public bool IsPlantDetected { get; set; }
+
+        public string? GlobalName { get; set; } 
     }
 }
