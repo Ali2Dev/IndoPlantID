@@ -101,6 +101,7 @@
                 @if (ViewData["PictureUrl"] == null)
                 {
                     <img class="rounded-circle" src="~/uploads/userPictures/defaultUserPhoto.jpg" ; />
+                   
                 }
                 else
                 {
@@ -108,6 +109,14 @@
                 }
                 
             </div>
+            @if (ViewData["PictureUrl"] != null)
+            {
+                <div class="text-center mt-2">
+                    <button class="btn"><i class="bi bi-trash text-danger fs-3"></i></button>
+
+                </div>
+            }
+           
         </div>
     </div>
 </div>

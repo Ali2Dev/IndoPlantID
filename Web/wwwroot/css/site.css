@@ -29,7 +29,13 @@ a {
 }
 
 #map {
-    width: 800px; 
-    height: 400px; 
-    margin: 0 auto; 
-} 
+    width: 800px;
+    height: 400px;
+    margin: 0 auto;
+}
+
+/*Scroll*/
+.table-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+}
