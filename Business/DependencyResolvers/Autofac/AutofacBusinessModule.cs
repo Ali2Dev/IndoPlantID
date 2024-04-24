@@ -31,6 +31,9 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<OpenStreetMapManager>().As<IOpenStreetMapService>().SingleInstance();
 
+            builder.RegisterType<ChatGPTManager>().As<IChatGPTService>().InstancePerLifetimeScope();
+
+
             //builder.Register(context => new MapperConfiguration(cfg =>
             //{
             //    // Configure your AutoMapper mappings here

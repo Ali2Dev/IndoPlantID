@@ -20,8 +20,10 @@ namespace Web.Controllers
         private readonly IPlantNetService _plantNetService;
         private readonly IOpenStreetMapService _openStreetMapService;
         private readonly ITrefleIOService _trefleIOService;
+        private readonly IChatGPTService _chatGPTService;
 
-        public TestController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, IPlantNetService plantNetService , IOpenStreetMapService openStreetMapService, ITrefleIOService trefleIOService) : base(userManager)
+
+        public TestController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, IPlantNetService plantNetService, IOpenStreetMapService openStreetMapService, ITrefleIOService trefleIOService, IChatGPTService chatGPTService) : base(userManager)
         {
             _documentService = documentService;
             _fileProvider = fileProvider;
@@ -30,6 +32,7 @@ namespace Web.Controllers
             _plantNetService = plantNetService;
             _openStreetMapService = openStreetMapService;
             _trefleIOService = trefleIOService;
+            _chatGPTService = chatGPTService;
         }
 
         public async Task<IActionResult> Index()
@@ -118,6 +121,10 @@ namespace Web.Controllers
                     var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
 
                     TempData["LocationData"] = locationJson;
+
+                    var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+
+                    TempData["GPTResponse"] = chatGPTResponse;
                 }
                 else 
                 {
@@ -136,6 +143,10 @@ namespace Web.Controllers
                     var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
 
                     TempData["LocationData"] = locationJson;
+
+                    var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+
+                    TempData["GPTResponse"] = chatGPTResponse;
                 }
 
 

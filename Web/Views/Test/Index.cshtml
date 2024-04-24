@@ -106,6 +106,13 @@
 </div>
 }
 
+@if (TempData["GPTResponse"] != null)
+{
+    <div class="text-center">
+        <h1 class="display-6">Sonuç</h1>
+        <h6>@TempData["GPTResponse"]</h6>
+    </div>
+}
 
 <div class="text-center">
     <div id="map"></div>
