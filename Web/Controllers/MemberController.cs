@@ -175,6 +175,18 @@ namespace Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteUserPicture(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+
+            user.Picture = null;
+
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction("EditUser", "Member");
+        }
+
 
     }
 }

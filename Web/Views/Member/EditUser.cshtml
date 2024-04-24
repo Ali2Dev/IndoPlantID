@@ -112,7 +112,11 @@
             @if (ViewData["PictureUrl"] != null)
             {
                 <div class="text-center mt-2">
-                    <button class="btn"><i class="bi bi-trash text-danger fs-3"></i></button>
+                    
+                    <form asp-controller="Member" asp-action="DeleteUserPicture" method="post" onsubmit="return confirm('Profil resminiz kaldırılacaktır. Onaylıyor musunuz ?')">
+                        <input type="hidden" value="@Model.UserName" name="userName" />
+                        <button class="btn" asp-controller="Member" asp-action="DeleteUserPicture"><i class="bi bi-trash text-danger fs-3"></i></button>
+                    </form>
 
                 </div>
             }
