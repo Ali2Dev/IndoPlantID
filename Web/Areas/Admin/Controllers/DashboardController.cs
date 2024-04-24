@@ -91,5 +91,20 @@ namespace Web.Areas.Admin.Controllers
             return View(userViewModelList);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+            }
+
+            return RedirectToAction("UserList");
+        }
+
+
     }
 }

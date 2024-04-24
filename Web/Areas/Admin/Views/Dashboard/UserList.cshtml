@@ -34,6 +34,7 @@
                 <th>2-FactorEnabled</th>
                 <th>Role</th>
                 <th>RoleOperation</th>
+                <th>-</th>
             </tr>
         </thead>
         <tbody>
@@ -91,6 +92,14 @@
                     </td>
                     <td>
                         <a class="ui inverted blue button" asp-area="Admin" asp-controller="Role" asp-action="AssignRoleToUser" asp-route-userId="@item.Id">Rol ata</a>
+                    </td>
+                    <td>
+
+                        
+                        <form asp-controller="Dashboard" asp-action="DeleteUser" method="post" onsubmit="return confirm(' @item.FullName (@item.Username) kullanıcısı silinecektir. Emin misiniz ?')">
+                            <input type="hidden" value="@item.Id" name="userId" />
+                            <button class="ui inverted red button" asp-area="Admin" asp-controller="Dashboard" asp-action="DeleteUser">Sil</button>
+                        </form>
                     </td>
                 </tr>
             }
