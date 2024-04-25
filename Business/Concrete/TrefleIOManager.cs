@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Entities.Concrete;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -113,6 +114,74 @@ namespace Business.Concrete
                 Console.WriteLine($"Error occurred: {ex.Message}");
                 return null;
             }
+        }
+   
+
+        public async Task<PlantImages> GetPlantImagesAsync(int plantId) //261950
+        {
+            try
+            {
+                var token = "QvXKoNsAFzKj9peykXbXEChQUZf0dsL7KRuey9KRoC0";
+
+                var url = $"https://trefle.io/api/v1/species/{plantId}?token={token}";
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var json = JObject.Parse(content);
+
+                    // Extract images of the plant
+                    var images = json["data"]["images"];
+
+                    var plantImages = new PlantImages();
+
+                    if (images != null)
+                    {
+                        plantImages.Leaf = GetImagesList(images["leaf"]);
+                        plantImages.Flower = GetImagesList(images["flower"]);
+                        plantImages.Fruit = GetImagesList(images["fruit"]);
+                        plantImages.Bark = GetImagesList(images["bark"]);
+                        plantImages.Habit = GetImagesList(images["habit"]);
+                    }
+
+                    return plantImages;
+                }
+                else
+                {
+                    // Handle unsuccessful response
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return null;
+            }
+        }
+
+        private List<ImageDetail> GetImagesList(JToken imagesToken)
+        {
+            var imagesList = new List<ImageDetail>();
+
+            if (imagesToken is JArray imagesArray)
+            {
+                foreach (var imageToken in imagesArray)
+                {
+                    var image = new ImageDetail
+                    {
+                        Id = (int)imageToken["id"],
+                        ImageUrl = (string)imageToken["image_url"],
+                        Copyright = (string)imageToken["copyright"]
+                    };
+
+                    imagesList.Add(image);
+                }
+            }
+
+            return imagesList;
         }
     }
 }

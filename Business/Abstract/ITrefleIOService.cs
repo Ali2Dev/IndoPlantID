@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Concrete;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,7 @@ namespace Business.Abstract
         Task<List<int>> SearchPlantIdsAsync(string name);
 
         Task<List<string>> GetPlantRegionsAsync(int plantId);
+
+        Task<PlantImages> GetPlantImagesAsync(int plantId);
     }
 }

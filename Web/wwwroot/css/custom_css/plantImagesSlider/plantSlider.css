@@ -1,0 +1,80 @@
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+    width: 100%;
+    cursor: pointer;
+}
+
+.modal-open .modal {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+#imageModal .modal-dialog {
+    max-width: 80%;
+}
+
+#imageModal .modal-content {
+    background-color: transparent;
+    border: none;
+}
+
+#imageModal .modal-body {
+    position: relative;
+    text-align: center;
+}
+
+    #imageModal .modal-body img {
+        border-radius: 0.25rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+.btn-close {
+    filter: invert(1);
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 0.5rem;
+}
+
+.zoom-controls {
+    position: absolute;
+    top: 50%;
+    right: -70px; /* Butonları fotoğrafın dışında sağa taşı */
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-button {
+    cursor: pointer;
+    font-size: 18px;
+    color: #333; /* Koyu gri renk */
+    background-color: #ffffffbe; /* Beyaz arka plan */
+    border: 1px solid #ddd; /* Hafif gri çerçeve */
+    padding: 10px;
+    margin: 5px;
+    border-radius: 50%;
+    display: inline-block;
+    width: 40px; /* Buton genişliği */
+    height: 40px; /* Buton yüksekliği */
+    line-height: 20px; /* Dikey hizalama */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Yumuşak gölge efekti */
+    transition: all 0.3s ease; /* Yumuşak geçiş efekti */
+}
+
+    .zoom-button:hover {
+        background-color: #f8f8f8; /* Farenin üzerine gelindiğinde arka plan rengi */
+        border-color: #ccc; /* Farenin üzerine gelindiğinde çerçeve rengi */
+        transform: scale(1.1); /* Büyütme efekti */
+    }
+
+    .zoom-button:active {
+        background-color: #e6e6e6; /* Tıklama anında arka plan rengi */
+        border-color: #bbb; /* Tıklama anında çerçeve rengi */
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Tıklama anında gölge efekti */
+    }

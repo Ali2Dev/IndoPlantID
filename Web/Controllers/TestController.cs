@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Web.Identity;
 using Web.Models;
 
+
 namespace Web.Controllers
 {
     public class TestController : BaseController
@@ -116,6 +117,11 @@ namespace Web.Controllers
 
                     var regions = await _trefleIOService.GetPlantRegionsAsync(firstId);
 
+                    var plantImages = await _trefleIOService.GetPlantImagesAsync(firstId);
+
+                    TempData["PlantImages"] = Newtonsoft.Json.JsonConvert.SerializeObject(plantImages);
+
+
                     var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
 
                     var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
@@ -137,6 +143,11 @@ namespace Web.Controllers
                     var firstId = trefleIdResult.First();
 
                     var regions = await _trefleIOService.GetPlantRegionsAsync(firstId);
+
+                    var plantImages = await _trefleIOService.GetPlantImagesAsync(firstId);
+
+                    TempData["PlantImages"] = Newtonsoft.Json.JsonConvert.SerializeObject(plantImages);
+
 
                     var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
 
