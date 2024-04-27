@@ -35,5 +35,7 @@ namespace Web.Identity.ViewModels
         [Display(Name = "Profil resmi :")]
         public IFormFile? File { get; set; }
 
+        public bool IsEmailConfirmed { get; set; }
+
     }
 }

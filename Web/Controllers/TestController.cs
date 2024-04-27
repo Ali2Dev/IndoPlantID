@@ -8,10 +8,12 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Web.Identity;
 using Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Web.Controllers
 {
+    [Authorize]
     public class TestController : BaseController
     {
         private IDocumentService _documentService;
@@ -88,7 +90,7 @@ namespace Web.Controllers
             {
                 TempData["PlantNetTempData"] = plantNetResult.JsonResponse;
 
-                return RedirectToAction("Index", "Test");                
+                return RedirectToAction("Index", "Test");
             }
 
             else
@@ -105,7 +107,7 @@ namespace Web.Controllers
 
                 var roboflowResult = _roboflowService.GetResponse(imageArray, randomFileName);
 
-                if (roboflowResult!=null)  
+                if (roboflowResult != null)
                 {
                     var jsonModel = JsonSerializer.Serialize(roboflowResult);
 
@@ -132,9 +134,9 @@ namespace Web.Controllers
 
                     TempData["GPTResponse"] = chatGPTResponse;
                 }
-                else 
+                else
                 {
-                    TempData["RoboflowFailed"] = "Üzgünüz , modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk";  
+                    TempData["RoboflowFailed"] = "Üzgünüz , modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk";
 
                     TempData["PlantNetTempData"] = plantNetResult.GlobalName;
 
@@ -165,7 +167,7 @@ namespace Web.Controllers
             }
 
 
-            
+
         }
     }
 }

@@ -4,5 +4,6 @@
     {
         Task SendResetPasswordEmailAsync(string resetEmailLink, string toEmail, string userName);
         Task SendResetPasswordIsSuccessfulAsync(string userName, string toEmail);
+        Task SendConfirmEmailLinkAsync(string confirmEmailLink, string toEmail, string userName);
     }
 }

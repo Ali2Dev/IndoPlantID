@@ -111,7 +111,15 @@ namespace Web.Controllers
 
             if (identityResult.Succeeded)
             {
-                TempData["SuccessMessage"] = "Kayıt işlemi başarıyla gerçekleştirildi.";
+                TempData["SuccessMessage"] = "Kayıt işlemi gerçekleştirildi ve e-mail adresinize doğrulama linki gönderildi.";
+
+                var user = await _userManager.FindByEmailAsync(request.Email);
+
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmEmailLink = Url.Action("ConfirmEmail", "Home", new { user.Id, token }, HttpContext.Request.Scheme);
+
+                //Send an email
+                await _emailService.SendConfirmEmailLinkAsync(confirmEmailLink!, user.Email!, user.FullName!);
                 return RedirectToAction(nameof(HomeController.SignUp));
             }
 
@@ -223,6 +231,74 @@ namespace Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+
+        public async Task<IActionResult> ConfirmEmail(string id, string token)
+        {
+            if (id == null || token == null)
+            {
+                TempData["ConfirmEmailMsg"] = "Bu token artık geçersiz. Yeni bir tane talep edebilirsin.";
+                TempData["MessageType"] = "negative";
+                return RedirectToAction(nameof(HomeController.Index));
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+
+                if (result.Succeeded)
+                {
+                    TempData["ConfirmEmailMsg"] = "Mail adresiniz başarıyla onaylandı!";
+                    TempData["MessageType"] = "positive";
+                    return RedirectToAction(nameof(HomeController.Index));
+                }
+            }
+
+            TempData["ConfirmEmailMsg"] = "Bu e-mail ile bir kullanıcı bulanamadı!";
+            TempData["MessageType"] = "warning";
+            return RedirectToAction(nameof(HomeController.Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendEmailConfirmLink(SignUpViewModel request)
+        {
+
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+
+            bool isEmailSent = await SendEmailConfirmLinkAsync(user);
+
+            if (isEmailSent)
+            {
+                TempData["ConfirmEmailMsg"] = "Hesap doğrulama bağlantısı e-posta adresinize gönderildi!";
+                TempData["MessageType"] = "info";
+                return RedirectToAction(nameof(MemberController.EditUser), "Member");
+
+            }
+
+            TempData["ConfirmEmailMsg"] = "Hesap doğrulama bağlantısı gönderilemedi! Lütfen daha sonra tekrar deneyin.";
+            TempData["MessageType"] = "negative";
+            return RedirectToAction(nameof(MemberController.EditUser), "Member");
+        }
+
+        private async Task<bool> SendEmailConfirmLinkAsync(AppUser user)
+        {
+
+
+            if (user != null)
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmEmailLink = Url.Action("ConfirmEmail", "Home", new { user.Id, token }, HttpContext.Request.Scheme);
+
+                //Send an email
+                await _emailService.SendConfirmEmailLinkAsync(confirmEmailLink!, user.Email!, user.FullName!);
+                return true;
+            }
+            return false;
+
         }
     }
 }

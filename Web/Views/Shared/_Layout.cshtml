@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@if (TempData["ConfirmEmailMsg"] != null)
+{
+    <div class="ui @TempData["MessageType"] message">
+        <i class="close icon"></i>
+        <p>
+            @TempData["ConfirmEmailMsg"]
+        </p>
+    </div>
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />

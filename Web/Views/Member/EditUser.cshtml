@@ -23,8 +23,8 @@
             </div>
 
             <form asp-controller="Member" asp-action="EditUser" method="post" enctype="multipart/form-data">
-                
-                
+
+
                 <div class="row mb-3">
                     <label class="col-md-4 col-form-label" asp-for="FirstName"></label>
                     <div class="col-md-8">
@@ -43,7 +43,7 @@
                         <span class="text-danger" asp-validation-for="LastName"></span>
                     </div>
                 </div>
-                
+
 
 
                 <div class="row mb-3">
@@ -74,7 +74,7 @@
                 <div class="row mb-3">
                     <label class="col-md-4 col-form-label" asp-for="File"></label>
                     <div class="col-md-8">
-                        <input class="form-control" type="file" asp-for="File"/>
+                        <input class="form-control" type="file" asp-for="File" />
                         <span class="text-danger" asp-validation-for="File"></span>
                     </div>
                 </div>
@@ -86,33 +86,49 @@
                 </div>
 
             </form>
-            
-            <hr/>
+
+            <hr />
             <div class="row mt-5 mb-5">
                 <h2>Şifre Güncelleme</h2>
                 <a asp-controller="Member" asp-action="ChangePassword">
                     <button class="ui red button">Şifre değiştir</button>
                 </a>
             </div>
+
+
+            @if (!Model.IsEmailConfirmed)
+            {
+                <hr />
+                <form asp-controller="Home" asp-action="SendEmailConfirmLink" method="post">
+                    <div class="mt-4 mb-4">
+                        <h2>E-posta Onayla</h2>
+                        <p>Hesabınız doğrulanmamıştır. Aşağıdan hesabınızı doğrulayabilirsiniz</p>
+                        <button type="submit" class="ui inverted green button">Onayla</button>
+                        <input type="hidden" asp-for="Email" class="form-control" required>
+                    </div>
+                </form>
+            }
         </div>
+
+
 
         <div class="col-md-6">
             <div class="text-center col-md-6 offset-md-3 ui medium fluid image">
                 @if (ViewData["PictureUrl"] == null)
                 {
                     <img class="rounded-circle" src="~/uploads/userPictures/defaultUserPhoto.jpg" ; />
-                   
+
                 }
                 else
                 {
                     <img class="rounded-circle" src="~/uploads/userPictures/@ViewData["PictureUrl"]" ; />
                 }
-                
+
             </div>
             @if (ViewData["PictureUrl"] != null)
             {
                 <div class="text-center mt-2">
-                    
+
                     <form asp-controller="Member" asp-action="DeleteUserPicture" method="post" onsubmit="return confirm('Profil resminiz kaldırılacaktır. Onaylıyor musunuz ?')">
                         <input type="hidden" value="@Model.UserName" name="userName" />
                         <button class="btn" asp-controller="Member" asp-action="DeleteUserPicture"><i class="bi bi-trash text-danger fs-3"></i></button>
@@ -120,12 +136,12 @@
 
                 </div>
             }
-           
+
         </div>
     </div>
 </div>
 
 @section Scripts
-    {
+{
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }

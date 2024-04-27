@@ -106,7 +106,8 @@ namespace Web.Controllers
                 Email = currentUser!.Email!,
                 Phone = currentUser!.PhoneNumber!,
                 FirstName = currentUser!.FirstName,
-                LastName = currentUser!.LastName
+                LastName = currentUser!.LastName,
+                IsEmailConfirmed = currentUser.EmailConfirmed
             };
 
             ViewData["PictureUrl"] = currentUser.Picture;
