@@ -18,8 +18,11 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
+            //Documents
             builder.RegisterType<DocumentManager>().As<IDocumentService>().SingleInstance();
             builder.RegisterType<EfDocumentDal>().As<IDocumentDal>().SingleInstance();
+            builder.RegisterType<DocumentResultManager>().As<IDocumentResultService>().SingleInstance();
+            builder.RegisterType<EfDocumentResultDal>().As<IDocumentResultDal>().SingleInstance();
 
             //Roboflow
             builder.RegisterType<RoboflowManager>().As<IRoboflowService>().SingleInstance();

@@ -11,21 +11,24 @@ namespace Entities.Concrete
     {
 
         public int Id { get; set; }
-        //public int Correspondent { get; set; }
-        //public int DocumentType { get; set; }
+
 
         public string StoragePath { get; set; }
 
         public string DocumentExtension { get; set; }
 
         public string Title { get; set; }
-        
+
         public DateTime CreatedDate { get; set; }
 
         public string Content { get; set; }
+        public string UserId { get; set; }
+
+
+        //public int Correspondent { get; set; }
+        //public int DocumentType { get; set; }
         ////public List<int?> Tags { get; set; } = new List<int?>();
         //public byte[] Documentfile { get; set; }
-        //public DateTime CreatedDate { get; set; }
         //public DateTime Modified { get; set; }
         //public DateTime Added { get; set; }
         //public string? ArchiveSerialNumber { get; set; }

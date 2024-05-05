@@ -17,6 +17,7 @@ namespace Business.Concrete
         IDocumentDal _documentDal;
 
 
+
         public DocumentManager(IDocumentDal documentDal)
         {
             _documentDal = documentDal;
@@ -48,7 +49,7 @@ namespace Business.Concrete
             _documentDal.Update(document);
         }
 
-        public async void PostFileAsync(IFormFile fileData, string path)
+        public async void PostFileAsync(IFormFile fileData, string path, string userId)
         {
             try
             {
@@ -57,7 +58,9 @@ namespace Business.Concrete
                     StoragePath = path,
                     Title = fileData.FileName,
                     Content = fileData.ContentDisposition,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    UserId = userId
+
                 };
 
                 document.DocumentExtension = Path.GetExtension(document.Title);
