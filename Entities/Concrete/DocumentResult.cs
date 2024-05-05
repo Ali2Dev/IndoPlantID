@@ -26,17 +26,16 @@ namespace Entities.Concrete
         public string PlantGlobalName { get; set; }
         public string? RoboflowJsonModel { get; set; }
 
-        //Plant Images
-        //public PlantImages PlantImages { get; set; }
 
-        public List<ImageDetail> PlantFlowerImages { get; set; }
-        public List<ImageDetail> PlantLeafImages { get; set; }
-        public List<ImageDetail> PlantBarkImages { get; set; }
-        public List<ImageDetail> PlantFruitImages { get; set; }
+
+        public string? FlowerUrl { get; set; }
+        public string? LeafUrl { get; set; }
+        public string? BarkUrl { get; set; }
+        public string? FruitUrl { get; set; }
         //--
 
-        public List<PlantCoordinate> PlantCoordinates { get; set; }
+        //public List<PlantCoordinate> PlantCoordinates { get; set; }
 
-        public string PlantChatGPTResponse { get; set; }
+        public string? PlantChatGPTResponse { get; set; }
     }
 }

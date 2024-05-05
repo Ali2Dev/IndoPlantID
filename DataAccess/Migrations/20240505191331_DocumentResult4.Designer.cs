@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(IndoPlantDb))]
-    [Migration("20240505141612_added_DocumentResult")]
-    partial class added_DocumentResult
+    [Migration("20240505191331_DocumentResult4")]
+    partial class DocumentResult4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +68,9 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("BarkUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,8 +82,16 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FlowerUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FruitUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LeafUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PlantChatGPTResponse")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PlantGlobalName")
@@ -88,7 +99,6 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoboflowJsonModel")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StoragePath")
@@ -102,77 +112,6 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DocumentResults");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.ImageDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Copyright")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DocumentResultId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DocumentResultId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DocumentResultId2")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DocumentResultId3")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentResultId");
-
-                    b.HasIndex("DocumentResultId1");
-
-                    b.HasIndex("DocumentResultId2");
-
-                    b.HasIndex("DocumentResultId3");
-
-                    b.ToTable("ImageDetail");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.PlantCoordinate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("DocumentResultId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Lat")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Lon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentResultId");
-
-                    b.ToTable("PlantCoordinate");
                 });
 
             modelBuilder.Entity("Entities.Concrete.RoboflowResponse", b =>
@@ -201,45 +140,6 @@ namespace DataAccess.Migrations
                     b.HasKey("RoboflowResponseId");
 
                     b.ToTable("RoboflowResponses");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.ImageDetail", b =>
-                {
-                    b.HasOne("Entities.Concrete.DocumentResult", null)
-                        .WithMany("PlantBarkImages")
-                        .HasForeignKey("DocumentResultId");
-
-                    b.HasOne("Entities.Concrete.DocumentResult", null)
-                        .WithMany("PlantFlowerImages")
-                        .HasForeignKey("DocumentResultId1");
-
-                    b.HasOne("Entities.Concrete.DocumentResult", null)
-                        .WithMany("PlantFruitImages")
-                        .HasForeignKey("DocumentResultId2");
-
-                    b.HasOne("Entities.Concrete.DocumentResult", null)
-                        .WithMany("PlantLeafImages")
-                        .HasForeignKey("DocumentResultId3");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.PlantCoordinate", b =>
-                {
-                    b.HasOne("Entities.Concrete.DocumentResult", null)
-                        .WithMany("PlantCoordinates")
-                        .HasForeignKey("DocumentResultId");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.DocumentResult", b =>
-                {
-                    b.Navigation("PlantBarkImages");
-
-                    b.Navigation("PlantCoordinates");
-
-                    b.Navigation("PlantFlowerImages");
-
-                    b.Navigation("PlantFruitImages");
-
-                    b.Navigation("PlantLeafImages");
                 });
 #pragma warning restore 612, 618
         }

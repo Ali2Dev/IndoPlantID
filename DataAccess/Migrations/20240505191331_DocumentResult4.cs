@@ -1,33 +1,76 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace DataAccess.Migrations
 {
-    public partial class added_DocumentResult : Migration
+    public partial class DocumentResult4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "DocumentResults",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoragePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DocumentExtension = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PlantGlobalName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoboflowJsonModel = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PlantChatGPTResponse = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DocumentResults", x => x.Id);
-                });
+
+
+
+            migrationBuilder.AlterColumn<string>(
+                name: "PlantChatGPTResponse",
+                table: "DocumentResults",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AddColumn<string>(
+                name: "BarkUrl",
+                table: "DocumentResults",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "FlowerUrl",
+                table: "DocumentResults",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "FruitUrl",
+                table: "DocumentResults",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "LeafUrl",
+                table: "DocumentResults",
+                type: "nvarchar(max)",
+                nullable: true);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "BarkUrl",
+                table: "DocumentResults");
+
+            migrationBuilder.DropColumn(
+                name: "FlowerUrl",
+                table: "DocumentResults");
+
+            migrationBuilder.DropColumn(
+                name: "FruitUrl",
+                table: "DocumentResults");
+
+            migrationBuilder.DropColumn(
+                name: "LeafUrl",
+                table: "DocumentResults");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "PlantChatGPTResponse",
+                table: "DocumentResults",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
 
             migrationBuilder.CreateTable(
                 name: "ImageDetail",
@@ -35,12 +78,16 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Copyright = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentResultBarkId = table.Column<int>(type: "int", nullable: false),
+                    DocumentResultFlowerId = table.Column<int>(type: "int", nullable: false),
+                    DocumentResultFruitId = table.Column<int>(type: "int", nullable: false),
                     DocumentResultId = table.Column<int>(type: "int", nullable: true),
                     DocumentResultId1 = table.Column<int>(type: "int", nullable: true),
                     DocumentResultId2 = table.Column<int>(type: "int", nullable: true),
-                    DocumentResultId3 = table.Column<int>(type: "int", nullable: true)
+                    DocumentResultId3 = table.Column<int>(type: "int", nullable: true),
+                    DocumentResultLeafId = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,10 +120,10 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentResultId = table.Column<int>(type: "int", nullable: true),
                     Lat = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Lon = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DocumentResultId = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,18 +159,6 @@ namespace DataAccess.Migrations
                 name: "IX_PlantCoordinate_DocumentResultId",
                 table: "PlantCoordinate",
                 column: "DocumentResultId");
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "ImageDetail");
-
-            migrationBuilder.DropTable(
-                name: "PlantCoordinate");
-
-            migrationBuilder.DropTable(
-                name: "DocumentResults");
         }
     }
 }

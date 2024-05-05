@@ -157,27 +157,30 @@ namespace Web.Controllers
                     documentResult.PlantGlobalName = plantNetResult.GlobalName;
                     documentResult.RoboflowJsonModel = jsonModel;
 
-                    documentResult.PlantFlowerImages = plantImages.Flower;
-                    documentResult.PlantBarkImages = plantImages.Bark;
-                    documentResult.PlantFruitImages = plantImages.Fruit;
-                    documentResult.PlantLeafImages = plantImages.Leaf;
+                    plantImages.Flower.ForEach(x => documentResult.FlowerUrl += x.ImageUrl.ToString());
+                    plantImages.Bark.ForEach(x => documentResult.BarkUrl += x.ImageUrl.ToString());
+                    plantImages.Fruit.ForEach(x => documentResult.FruitUrl += x.ImageUrl.ToString());
+                    plantImages.Leaf.ForEach(x => documentResult.LeafUrl += x.ImageUrl.ToString());
+
+
+
                     documentResult.PlantChatGPTResponse = chatGPTResponse;
 
-                    var coordinateList = new List<PlantCoordinate>();
+                    //var coordinateList = new List<PlantCoordinate>();
 
-                    foreach (var item in coordinates)
-                    {
-                        var plantCoordinate = new PlantCoordinate()
-                        {
-                            Lat = item.Lat,
-                            Lon = item.Lon,
-                            Name = item.Name
-                        };
+                    //foreach (var item in coordinates)
+                    //{
+                    //    var plantCoordinate = new PlantCoordinate()
+                    //    {
+                    //        Lat = item.Lat,
+                    //        Lon = item.Lon,
+                    //        Name = item.Name
+                    //    };
 
-                        coordinateList.Add(plantCoordinate);
-                    }
+                    //    coordinateList.Add(plantCoordinate);
+                    //}
 
-                    documentResult.PlantCoordinates = coordinateList;
+                    //documentResult.PlantCoordinates = coordinateList;
 
 
                     _documentResultService.Add(documentResult);
@@ -211,27 +214,30 @@ namespace Web.Controllers
 
 
                     documentResult.PlantGlobalName = plantNetResult.GlobalName;
-                    documentResult.PlantFlowerImages = plantImages.Flower;
-                    documentResult.PlantBarkImages = plantImages.Bark;
-                    documentResult.PlantFruitImages = plantImages.Fruit;
-                    documentResult.PlantLeafImages = plantImages.Leaf;
+
+
+                    plantImages.Flower.ForEach(x => documentResult.FlowerUrl += x.ImageUrl.ToString());
+                    plantImages.Bark.ForEach(x => documentResult.BarkUrl += x.ImageUrl.ToString());
+                    plantImages.Fruit.ForEach(x => documentResult.FruitUrl += x.ImageUrl.ToString());
+                    plantImages.Leaf.ForEach(x => documentResult.LeafUrl += x.ImageUrl.ToString());
+
                     documentResult.PlantChatGPTResponse = chatGPTResponse;
 
-                    var coordinateList = new List<PlantCoordinate>();
+                    //var coordinateList = new List<PlantCoordinate>();
 
-                    foreach (var item in coordinates)
-                    {
-                        var plantCoordinate = new PlantCoordinate()
-                        {
-                            Lat = item.Lat,
-                            Lon = item.Lon,
-                            Name = item.Name
-                        };
+                    //foreach (var item in coordinates)
+                    //{
+                    //    var plantCoordinate = new PlantCoordinate()
+                    //    {
+                    //        Lat = item.Lat,
+                    //        Lon = item.Lon,
+                    //        Name = item.Name
+                    //    };
 
-                        coordinateList.Add(plantCoordinate);
-                    }
+                    //    coordinateList.Add(plantCoordinate);
+                    //}
 
-                    documentResult.PlantCoordinates = coordinateList;
+                    //documentResult.PlantCoordinates = coordinateList;
 
 
                     _documentResultService.Add(documentResult);
