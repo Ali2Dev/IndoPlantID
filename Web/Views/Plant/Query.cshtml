@@ -6,20 +6,28 @@
 @* @model List<DocumentResultViewModel> *@
 @model DocumentResult
 
-<h1>Query</h1>
 
 
+
+<h2>@Model.PlantGlobalName</h2>
+
+<p class="fw-light"> <strong>Tarih:</strong> @Model.CreatedDate </p>
 <div>
-    <p>@Model.UserId </p>
-    <p>@Model.CreatedDate </p>
+
+    
+    
+    <div class="ui input">
+        <input type="text" value="@Model.PlantChatGPTResponse" readonly="true">
+    </div>
+   
     <p>@Model.BarkUrl </p>
-    <p>@Model.Content </p>
-    <p>@Model.DocumentExtension </p>
+
+
     <p>@Model.FruitUrl </p>
     <p>@Model.LeafUrl </p>
     <p>@Model.PlantChatGPTResponse </p>
     <p>@Model.PlantGlobalName </p>
-    
+
     <img src="~/uploads/images/@Model.StoragePath" class="card-img-top" width="100%" height="200px">
 
 
