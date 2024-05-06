@@ -3,34 +3,122 @@
     ViewData["Title"] = "Query";
 }
 
-@* @model List<DocumentResultViewModel> *@
-@model DocumentResult
+@model DocumentResultViewModel
 
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
 
 
 <h2>@Model.PlantGlobalName</h2>
 
-<p class="fw-light"> <strong>Tarih:</strong> @Model.CreatedDate </p>
-<div>
 
-    
-    
-    <div class="ui input">
-        <input type="text" value="@Model.PlantChatGPTResponse" readonly="true">
+    <div class="row mt-3">
+        <div class="col-md-6 offset-md-3">
+            <h2>Yüklediğiniz Fotoğraf</h2>
+            <img class="img-fluid rounded" id="preview" src="~/uploads/images/@Model.StoragePath" alt="Önizleme" style= "width: 50%;" />
+        </div>
     </div>
-   
-    <p>@Model.BarkUrl </p>
 
 
-    <p>@Model.FruitUrl </p>
-    <p>@Model.LeafUrl </p>
-    <p>@Model.PlantChatGPTResponse </p>
-    <p>@Model.PlantGlobalName </p>
+@if (Model.PlantChatGPTResponse != null)
+{
+    <div class="text-center">
+        <h1 class="display-6">Bitki Hakkında Genel Bilgi</h1>
+        <h6>@Model.PlantChatGPTResponse</h6>
+    </div>
+}
 
-    <img src="~/uploads/images/@Model.StoragePath" class="card-img-top" width="100%" height="200px">
+
+@if (Model.PlantFlowerImgUrl != null && Model.PlantFlowerImgUrl.Any())
+{
+    <div class="row">
+        <div class="text-center">
+            <h1 class="display-6">Bitkinin Diğer Fotoları</h1>
+        </div>
+        @foreach (var item in Model.PlantFlowerImgUrl)
+        {
+
+            <div class="col-md-3">
+
+                <div class="card mb-4" style="width: 18rem;">
+                    <img src="@item" class="card-img-top" width="100%" height="200px">
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+
+@if (Model.PlantLeafImgUrl != null && Model.PlantLeafImgUrl.Any())
+{
+    <div class="row">
+        <div class="text-center">
+            <h1 class="display-6">Bitkinin Yaprakları</h1>
+        </div>
+        @foreach (var item in Model.PlantLeafImgUrl)
+        {
+
+            <div class="col-md-3">
+
+                <div class="card mb-4" style="width: 18rem;">
+                    <img src="@item" class="card-img-top" width="100%" height="200px">
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+
+@if (Model.PlantBarkImgUrl != null && Model.PlantBarkImgUrl.Any())
+{
+    <div class="row">
+        <div class="text-center">
+            <h1 class="display-6">Bitkinin Kabukları</h1>
+        </div>
+        @foreach (var item in Model.PlantBarkImgUrl)
+        {
+
+            <div class="col-md-3">
+
+                <div class="card mb-4" style="width: 18rem;">
+                    <img src="@item" class="card-img-top" width="100%" height="200px">
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+
+@if (Model != null && Model.PlantFruitImgUrl != null && Model.PlantFruitImgUrl.Any())
+{
+    <div class="row">
+        <div class="text-center">
+            <h1 class="display-6">Bitkinin Meyveleri</h1>
+        </div>
+        @foreach (var item in Model.PlantFruitImgUrl)
+        {
+
+            <div class="col-md-3">
+
+                <div class="card mb-4" style="width: 18rem;">
+                    <img src="@item" class="card-img-top" width="100%" height="200px">
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
 
 
+<div class="text-center">
+    <h1 class="display-6">Bitkinin Yetiştiği Bölgeler</h1>
+    <div id="map"></div>
+</div>
 
 
 </div>

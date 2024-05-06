@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Web.Identity;
 using Web.Models;
 using Microsoft.AspNetCore.Authorization;
-
+using System.Text.RegularExpressions;
 
 namespace Web.Controllers
 {
@@ -283,12 +283,32 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Query(string userId, string storagePath)
         {
-
             var documentResult = _documentResultService.GetByStoragePathAndUserId(storagePath, userId);
+            var model = new DocumentResultViewModel
+            {
+                PlantGlobalName = documentResult.PlantGlobalName,
+                CreatedDate = documentResult.CreatedDate,
+                PlantChatGPTResponse = documentResult.PlantChatGPTResponse,
+                StoragePath = documentResult.StoragePath
+            };
+
+            // FlowerUrl için URL'leri ayıkla
+            model.PlantFlowerImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.FlowerUrl);
+
+            // BarkUrl için URL'leri ayıkla
+            model.PlantBarkImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.BarkUrl);
+
+            // LeafUrl için URL'leri ayıkla
+            model.PlantLeafImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.LeafUrl);
+
+            // FruitUrl için URL'leri ayıkla
+            model.PlantFruitImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.FruitUrl);
 
             await GetUserPicture();
-            return View(documentResult);
+            return View(model);
         }
+
+
 
 
         [HttpGet]
@@ -299,6 +319,75 @@ namespace Web.Controllers
 
             return View();
         }
+        public class UrlHelper
+        {
+            public static List<string> ExtractUrlsFromString(string input)
+            {
+                List<string> extractedUrls = new List<string>();
+
+                // input değişkenini kontrol et
+                if (input != null)
+                {
+                    int startIndex = 0;
+
+                    // 'https://bs' ile başlayan URL'leri ayıkla
+                    while (startIndex < input.Length)
+                    {
+                        int bsIndex = input.IndexOf("https://bs", startIndex, StringComparison.OrdinalIgnoreCase);
+
+                        if (bsIndex != -1)
+                        {
+                            // 'https://bs' ile başlayan kısmı bulundu, URL'yi al
+                            int endIndex = input.IndexOf("https://bs", bsIndex + 1, StringComparison.OrdinalIgnoreCase);
+
+                            if (endIndex == -1)
+                            {
+                                endIndex = input.Length;
+                            }
+
+                            string url = input.Substring(bsIndex, endIndex - bsIndex);
+                            extractedUrls.Add(url);
+
+                            // Başlangıç indeksini bir sonraki aramanın ötesine geçir
+                            startIndex = endIndex;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    // input değişkeni null ise, extractedUrls listesini boş olarak döndür
+                    Console.WriteLine("input is null.");
+                }
+
+                return extractedUrls;
+            }
+
+        }
+        //public static class UrlHelper
+        //{
+        //    public static List<string> ExtractUrls(string input)
+        //    {
+        //        List<string> extractedUrls = new List<string>();
+
+        //        // Güncellenmiş Regex deseni kullanarak URL'leri bulma
+        //        //Regex urlRegex = new Regex(@"\b(?:https?://|www\.)\S+\b");
+        //        Regex urlRegex = new Regex(@"https?://[^\s/$.?#]+");
+
+        //        MatchCollection matches = urlRegex.Matches(input);
+
+        //        foreach (Match match in matches)
+        //        {
+        //            extractedUrls.Add(match.Value);
+        //        }
+
+        //        return extractedUrls;
+        //    }
+        //}
+
 
     }
 }

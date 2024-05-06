@@ -7,34 +7,6 @@
       crossorigin="" />
 
 
-
-<div class="table-wrapper">
-    <table class="table table-striped table-hover">
-        <thead>
-
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Title</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            @foreach (var item in Model.Documents)
-            {
-                <tr>
-
-                    <th scope="row">@item.Id</th>
-
-                    <td>@item.Title</td>
-
-                </tr>
-            }
-        </tbody>
-
-    </table>
-</div>
-
 <div class="row mt-3">
     <div class="col-md-6 offset-md-3">
         <h2>Yüklediğiniz Fotoğraf</h2>

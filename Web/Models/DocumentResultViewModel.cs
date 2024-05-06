@@ -5,10 +5,10 @@ namespace Web.Models
 {
     public class DocumentResultViewModel
     {
-        List<string>? PlantFlowerImgUrl { get; set; }
-        List<string>? PlantBarkImgUrl { get; set; }
-        List<string>? PlantLeafImgUrl { get; set; }
-        List<string>? PlantFruitImgUrl { get; set; }
+        public List<string>? PlantFlowerImgUrl { get; set; }
+        public List<string>? PlantBarkImgUrl { get; set; }
+        public List<string>? PlantLeafImgUrl { get; set; }
+        public List<string>? PlantFruitImgUrl { get; set; }
         public string StoragePath { get; set; }
         public string PlantGlobalName { get; set; }
         public DateTime CreatedDate { get; set; }
