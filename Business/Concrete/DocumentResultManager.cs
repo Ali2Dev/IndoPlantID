@@ -29,6 +29,12 @@ namespace Business.Concrete
             return _documentResultDal.Get(i => i.Id == id);
         }
 
+        public DocumentResult GetByStoragePathAndUserId(string storagePath, string userId)
+        {
+            return _documentResultDal.Get(i => i.StoragePath == storagePath && i.UserId == userId);
+        }
+
+
         public void Add(DocumentResult entity)
         {
             _documentResultDal.Add(entity);

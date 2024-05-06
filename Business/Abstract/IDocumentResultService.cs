@@ -13,6 +13,8 @@ namespace Business.Abstract
         List<DocumentResult> GetAll();
 
         DocumentResult GetById(int id);
+        DocumentResult GetByStoragePathAndUserId(string storagePath, string userId);
+
 
         void Add(DocumentResult entity);
         void Delete(DocumentResult entity);

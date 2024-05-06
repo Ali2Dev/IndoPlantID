@@ -65,6 +65,7 @@ namespace Web.Controllers
                 Documents = documents
             };
 
+
             return View(viewModel);
         }
 
@@ -254,21 +255,48 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> PreviousDocuments()
         {
+            await GetUserPicture();
+
+
             // Get UserId
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
             if (user != null)
             {
                 string userId = user.Id;
                 ViewBag.UserId = userId;
 
-                // Document'ları GetAll() ile al ve bellekte filtrele/sırala
+
                 var documentList = _documentService.GetAll()
                     .Where(d => d.UserId == userId)
                     .OrderByDescending(d => d.CreatedDate)
                     .ToList();
 
+
                 return View(documentList);
             }
+
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Query(string userId, string storagePath)
+        {
+
+            var documentResult = _documentResultService.GetByStoragePathAndUserId(storagePath, userId);
+
+            await GetUserPicture();
+            return View(documentResult);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Query()
+        {
+
+
+
             return View();
         }
 

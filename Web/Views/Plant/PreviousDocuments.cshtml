@@ -5,9 +5,12 @@
 
 @model List<Document>
 
+<link href="css/custom_css/documentResult/document_result.css"/>
+
 <div class="text-center">
     <h2 class="mb-3">Önceki Sorgularınız</h2>
 </div>
+
 
 
 <div class="row">
@@ -18,12 +21,32 @@
         {
             <div class="col-md-3">
 
-                <div class="card mb-4" style="width: 18rem;">
+                <form id="getDocumentResult" method="POST" asp-controller="Plant" asp-action="Query">
+                    <div class="card mb-4 opacity-hover" style="width: 18rem; cursor: pointer;" onclick="submitForm()">
+                        <img src="~/uploads/images/@item.StoragePath" class="card-img-top" width="100%" height="200px">
+
+                        <input type="hidden" name="userId" value="@item.UserId">
+                        <input type="hidden" name="storagePath" value="@item.StoragePath">
+
+                        <div class="card-body" >
+                            <p class="card-text text-dark"><strong>Tarih:</strong> @item.CreatedDate.ToString()</p>
+                        </div>
+                    </div>
+                </form>
+
+
+
+                
+                
+                
+
+
+               @*  <div class="card mb-4" style="width: 18rem;" asp-action="Query">
                     <img src="~/uploads/images/@item.StoragePath" class="card-img-top" width="100%" height="200px">
                     <div class="card-body">
-                        <p class="card-text">Created: @item.CreatedDate.ToString()</p>
+                        <p class="card-text text-dark"><strong>Tarih:</strong> @item.CreatedDate.ToString()</p>
                     </div>
-                </div>
+                </div> *@
 
             </div>
         }
@@ -36,4 +59,11 @@
         object-fit: cover;
     }
 </style>
+
+
+<script>
+    function submitForm() {
+        document.getElementById('getDocumentResult').submit();
+    }
+</script>
 
