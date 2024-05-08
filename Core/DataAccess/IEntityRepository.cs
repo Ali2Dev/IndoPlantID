@@ -13,6 +13,7 @@ namespace Core.DataAccess
         List<T> GetAll(Expression<Func<T, bool>> filter = null); //optional filter
         T Get(Expression<Func<T, bool>> filter);
         void Add(T entity);
+        void AddRange(IEnumerable<T> entities);
         void Delete(T entity);
         void Update(T entity);
     }

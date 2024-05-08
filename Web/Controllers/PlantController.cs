@@ -25,9 +25,10 @@ namespace Web.Controllers
         private readonly IOpenStreetMapService _openStreetMapService;
         private readonly ITrefleIOService _trefleIOService;
         private readonly IChatGPTService _chatGPTService;
+        private readonly IRegionCoordinateService _regionCoordinateService;
 
 
-        public PlantController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, IPlantNetService plantNetService, IOpenStreetMapService openStreetMapService, ITrefleIOService trefleIOService, IChatGPTService chatGPTService, IDocumentResultService documentResultService) : base(userManager)
+        public PlantController(UserManager<AppUser> userManager, IDocumentService documentService, IFileProvider fileProvider, IRoboflowService roboflowService, IPlantNetService plantNetService, IOpenStreetMapService openStreetMapService, ITrefleIOService trefleIOService, IChatGPTService chatGPTService, IDocumentResultService documentResultService, IRegionCoordinateService regionCoordinateService) : base(userManager)
         {
             _documentService = documentService;
             _fileProvider = fileProvider;
@@ -38,6 +39,7 @@ namespace Web.Controllers
             _trefleIOService = trefleIOService;
             _chatGPTService = chatGPTService;
             _documentResultService = documentResultService;
+            _regionCoordinateService = regionCoordinateService;
         }
 
         public async Task<IActionResult> Index()
@@ -146,6 +148,24 @@ namespace Web.Controllers
 
                     var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
 
+                    if (coordinates != null)
+                    {
+                        var regionCoordinateList = new List<RegionCoordinate>();
+                        foreach (var item in coordinates)
+                        {
+                            var regionCoordinate = new RegionCoordinate
+                            {
+                                Name = item.Name,
+                                Lat = item.Lat,
+                                Lon = item.Lon,
+                                StoragePath = document.StoragePath,
+                                UserId = userId
+                            };
+                            regionCoordinateList.Add(regionCoordinate);
+                        }
+                        _regionCoordinateService.AddRange(regionCoordinateList);
+                    }
+
                     var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
 
                     TempData["LocationData"] = locationJson;
@@ -204,6 +224,24 @@ namespace Web.Controllers
 
 
                     var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
+                    if (coordinates!=null)
+                    {
+                        var regionCoordinateList = new List<RegionCoordinate>();
+                        foreach (var item in coordinates)
+                        {
+                            var regionCoordinate = new RegionCoordinate
+                            {
+                                Name = item.Name,
+                                Lat = item.Lat,
+                                Lon = item.Lon,
+                                StoragePath = document.StoragePath,
+                                UserId = userId
+                            };
+                            regionCoordinateList.Add(regionCoordinate);
+                        }
+                        _regionCoordinateService.AddRange(regionCoordinateList);
+                    }
+                    
 
                     var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
 
@@ -304,7 +342,16 @@ namespace Web.Controllers
             // FruitUrl için URL'leri ayıkla
             model.PlantFruitImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.FruitUrl);
 
+
+            var regionCoordinates = _regionCoordinateService.GetAll(x => x.UserId == userId && x.StoragePath == storagePath);     
+
+            var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(regionCoordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
+
+            TempData["LocationData"] = locationJson;
+
             await GetUserPicture();
+
+             
             return View(model);
         }
 
@@ -314,11 +361,10 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Query()
         {
-
-
-
+            
             return View();
         }
+
         public class UrlHelper
         {
             public static List<string> ExtractUrlsFromString(string input)

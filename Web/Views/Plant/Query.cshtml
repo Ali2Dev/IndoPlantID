@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Query";
 }
 
@@ -13,12 +12,12 @@
 <h2>@Model.PlantGlobalName</h2>
 
 
-    <div class="row mt-3">
-        <div class="col-md-6 offset-md-3">
-            <h2>Yüklediğiniz Fotoğraf</h2>
-            <img class="img-fluid rounded" id="preview" src="~/uploads/images/@Model.StoragePath" alt="Önizleme" style= "width: 50%;" />
-        </div>
+<div class="row mt-3">
+    <div class="col-md-6 offset-md-3">
+        <h2>Yüklediğiniz Fotoğraf</h2>
+        <img class="img-fluid rounded" id="preview" src="~/uploads/images/@Model.StoragePath" alt="Önizleme" style="width: 50%;" />
     </div>
+</div>
 
 
 @if (Model.PlantChatGPTResponse != null)
@@ -29,6 +28,10 @@
     </div>
 }
 
+<div class="text-center">
+    <h1 class="display-6">Bitkinin Yetiştiği Bölgeler</h1>
+    <div id="map"></div>
+</div>
 
 @if (Model.PlantFlowerImgUrl != null && Model.PlantFlowerImgUrl.Any())
 {
@@ -121,4 +124,30 @@
 </div>
 
 
-</div>
+@* @section Scripts {
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+} *@
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+    // MAP İŞLEMLERİ
+    var map = L.map('map').setView([0, 0], 2);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+
+    var locationData = JSON.parse('@Html.Raw(TempData["LocationData"])');
+
+    locationData.forEach(function (loc) {
+        var marker = L.marker([loc.lat, loc.lon]).addTo(map)
+            .bindPopup(loc.name);
+    });
+
+</script>

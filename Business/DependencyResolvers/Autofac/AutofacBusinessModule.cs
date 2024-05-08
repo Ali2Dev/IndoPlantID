@@ -10,6 +10,7 @@ using Business.Concrete;
 using Castle.DynamicProxy;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
+using Entities.Concrete;
 using Microsoft.Extensions.FileProviders;
 
 namespace Business.DependencyResolvers.Autofac
@@ -27,6 +28,9 @@ namespace Business.DependencyResolvers.Autofac
             //Roboflow
             builder.RegisterType<RoboflowManager>().As<IRoboflowService>().SingleInstance();
             builder.RegisterType<EfRoboflowDal>().As<IRoboflowDal>().SingleInstance();
+
+            builder.RegisterType<RegionCoordinateManager>().As<IRegionCoordinateService>().SingleInstance();
+            builder.RegisterType<EfRegionCoordinateDal>().As<IRegionCoordinateDal>().SingleInstance();
 
             builder.RegisterType<PlantNetManager>().As<IPlantNetService>().SingleInstance();
 
