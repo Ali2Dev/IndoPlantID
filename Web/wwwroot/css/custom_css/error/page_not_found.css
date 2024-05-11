@@ -1,0 +1,85 @@
+/*======================
+    404 page
+=======================*/
+
+
+.page_404 {
+    padding: 40px 0;
+    background: #fff;
+    font-family: 'Arvo', sans-serif;
+}
+
+    .page_404 img {
+        width: 100%;
+    }
+
+.four_zero_four_bg {
+    background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
+    height: 400px;
+    background-position: center;
+}
+
+
+    .four_zero_four_bg h1 {
+        font-size: 80px;
+    }
+
+    .four_zero_four_bg h3 {
+        font-size: 80px;
+    }
+
+.link_404 {
+    color: #fff !important;
+    padding: 10px 20px;
+    background: #39ac31;
+    margin: 20px 0;
+    display: inline-block;
+}
+
+.contant_box_404 {
+    margin-top: -50px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0 auto;
+    width: 100%;
+    flex-direction: column;
+    margin-top: -10%; /* Ýçeriði yukarý çek */
+}
+
+
+.row {
+    display: flex;
+    justify-content: center; /* Yatayda ortala */
+    align-items: center; /* Dikeyde ortala */
+    width: 100%; /* Yüzde yüz geniþlik */
+    flex-direction: column; /* Ýçerikleri dikey olarak sýrala */
+}
+
+.col-sm-10.col-sm-offset-1 {
+    display: flex;
+    flex-direction: column; /* Ýçerikleri sütun olarak hizala */
+    justify-content: center; /* Yatayda ortala */
+    align-items: center; /* Dikeyde ortala */
+    width: 100%; /* Geniþliði tam ekran yap */
+}
+
+.link_404 {
+    color: #fff !important;
+    padding: 10px 20px;
+    background: #39ac31;
+    margin: 20px 0;
+    display: inline-block;
+    width: auto; /* Buton geniþliðini içeriðe göre ayarla */
+    max-width: 200px; /* Maksimum geniþlik */
+    text-align: center; /* Buton metnini merkeze al */
+}
+
+.four_zero_four_bg, .contant_box_404 {
+    text-align: center;
+    width: 100%;
+}

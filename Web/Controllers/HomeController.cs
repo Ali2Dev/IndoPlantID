@@ -42,12 +42,16 @@ namespace Web.Controllers
 
         public IActionResult SignIn()
         {
+            ViewBag.ShowNavbar = false;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SignIn(SignInViewModel request, string? returnUrl = null)
         {
+            ViewBag.ShowNavbar = false;
+            TempData["ShowWelcomeMessage"] = false;
+
             returnUrl = returnUrl ?? Url.Action("Index", "Home");
 
             var userResult = await _userManager.FindByEmailAsync(request.Email);
@@ -88,12 +92,14 @@ namespace Web.Controllers
 
         public IActionResult SignUp()
         {
+            ViewBag.ShowNavbar = false;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpViewModel request)
         {
+            ViewBag.ShowNavbar = false;
 
             if (!ModelState.IsValid)
             {
@@ -139,14 +145,15 @@ namespace Web.Controllers
 
         public IActionResult ForgotMyPassword()
         {
-
+            ViewBag.ShowNavbar = false;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> ForgotMyPassword(ForgotMyPasswordViewModel request)
         {
-            // http://localhost:5185?userId=1=&token=aaaaaaaaaaaa
+            ViewBag.ShowNavbar = false;
+            TempData["ShowWelcomeMessage"] = false;
 
             bool userFound = false;
 
@@ -155,7 +162,7 @@ namespace Web.Controllers
             if (hasUser == null)
             {
                 TempData["UserFound"] = userFound;
-                ModelState.AddModelError(string.Empty, "Bu e-mail ile bir kullanıcı bulunamadı.");
+                ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunamadı.");
                 return View();
             }
 

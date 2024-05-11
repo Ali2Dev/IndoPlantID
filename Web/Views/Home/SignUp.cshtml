@@ -4,10 +4,12 @@
 
 @model SignUpViewModel
 
+<link href="~/css/custom_css/home/signup.css" rel="stylesheet" />
+<link href="~/css/custom_css/animations/moving-letters/16.css" rel="stylesheet" />
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-<div class="text-center"><h1>Kayıt Formu</h1></div>
 
-<div class="row d-flex justify-content-center mt-4">
+@* <div class="row d-flex justify-content-center mt-4">
 
     <div class="col-md-6">
 
@@ -110,7 +112,94 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
+</div> *@
+
+
+
+@* Yeni Kayıt formu *@
+
+
+
+<div>
+
+    <div class="wrapper">
+        <form asp-controller="Home" asp-action="SignUp" method="post">
+
+            @if ((bool)(TempData["ShowWelcomeMessage"] ?? true))
+            {
+                <h1 class="ml16 fs-3">Merhaba</h1>
+            }
+
+            <div class="input-box">
+                <input type="text" placeholder="İsim" asp-for="FirstName" required>
+                <span asp-validation-for="FirstName" class="text-danger ms-3"></span>
+            </div>
+            <div class="input-box">
+                <input type="text" placeholder="Soyisim" asp-for="LastName" required>
+                <span asp-validation-for="LastName" class="text-danger ms-3"></span>
+            </div>
+            <div class="input-box">
+                <input type="email" placeholder="E-mail" asp-for="Email"  required>
+                <span asp-validation-for="Email" class="text-danger ms-3"></span>
+            </div>
+            <div class="input-box">
+                <input type="text" placeholder="Kullanıcı adı" asp-for="Username" required>
+                <span asp-validation-for="Username" class="text-danger ms-3"></span>
+            </div>
+            <div class="input-box">
+                <input type="text" placeholder="5XXXXXXXXX" id="phoneNumber" asp-for="PhoneNumber" maxlength="10" required>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Şifre" asp-for="Password" required>
+                <i class='bx bxs-lock-alt' style="cursor: pointer"></i>
+                <span asp-validation-for="Password" class="text-danger ms-3"></span>
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Şifre Tekrar" asp-for="PasswordConfirmed" required>
+                <i class='bx bxs-lock-alt' style="cursor: pointer"></i>
+                <span asp-validation-for="PasswordConfirmed" class="text-danger ms-3"></span>
+            </div>
+
+            <button type="submit" id="btn-signup" class="btn">Kaydı tamamla</button>
+
+            <div class="register-link d-flex justify-content-center mt-5">
+                @* <a class="text-white fw-lighter" asp-controller="Home" asp-action="Index">Ana sayfa</a> *@
+                <p class="text-white">Hesabım var. <a asp-controller="Home" asp-action="SignIn"><strong>Giriş yap</strong></a></p>
+            </div>
+        </form>
+        
+        <div asp-validation-summary="ModelOnly" class="alert alert-warning alert-dismissible fade show d-flex align-items-center mt-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-2"></i>
+            <span class="ms-4">
+            </span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Kayıt başarılı!</strong> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <script>
+        setTimeout(function() {
+            window.location.href = 'https://localhost:7041/Home/SignIn'; 
+        }, 3000); 
+    </script>
+        }
+
+        else if (!String.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Kayıt olunamadı!</strong> @ViewBag.ErrorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
 </div>
+
+
 
 
 @* ClientSide V.  *@
@@ -119,4 +208,34 @@
     {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+<script src="~/js/custom_js/animations/moving-letters/16.js"></script>
 <script src="js/custom_js/home/validation_phone.js"></script>
+
+
+<script>
+    //Şifreyi göster/gizle
+    document.addEventListener("DOMContentLoaded", function () {
+       
+        var passwordFields = document.querySelectorAll('input[type="password"]');
+        passwordFields.forEach(function (passwordInput) {
+            var toggleIcon = passwordInput.nextElementSibling; // İlgili ikonu bul
+
+            if (toggleIcon.classList.contains('bxs-lock-alt')) {
+                toggleIcon.addEventListener('click', function () {
+                    
+                    if (passwordInput.type === "password") {
+                        // Şifre görünür hale getir
+                        passwordInput.type = "text";
+                        toggleIcon.classList.replace('bxs-lock-alt', 'bxs-lock-open-alt'); // Icon'u açık kilit ikonuyla değiştir
+                    } else {
+                        // Şifre tekrar gizle
+                        passwordInput.type = "password";
+                        toggleIcon.classList.replace('bxs-lock-open-alt', 'bxs-lock-alt'); // Icon'u kapalı kilit ikonuyla değiştir
+                    }
+                });
+            }
+        });
+    });
+</script>

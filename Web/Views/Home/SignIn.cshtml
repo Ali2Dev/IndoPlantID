@@ -1,10 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Kullanıcı Giriş";
+    ViewData["Title"] = "Kullanıcı Girişi";
 
 }
 @model SignInViewModel
+<link href="~/css/custom_css/home/signin.css" rel="stylesheet" />
 
-<div class="row">
+<link href="~/css/custom_css/animations/moving-letters/16.css" rel="stylesheet" />
+
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+
+@* <div class="row">
     <div class="col-md-4 offset-md-4">
         <h2 class="text-center mb-4">Kullanıcı Girişi</h2>
 
@@ -16,7 +22,7 @@
         <form class="border p-4 rounded-1 " asp-controller="Home" asp-action="SignIn" asp-route-returnurl="@Context.Request.Query["returnUrl"]" method="post">
             <div class="mb-3">
                 <label for="Email" class="form-label" asp-for="Email"></label>
-                <input value="azizvefa23@gmail.com" class="form-control" asp-for="Email">
+                <input value="byali.ilgin@gmail.com" class="form-control" asp-for="Email">
                 <span class="text-danger" asp-validation-for="Email"></span>
             </div>
             <div class="mb-3">
@@ -46,9 +52,89 @@
             </div>
         </form>
     </div>
+</div> *@
+
+
+<div>
+    
+        <a class="fs-1 text-success" asp-controller="Home" asp-action="Index">←</a> 
+   
+    <div class="wrapper">
+
+        <div asp-validation-summary=ModelOnly class="alert alert-danger alert-dismissible fade show" role="alert">
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <form asp-controller="Home" asp-action="SignIn" asp-route-returnurl="@Context.Request.Query["returnUrl"]" method="post">
+
+
+
+            @if ((bool)(TempData["ShowWelcomeMessage"] ?? true))
+            {
+                <h1 class="ml16 fs-3">HOŞ GELDİN!</h1>
+            }
+
+            <div class="input-box">
+                <input type="email" placeholder="E-mail" asp-for="Email" value="byali.ilgin@gmail.com" required>
+                <i class='bx bxs-user'></i>
+                <span class="text-danger ms-3" asp-validation-for="Email"></span>
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Şifre" asp-for="Password" required>
+                <i class='bx bxs-lock-alt' style="cursor: pointer"></i>
+            </div>
+            <div class="remember-forgot">
+                <label for="RememberMe" asp-for="RememberMe"><input type="checkbox" asp-for="RememberMe">Beni hatırla</label>
+                <a asp-controller="Home" asp-action="ForgotMyPassword" class="text-white opacity-75">Şifremi Unuttum</a>
+            </div>
+            
+
+            <button type="submit" id="btn-signin" class="btn">Giriş yap</button>
+            <div class="register-link d-flex justify-content-center mt-5">
+                @* <a class="text-white fw-lighter" asp-controller="Home" asp-action="Index">Ana sayfa</a> *@
+                <p class="text-white">Hesabım yok. <a asp-controller="Home" asp-action="SignUp"><strong>Üye ol</strong></a></p>
+            </div>
+        </form>
+
+
+
+    </div>
 </div>
+
+
+
+
+
 
 @section Scripts
     {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
+
+<script>
+    //Şifreyi görünür/gizli kılma
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var passwordInput = document.querySelector('input[type="password"]');
+        var toggleIcon = document.querySelector('.bxs-lock-alt');
+
+        toggleIcon.addEventListener('click', function () {
+           
+            if (passwordInput.type === "password") {
+                // Şifre görünür hale getir
+                passwordInput.type = "text";
+                toggleIcon.classList.replace('bxs-lock-alt', 'bxs-lock-open-alt'); 
+            } else {
+                // Şifre tekrar gizle
+                passwordInput.type = "password";
+                toggleIcon.classList.replace('bxs-lock-open-alt', 'bxs-lock-alt');
+            }
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+
+
+<script src="~/js/custom_js/animations/moving-letters/16.js"></script>

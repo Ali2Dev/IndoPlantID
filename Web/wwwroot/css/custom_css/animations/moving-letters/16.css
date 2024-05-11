@@ -1,0 +1,15 @@
+﻿.ml16 {
+    color: black;
+    padding: 10px 0;
+    font-weight: 800;
+    font-size: 2em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    overflow: hidden;
+    opacity: 0.5;
+}
+
+    .ml16 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }

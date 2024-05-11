@@ -8,6 +8,8 @@
     </div>
 }
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,18 +28,21 @@
 </head>
 <body>
     <header>
-        <partial name="_Navbar" />
+        @if (ViewBag.ShowNavbar ?? true)  
+        {
+            <partial name="_Navbar" />
+        }
     </header>
-    <div class="container">
+    <div class="">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    <div class="container">
+    &copy; 2024 - Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
     </footer> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

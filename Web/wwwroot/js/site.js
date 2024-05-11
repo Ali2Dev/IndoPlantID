@@ -15,18 +15,18 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 //Show - hide password for password inputs
-document.querySelectorAll('.btn-password-eye').forEach(button => {
-    button.addEventListener('click', function () {
-        const passwordInput = button.previousElementSibling;
+//document.querySelectorAll('.btn-password-eye').forEach(button => {
+//    button.addEventListener('click', function () {
+//        const passwordInput = button.previousElementSibling;
 
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            button.innerHTML = '<i class="bi bi-eye-fill fs-6"></i>'; // show
-        } else {
-            passwordInput.type = 'password';
-            button.innerHTML = '<i class="bi bi-eye-slash fs-6"></i>'; // hide
-        }
-    });
-});
+//        if (passwordInput.type === 'password') {
+//            passwordInput.type = 'text';
+//            button.innerHTML = '<i class="bi bi-eye-fill fs-6"></i>'; // show
+//        } else {
+//            passwordInput.type = 'password';
+//            button.innerHTML = '<i class="bi bi-eye-slash fs-6"></i>'; // hide
+//        }
+//    });
+//});
 
 

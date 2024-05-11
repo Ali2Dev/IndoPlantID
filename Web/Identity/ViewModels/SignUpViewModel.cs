@@ -50,6 +50,7 @@ namespace Web.Identity.ViewModels
         [Display(Name = "Telefon:")]
         public string PhoneNumber { get; set; }
 
+
         [Compare(nameof(PasswordConfirmed), ErrorMessage = "Şifreler uyuşmuyor.")]
         [Required(ErrorMessage = "Bu kısım boş olamaz.")]
         [Display(Name = "Şifre:")]

@@ -13,7 +13,7 @@ namespace Business.Concrete
 {
     public class ChatGPTManager : IChatGPTService
     {
-       
+
         public async Task<string> GetResponse(string plantName)
         {
 
@@ -40,7 +40,7 @@ namespace Business.Concrete
             }
             else
             {
-                return "Sana nah baklava";
+                return "Servis hatası!";
             }
         }
     }
