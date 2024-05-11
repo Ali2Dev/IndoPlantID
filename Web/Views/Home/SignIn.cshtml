@@ -83,8 +83,9 @@
             <div class="input-box">
                 <input type="password" placeholder="Şifre" asp-for="Password" required>
                 <i class='bx bxs-lock-alt' style="cursor: pointer"></i>
+                <span class="text-danger ms-3" asp-validation-for="Password"></span>
             </div>
-            <div class="remember-forgot">
+            <div class="remember-forgot mt-1 mb-4">
                 <label for="RememberMe" asp-for="RememberMe"><input type="checkbox" asp-for="RememberMe">Beni hatırla</label>
                 <a asp-controller="Home" asp-action="ForgotMyPassword" class="text-white opacity-75">Şifremi Unuttum</a>
             </div>
