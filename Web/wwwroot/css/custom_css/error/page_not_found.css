@@ -40,7 +40,7 @@
     margin-top: -50px;
 }
 
-.container {
+.container-404 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,7 +52,7 @@
 }
 
 
-.row {
+.row-404 {
     display: flex;
     justify-content: center; /* Yatayda ortala */
     align-items: center; /* Dikeyde ortala */
