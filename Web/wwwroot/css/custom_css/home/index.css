@@ -38,6 +38,11 @@
     text-decoration: none;
 }
 
+    .brand:hover {
+        color: #0d730d;
+        text-shadow: 3px 3px 4px #000000;
+    }
+
 .navegation-items a {
     /*  El position: relative; en este caso indica que el enlace será el punto de referencia para posicionar cualquier elemento descendiente con position: absolute;. Esto significa que cualquier elemento con position: absolute; dentro de un enlace se posicionará en relación con ese enlace en particular. */
     position: relative;
