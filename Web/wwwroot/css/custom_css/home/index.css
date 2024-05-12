@@ -299,3 +299,16 @@
             margin-bottom: 40px;
         }
 }
+
+#btn-home {
+    color: whitesmoke;
+    /*background-color: rgba(255, 255, 255, 0.5);*/ /* Yarý saydam kýrmýzý */
+    background-color: transparent; /* Yarý saydam kýrmýzý */
+    border: 1px solid whitesmoke;
+}
+
+
+    #btn-home:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #222222
+    }
