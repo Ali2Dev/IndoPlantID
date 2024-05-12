@@ -28,12 +28,13 @@ namespace Web.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public ActionResult Index()
         {
-            await GetUserPicture();
-
+            //await GetUserPicture();
+            ViewBag.ShowNavbar = false;
             return View();
         }
+
 
         public IActionResult Privacy()
         {
@@ -45,6 +46,7 @@ namespace Web.Controllers
             ViewBag.ShowNavbar = false;
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SignIn(SignInViewModel request, string? returnUrl = null)

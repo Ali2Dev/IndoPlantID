@@ -224,7 +224,7 @@ namespace Web.Controllers
 
 
                     var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
-                    if (coordinates!=null)
+                    if (coordinates != null)
                     {
                         var regionCoordinateList = new List<RegionCoordinate>();
                         foreach (var item in coordinates)
@@ -241,7 +241,7 @@ namespace Web.Controllers
                         }
                         _regionCoordinateService.AddRange(regionCoordinateList);
                     }
-                    
+
 
                     var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
 
@@ -343,7 +343,7 @@ namespace Web.Controllers
             model.PlantFruitImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.FruitUrl);
 
 
-            var regionCoordinates = _regionCoordinateService.GetAll(x => x.UserId == userId && x.StoragePath == storagePath);     
+            var regionCoordinates = _regionCoordinateService.GetAll(x => x.UserId == userId && x.StoragePath == storagePath);
 
             var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(regionCoordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
 
@@ -351,7 +351,7 @@ namespace Web.Controllers
 
             await GetUserPicture();
 
-             
+
             return View(model);
         }
 
@@ -361,7 +361,14 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Query()
         {
-            
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult DetectWithCamera()
+        {
+
             return View();
         }
 

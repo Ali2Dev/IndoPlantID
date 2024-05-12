@@ -5,9 +5,9 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="" />
+<link href="~/css/custom_css/plant/imageUpload.css" rel="stylesheet" />
 
-
-<div class="row mt-3">
+@* <div class="row mt-3">
     <div class="col-md-6 offset-md-3">
         <h2>Yüklediğiniz Fotoğraf</h2>
         <img class="img-fluid rounded" id="preview" src="" alt="Önizleme" style="display:none; width: 50%;" />
@@ -17,11 +17,11 @@
         <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.FileContent)" alt="Uploaded Image" style="max-width: 100%; height: auto;" />
         } *@
 
-    </div>
-</div>
+  @*   </div>
+</div> *@ 
 
 
-<div class="row">
+@* <div class="row">
     <div class="col-md-6 offset-md-3">
         <h2>Fotoğraf Yükleyiniz</h2>
 
@@ -30,7 +30,7 @@
             <div class="row mb-3">
                 <label class="col-md-4 col-form-label">Fotoğraf yükleyin:</label>
                 <div class="col-md-8">
-                    <input class="form-control" id="fileUpload" type="file" name="file" />
+                    <input class="form-control" id="fileUpload" type="file" name="file" required />
                 </div>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="row mb-3">
 
                 <div class="col-md-8 offset-md-4">
-                    <button type="submit" class="btn btn-primary">Yükle</button>
+                    <button type="submit" class="btn btn-primary">Sorgula</button>
 
                     <a class="btn btn-warning ms-4" href="https://demo.roboflow.com/ev-bitkisi-tanima/1?publishable_key=rf_eBE2SLq9dEZYXkDRdsjU75PtjQt1" target="_blank"><i class="bi bi-camera me-3 fs-5"></i>Kamerayı Aç</a>
 
@@ -48,7 +48,39 @@
         </form>
 
     </div>
-</div>
+</div> *@
+
+<h2 class="mb-2">Bitkinizi yükleyin..</h2>
+
+<form class="uploader" id="file-upload-form" asp-controller="Plant" asp-action="UploadImage" method="post" enctype="multipart/form-data">
+    <input id="file-upload" type="file" name="file" required accept="image/*"/>
+
+    <label for="file-upload" id="file-drag">
+        <img id="file-image" src="#" alt="Preview" class="hidden">
+        <div id="start">
+            <i class="fa fa-download" aria-hidden="true"></i>
+            <div>Buraya tıklayabilir ya da fotoğrafınızı sürükleyebilirsiniz.</div>
+            <div id="notimage" class="hidden text-danger">Lütfen bir resim yükleyin.</div>
+            @* <span id="file-upload-btn" class="btn btn-primary">Select a file</span> *@
+        </div>
+        <div id="response" class="hidden">
+            <div id="messages"></div>
+            <progress class="progress" id="file-progress" value="0">
+                <span>0</span>%
+            </progress>
+        </div>
+    </label>
+    
+    
+    <button type="submit" class="btn">Sorgula</button>
+
+    <a class="btn  ms-4" href="https://demo.roboflow.com/ev-bitkisi-tanima/1?publishable_key=rf_eBE2SLq9dEZYXkDRdsjU75PtjQt1" target="_blank"><i class="bi bi-camera me-3 fs-5"></i>Kamerayı Aç</a>
+</form>
+
+
+
+
+
 
 @if (Model.RoboflowResponse != null)
 {
@@ -282,7 +314,8 @@
     }
 </script>
 
-<script>
+
+@* <script>
     document.getElementById('fileUpload').addEventListener('change', function (event) {
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -292,7 +325,10 @@
         };
         reader.readAsDataURL(event.target.files[0]);
     });
-</script>
+</script> *@
+
+<script src="~/js/custom_js/plant/imageUpload.js"></script>
+
 @section Scripts {
 
     <script src="~/js/site.js" asp-append-version="true"></script>
