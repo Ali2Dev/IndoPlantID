@@ -16,7 +16,7 @@
 
 <body>
     <header class="header">
-        <a asp-controller="Home" asp-action="Index" class="brand">Plant Identification</a>
+        <a asp-controller="Home" asp-action="Index" class="brand">Bitki Net</a>
         <div class="menu-btn">
             <!-- <img class="menu-btn_img" src="assets/imagens/menu-alt.svg" alt="menu button"> -->
         </div>
@@ -35,89 +35,100 @@
     </header>
 
     <section class="home">
+        <video src="~/videos/video4-roadTrip.mp4" class="video-slide active" autoplay muted loop></video>
 
-        <video src="~/videos/video2-campingJoy.mp4" class="video-slide active" autoplay muted loop></video>
+        <video src="~/videos/video2-campingJoy.mp4" class="video-slide" autoplay muted loop></video>
 
         @*  <video src="~/videos/video3-adventureOffRoad.mp4" class="video-slide" autoplay muted loop></video> *@
-        <video src="~/videos/video4-roadTrip.mp4" class="video-slide" autoplay muted loop></video>
+
         <video src="~/videos/video5-feelNature.mp4" class="video-slide" autoplay muted loop></video>
-        <video src="~/videos/video1-wonderfulIsland.mp4" class="video-slide" autoplay muted loop></video>
+        <video src="~/videos/video5-walkingChild.mp4" class="video-slide" autoplay muted loop></video>
+
 
         <div class="content active">
-            <h1>DOĞAYI<br><span>KEŞFET</span></br></h1>
-            <p>Nerde olursan ol! Kampta, tatilde, seyahatte.. Dilediğin an, dilediğin yerde fotoğrafını çek ve doğayı daha yakından tanımaya başla.</p>
+            <h1>DOĞANIN SIRLARINA<br><span>YOLCULUK</span></br></h1>
+            <p>Çiçekler, yapraklar, dallar... Her yeşilin bir hikayesi var. Bu hikayeleri keşfetmen için yanında olacağız.</p>
 
-           
-            
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-controller="Plant" asp-action="Index" id="btn-home" >Şimdi keşfe başla!</a>
+                <a asp-controller="Plant" asp-action="Index" id="btn-home">Şimdi keşfe başla!</a>
             }
             else
             {
                 <a asp-controller="Home" asp-action="SignUp" id="btn-home">Şimdi üye ol!</a>
+                <a asp-controller="Home" asp-action="SignIn" id="btn-home" class="ms-4">Hesabım var</a>
             }
-            
+        </div>
+
+        <div class="content">
+            <h1>HER YÜRÜYÜŞ<br><span>BİR KEŞİF</span></br></h1>
+            <p>Doğa yürüyüşlerinde yanında olmak için buradayız. Yolda karşılaştığın bitkilerin fotoğraflarını çek, hemen tanımaya başlayalım!</p>
+
+
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Plant" asp-action="Index" id="btn-home">Şimdi keşfe başla!</a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="SignUp" id="btn-home">Şimdi üye ol!</a>
+                <a asp-controller="Home" asp-action="SignIn" id="btn-home" class="ms-4">Hesabım var</a>
+            }
+
 
         </div>
+
         <div class="content">
-            <h1>Camping.<br><span>Enjoy</span></br></h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam eveniet voluptatum consectetur quae similique animi alias natus! Voluptates, illum aut quae, enim, veritatis iusto ducimus dolores minima vitae totam rerum.</p>
-           
+            <h1>BİTKİLERLE TANIŞMA<br><span>ZAMANI</span></br></h1>
+            <p>Her bir yaprak, kendine has bir dünya sunar. Fotoğrafını çek, bizimle paylaş; senin için hangi bitki olduğunu tüm detaylarıyla söyleyelim!</p>
+
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-controller="Plant" asp-action="Index" id="btn-home" >Şimdi keşfe başla!</a>
+                <a asp-controller="Plant" asp-action="Index" id="btn-home">Şimdi keşfe başla!</a>
             }
             else
             {
                 <a asp-controller="Home" asp-action="SignUp" id="btn-home">Şimdi üye ol!</a>
+                <a asp-controller="Home" asp-action="SignIn" id="btn-home" class="ms-4">Hesabım var</a>
             }
         </div>
         <div class="content">
-            <h1>Adventures.<br><span>Off Road</span></br></h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam eveniet voluptatum consectetur quae similique animi alias natus! Voluptates, illum aut quae, enim, veritatis iusto ducimus dolores minima vitae totam rerum.</p>
-            
+            <h1>YEŞİLİN DİLİNİ<br><span>ÇÖZ</span></br></h1>
+            <p>Yürüyüşte, parkta ya da bahçende... Hangi bitkinin peşindesin? Fotoğrafını çek, hemen tanıyalım!</p>
+
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-controller="Plant" asp-action="Index" id="btn-home" >Şimdi keşfe başla!</a>
+                <a asp-controller="Plant" asp-action="Index" id="btn-home">Şimdi keşfe başla!</a>
             }
             else
             {
                 <a asp-controller="Home" asp-action="SignUp" id="btn-home">Şimdi üye ol!</a>
+                <a asp-controller="Home" asp-action="SignIn" id="btn-home" class="ms-4">Hesabım var</a>
             }
         </div>
-        <div class="content">
-            <h1>Road Trip.<br><span>Together</span></br></h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam eveniet voluptatum consectetur quae similique animi alias natus! Voluptates, illum aut quae, enim, veritatis iusto ducimus dolores minima vitae totam rerum.</p>
-            
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a asp-controller="Plant" asp-action="Index" id="btn-home" >Şimdi keşfe başla!</a>
-            }
-            else
-            {
-                <a asp-controller="Home" asp-action="SignUp" id="btn-home">Şimdi üye ol!</a>
-            }
-        </div>
-        <div class="content">
+        @* <div class="content">
             <h1>Feel Nature.<br><span>Relax</span></br></h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam eveniet voluptatum consectetur quae similique animi alias natus! Voluptates, illum aut quae, enim, veritatis iusto ducimus dolores minima vitae totam rerum.</p>
-           
+
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-controller="Plant" asp-action="Index" id="btn-home" >Şimdi keşfe başla!</a>
+                <a asp-controller="Plant" asp-action="Index" id="btn-home">Şimdi keşfe başla!</a>
             }
             else
             {
                 <a asp-controller="Home" asp-action="SignUp" id="btn-home">Şimdi üye ol!</a>
             }
-        </div>
+        </div> *@
+        
 
         <div class="media-icons">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
         </div>
+        
+
         <div class="slider-navegation">
             <div class="nav-btn active"></div>
             <div class="nav-btn"></div>
