@@ -10,7 +10,7 @@
 
 
 
-<div class="container">
+<div class="container mt-4">
     <div class="text-center">
         <h2 class="mb-3">Önceki Sorgularınız</h2>
     </div>
@@ -21,7 +21,7 @@
             {
                 <div class="col-md-3">
                     <div class="card mb-4 opacity-hover" style="width: 18rem; cursor: pointer;" onclick="submitForm('@item.UserId', '@item.StoragePath')">
-                        <img src="~/uploads/images/@item.StoragePath" class="card-img-top" width="100%" height="200px">
+                        <img src="~/uploads/images/@item.StoragePath" class="card-img-top" width="100%" height="200px" loading="lazy">
                         <div class="card-body">
                             <p class="card-text text-dark"><strong>Tarih:</strong> @item.CreatedDate.ToString()</p>
                         </div>

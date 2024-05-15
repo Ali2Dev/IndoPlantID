@@ -28,9 +28,9 @@ namespace Web.Controllers
         }
 
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            //await GetUserPicture();
+            await GetUserPicture();
             ViewBag.ShowNavbar = false;
             return View();
         }
@@ -94,6 +94,7 @@ namespace Web.Controllers
 
         public IActionResult SignUp()
         {
+            TempData["ShowWelcomeMessage"] = true;
             ViewBag.ShowNavbar = false;
             return View();
         }

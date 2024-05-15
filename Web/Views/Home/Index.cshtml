@@ -3,7 +3,7 @@
 }
 
 
- *@
+ 
 <link href="~/css/custom_css/home/index.css" rel="stylesheet" />
 <link rel="icon" href="~/css/icons/imagens/favicon-travel.svg" />
 <link rel="apple-touch-icon" href="~/css/icons/imagens/favicon-travel.svg" />
@@ -20,14 +20,14 @@
         </div>
         <div class="navegation">
             <div class="navegation-items">
-                <a asp-controller="Home" asp-action="SignUp">Home</a>
-                <a href="#">About</a>
-                <a href="#">Explore</a>
-                <a href="#">Gallery</a>
+                @* <a asp-controller="Home" asp-action="Index" class="fw-bold">Ana Sayfa</a> *@
+
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a asp-controller="Member" asp-action="Index">Hesabım</a>
+                    <a asp-controller="Plant" asp-action="Index" >Bitki Sorgula</a>
                 }
+               
+                <partial name="_NavbarUserWhite"/>
             </div>
         </div>
     </header>

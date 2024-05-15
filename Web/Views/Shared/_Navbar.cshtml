@@ -1,4 +1,4 @@
-﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+﻿@* <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container-fluid">
         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Plant Identification</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -13,11 +13,11 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Plant" asp-action="Index">Bitki Sorgula</a>
                 </li>
-                
+
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Plant" asp-action="PreviousDocuments">Önceki Sorgularım</a>
                 </li>
-                
+
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Plant" asp-action="DetectWithCamera">Kamera ile Sorgula</a>
                 </li>
@@ -26,4 +26,32 @@
             <partial name="_NavbarUser" />
         </div>
     </div>
-</nav>
+</nav> *@
+
+
+
+<header class="header px-3 py-2 border rounded">
+   
+    <a asp-controller="Home" asp-action="Index" class="brand text-dark d-flex justify-content-start">Bitki Net</a>
+    
+        <div class="navegation d-flex justify-content-end">
+        <div class="navegation-items">
+            <a asp-controller="Home" asp-action="Index" class="text-dark fw-bold me-4">Ana Sayfa</a>
+
+            <span class="text-dark drp-down fw-bold dropdown-toggle me-4" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer">
+                Bitki Sorgula
+            </span>
+            <ul class="dropdown-menu dropdown-menu-white">
+                <li><a class="dropdown-item text-dark mt-1 mb-2" asp-controller="Plant" asp-action="Index"><i class="bi bi-upload me-2"></i>Fotoğraf yükleyerek</a></li>
+                <li><a class="dropdown-item text-dark mb-1" asp-controller="Plant" asp-action="DetectWithCamera"> <i class="bi bi-camera me-2"></i>Kamera ile</a></li>
+            </ul>
+            
+            <a asp-controller="Plant" asp-action="PreviousDocuments" class="text-dark fw-bold me-4">Önceki Sorgularım</a>
+            
+
+            <partial name="_NavbarUser"/>
+
+        </div>
+    </div>
+  
+</header>

@@ -24,13 +24,13 @@ document.getElementById('confirm-password').addEventListener('keyup', function (
 
 // Þifre gücünü güncelleyen fonksiyon
 function updatePasswordStrength(inputElement, strengthIndicator) {
-    var strength = 'weak'; // Baþlangýç güç deðeri
+    var strength = 'ZAYIF'; // Baþlangýç güç deðeri
     var value = inputElement.value; // Input deðeri
-    if (value.length > 5 && /\d/.test(value)) { // Þifre uzunluðu ve rakam içerip içermediði
-        strength = 'medium';
+    if (value.length > 7 && /\d/.test(value)) { // Þifre uzunluðu ve rakam içerip içermediði
+        strength = 'NORMAL';
     }
-    if (value.length > 6 && /[^\w\s]/gi.test(value)) { // Þifre uzunluðu ve özel karakter içerip içermediði
-        strength = 'strong';
+    if (value.length > 10 && /[^\w\s]/gi.test(value)) { // Þifre uzunluðu ve özel karakter içerip içermediði
+        strength = 'HARIKA';
     }
     strengthIndicator.className = strength; // Güç göstergesi için class güncellemesi
     strengthIndicator.innerHTML = strength; // Güç göstergesi için text güncellemesi
