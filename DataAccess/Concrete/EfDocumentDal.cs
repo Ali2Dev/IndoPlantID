@@ -12,5 +12,6 @@ namespace DataAccess.Concrete
 {
     public class EfDocumentDal : EfEntityRepositoryBase<Document, IndoPlantDb>, IDocumentDal
     {
+        //test
     }
 }
