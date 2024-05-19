@@ -10,12 +10,17 @@ using Web.Identity;
 using Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using System.Text;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Web.Controllers
 {
     [Authorize]
     public class PlantController : BaseController
     {
+        private static IConfiguration Configuration { get; set; }
+
         private IDocumentService _documentService;
         private IDocumentResultService _documentResultService;
         private IFileProvider _fileProvider;
@@ -166,6 +171,28 @@ namespace Web.Controllers
                         _regionCoordinateService.AddRange(regionCoordinateList);
                     }
 
+                    //- Translator
+                    var builder = new ConfigurationBuilder()
+                        .SetBasePath(AppContext.BaseDirectory)
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    Configuration = builder.Build();
+
+                    string key = Configuration["TranslatorService:Key"];
+                    string endpoint = Configuration["TranslatorService:Endpoint"];
+                    string location = Configuration["TranslatorService:Location"];
+
+                    string textToTranslate = plantNetResult.GlobalName;
+                    string translatedText = await TranslateToTurkish(textToTranslate, key, endpoint, location);
+
+                    string plantFullName = plantNetResult.GlobalName;
+
+                    if (plantNetResult.GlobalName != translatedText)
+                    {
+                        plantFullName = plantNetResult.GlobalName + " - " + translatedText;
+                    }
+
+                    //Translator final
+
                     var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
 
                     TempData["LocationData"] = locationJson;
@@ -174,8 +201,10 @@ namespace Web.Controllers
 
                     TempData["GPTResponse"] = chatGPTResponse;
 
+
+
                     //-
-                    documentResult.PlantGlobalName = plantNetResult.GlobalName;
+                    documentResult.PlantGlobalName = plantFullName;
                     documentResult.RoboflowJsonModel = jsonModel;
 
                     plantImages.Flower.ForEach(x => documentResult.FlowerUrl += x.ImageUrl.ToString());
@@ -208,9 +237,33 @@ namespace Web.Controllers
                 }
                 else
                 {
+                    //- Translator
+                    var builder = new ConfigurationBuilder()
+                        .SetBasePath(AppContext.BaseDirectory)
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    Configuration = builder.Build();
+
+                    string key = Configuration["TranslatorService:Key"];
+                    string endpoint = Configuration["TranslatorService:Endpoint"];
+                    string location = Configuration["TranslatorService:Location"];
+
+                    string textToTranslate = plantNetResult.GlobalName;
+                    string translatedText = await TranslateToTurkish(textToTranslate, key, endpoint, location);
+
+
+                    string plantFullName = plantNetResult.GlobalName;
+
+                    if (plantNetResult.GlobalName != translatedText)
+                    {
+                        plantFullName = plantNetResult.GlobalName + " - " + translatedText;
+                    }
+
+                    //Translator final
+
+
                     TempData["RoboflowFailed"] = "Üzgünüz , modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk";
 
-                    TempData["PlantNetTempData"] = plantNetResult.GlobalName;
+                    TempData["PlantNetTempData"] = plantFullName;
 
                     var trefleIdResult = await _trefleIOService.SearchPlantIdsAsync(plantNetResult.GlobalName);
 
@@ -252,7 +305,9 @@ namespace Web.Controllers
                     TempData["GPTResponse"] = chatGPTResponse;
 
 
-                    documentResult.PlantGlobalName = plantNetResult.GlobalName;
+
+
+                    documentResult.PlantGlobalName = plantFullName;
 
 
                     plantImages.Flower.ForEach(x => documentResult.FlowerUrl += x.ImageUrl.ToString());
@@ -371,6 +426,74 @@ namespace Web.Controllers
 
             return View();
         }
+
+
+        static async Task<string> TranslateToTurkish(string textToTranslate, string key, string endpoint, string location)
+        {
+            // Detect the language of the input text
+            string detectedLanguage = await DetectLanguageAsync(textToTranslate, key, endpoint, location);
+
+            // Translate the text to Turkish
+            return await TranslateTextAsync(textToTranslate, detectedLanguage, "tr", key, endpoint, location);
+        }
+
+        static async Task<string> DetectLanguageAsync(string text, string key, string endpoint, string location)
+        {
+            string route = "/detect?api-version=3.0";
+            object[] body = new object[] { new { Text = text } };
+            var requestBody = JsonConvert.SerializeObject(body);
+
+            using (var client = new HttpClient())
+            using (var request = new HttpRequestMessage())
+            {
+                request.Method = HttpMethod.Post;
+                request.RequestUri = new Uri(endpoint + route);
+                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                request.Headers.Add("Ocp-Apim-Subscription-Key", key);
+                request.Headers.Add("Ocp-Apim-Subscription-Region", location);
+
+                HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+                string result = await response.Content.ReadAsStringAsync();
+
+                // Parse the detected language
+                var detectedLanguages = JsonConvert.DeserializeObject<dynamic>(result);
+                return detectedLanguages[0].language;
+            }
+        }
+
+        static async Task<string> TranslateTextAsync(string text, string fromLanguage, string toLanguage, string key, string endpoint, string location)
+        {
+            string route = $"/translate?api-version=3.0&from={fromLanguage}&to={toLanguage}";
+            object[] body = new object[] { new { Text = text } };
+            var requestBody = JsonConvert.SerializeObject(body);
+
+            using (var client = new HttpClient())
+            using (var request = new HttpRequestMessage())
+            {
+                request.Method = HttpMethod.Post;
+                request.RequestUri = new Uri(endpoint + route);
+                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                request.Headers.Add("Ocp-Apim-Subscription-Key", key);
+                request.Headers.Add("Ocp-Apim-Subscription-Region", location);
+
+                HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+                string result = await response.Content.ReadAsStringAsync();
+
+                // Parse the translation result
+                var translationResult = JsonConvert.DeserializeObject<dynamic>(result);
+                return translationResult[0].translations[0].text;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
 
         public class UrlHelper
         {
