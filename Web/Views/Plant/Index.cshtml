@@ -7,94 +7,81 @@
       crossorigin="" />
 <link href="~/css/custom_css/plant/imageUpload.css" rel="stylesheet" />
 
-@* <div class="row mt-3">
-    <div class="col-md-6 offset-md-3">
-        <h2>Yüklediğiniz Fotoğraf</h2>
-        <img class="img-fluid rounded" id="preview" src="" alt="Önizleme" style="display:none; width: 50%;" />
-
-        @*   @if (Model.FileContent != null)
-        {
-        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.FileContent)" alt="Uploaded Image" style="max-width: 100%; height: auto;" />
-        } *@
-
-  @*   </div>
-</div> *@ 
 
 
-@* <div class="row">
-    <div class="col-md-6 offset-md-3">
-        <h2>Fotoğraf Yükleyiniz</h2>
 
-        <form asp-controller="Plant" asp-action="UploadImage" method="post" enctype="multipart/form-data">
+<div class="row mt-5">
+    <div class="col-md-5">
+        <h2 class="mb-4">Bitkinizi yükleyin..</h2>
+        <form class="uploader" id="file-upload-form" asp-controller="Plant" asp-action="UploadImage" method="post" enctype="multipart/form-data">
+            <input id="file-upload" type="file" name="file" required accept="image/*" />
 
-            <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Fotoğraf yükleyin:</label>
-                <div class="col-md-8">
-                    <input class="form-control" id="fileUpload" type="file" name="file" required />
+            <label for="file-upload" id="file-drag">
+                <img id="file-image" src="#" alt="Preview" class="hidden">
+                <div id="start">
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    <div>Buraya tıklayabilir ya da fotoğrafınızı sürükleyebilirsiniz.</div>
+                    <div id="notimage" class="hidden text-danger">Lütfen bir resim yükleyin.</div>
+                    @* <span id="file-upload-btn" class="btn btn-primary">Select a file</span> *@
                 </div>
-            </div>
-
-
-            <div class="row mb-3">
-
-                <div class="col-md-8 offset-md-4">
-                    <button type="submit" class="btn btn-primary">Sorgula</button>
-
-                    <a class="btn btn-warning ms-4" href="https://demo.roboflow.com/ev-bitkisi-tanima/1?publishable_key=rf_eBE2SLq9dEZYXkDRdsjU75PtjQt1" target="_blank"><i class="bi bi-camera me-3 fs-5"></i>Kamerayı Aç</a>
-
+                <div id="response" class="hidden">
+                    <div id="messages"></div>
+                    <progress class="progress" id="file-progress" value="0">
+                        <span>0</span>%
+                    </progress>
                 </div>
-            </div>
+            </label>
+
+
+            <button type="submit" class="btn">Sorgula</button>
+
 
         </form>
 
+        @if (Model.RoboflowResponse != null)
+        {
+            <div class="ms-5 mt-3 text-center">
+                <p class="fw-bold fs-3">Kendi Modelimizin Cevabı</p>
+
+                <div class="border border-success border-1 rounded">
+                    @* <p><strong>Bitki No:</strong> @Model.RoboflowResponse.ClassId</p> *@
+                    <p><strong>Bitki Adı:</strong> @Model.RoboflowResponse.PlantName</p>
+                    <p><strong>Eşleşme oranı:</strong> %@Model.RoboflowResponse.Confidence</p>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Model.RoboflowResponse.PlantName değerini JavaScript değişkenine atayın
+                        var plantName = '@Model.RoboflowResponse.PlantName'.trim();
+                        // plantName '-' içeriyorsa, '-' görene kadar olan kısmı alın ve sonunda boşluk varsa onu atın
+                        if (plantName.includes('-')) {
+                            plantName = plantName.split('-')[0].trim();
+                        }
+                        // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
+                        console.log('fetchContent tetiklendi:', plantName);
+                        fetchContent(plantName);
+                        fetchContentPrice(plantName);
+                    });
+                </script>
+
+            </div>
+        }
     </div>
-</div> *@
 
-<h2 class="mb-2">Bitkinizi yükleyin..</h2>
+    <div class="col-md-7">
 
-<form class="uploader" id="file-upload-form" asp-controller="Plant" asp-action="UploadImage" method="post" enctype="multipart/form-data">
-    <input id="file-upload" type="file" name="file" required accept="image/*"/>
-
-    <label for="file-upload" id="file-drag">
-        <img id="file-image" src="#" alt="Preview" class="hidden">
-        <div id="start">
-            <i class="fa fa-download" aria-hidden="true"></i>
-            <div>Buraya tıklayabilir ya da fotoğrafınızı sürükleyebilirsiniz.</div>
-            <div id="notimage" class="hidden text-danger">Lütfen bir resim yükleyin.</div>
-            @* <span id="file-upload-btn" class="btn btn-primary">Select a file</span> *@
+        <div class="text-center">
+            <p class="fw-bold fs-3 text-success">Bitkinin Yetiştiği Bölgeler</p>
+            <div id="map"></div>
         </div>
-        <div id="response" class="hidden">
-            <div id="messages"></div>
-            <progress class="progress" id="file-progress" value="0">
-                <span>0</span>%
-            </progress>
-        </div>
-    </label>
-    
-    
-    <button type="submit" class="btn">Sorgula</button>
-
-   @*  <a class="btn  ms-4" href="https://demo.roboflow.com/ev-bitkisi-tanima/1?publishable_key=rf_eBE2SLq9dEZYXkDRdsjU75PtjQt1" target="_blank"><i class="bi bi-camera me-3 fs-5"></i>Kamerayı Aç</a> *@
-</form>
-
-
-
-
-
-
-@if (Model.RoboflowResponse != null)
-{
-    <div class="text-center">
-        <h1 class="display-6">RoboFlow Modelimizin Cevabı</h1>
-
-        <ul>
-            <li>Bitki No :  @Model.RoboflowResponse.ClassId</li>
-            <li>Eşleşme oranı : %@Model.RoboflowResponse.Confidence</li>
-            <li>Bitki Adı :  @Model.RoboflowResponse.PlantName</li>
-        </ul>
 
     </div>
-}
+</div>
+
+
+
+
+
 
 
 
@@ -111,28 +98,78 @@
     <div class="text-center">
         <h1 class="display-6">PlantNet Sonucu</h1>
         <h6>@TempData["PlantNetTempData"]</h6>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Model.RoboflowResponse.PlantName değerini JavaScript değişkenine atayın
+                var plantName = '@Model.RoboflowResponse.PlantName'.trim();
+                // plantName '-' içeriyorsa, '-' görene kadar olan kısmı alın ve sonunda boşluk varsa onu atın
+                if (plantName.includes('-')) {
+                    plantName = plantName.split('-')[0].trim();
+                }
+                // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
+                console.log('fetchContent tetiklendi:', plantName);
+                fetchContent(plantName);
+                fetchContentPrice(plantName);
+            });
+        </script>
     </div>
 }
 
 @if (TempData["GPTResponse"] != null)
 {
-    <div class="text-center">
-        <h1 class="display-6">Bitki Hakkında Genel Bilgi</h1>
-        <h6>@TempData["GPTResponse"]</h6>
-    </div>
+
+    @if (TempData["GPTResponse"].ToString() != "Servis hatası!")
+    {
+        <h1 class="display-6 text-center">Bitki Hakkında Genel Bilgi</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="ms-5 border border-success border-2 rounded text-dark" id="fidan-burada-result"></div>
+            </div>
+            <div class="col-md-6">
+                <div class=" me-5 border border-success border-2 rounded" id="gpt-result">@TempData["GPTResponse"]</div>
+            </div>
+        </div>
+    }
+    else
+    {
+        
+        <div class="row mt-5 mb-5">
+            <div class="col-md-6">
+                <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin bazı özellikleri</p>
+                <div class="ms-5 border border-success border-2 rounded text-dark" id="fidan-burada-result" style="height: 600px; overflow-y: scroll;">
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <p class="fw-bold fs-3 text-success"><i class="bi bi-cart-check me-3"></i>Bu bitkiyi satın almak ister misiniz?</p>
+                <div class="row d-flex justify-content-center">
+                    <div class="border rounded mb-4 w-50 d-flex justify-content-center pt-3" id="price-range">
+
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center me-5" id="fidan-burada-price-result" style="height: 518px; overflow-y: scroll;">
+
+                </div>
+            </div>
+        </div>
+
+
+
+    }
+
+
 }
 
-<div class="text-center">
-    <h1 class="display-6">Bitkinin Yetiştiği Bölgeler</h1>
-    <div id="map"></div>
-</div>
 
 @if (TempData["PlantImages"] != null)
 {
     var plantImagesJson = TempData["PlantImages"] as string;
     var plantImages = JsonConvert.DeserializeObject<PlantImages>(plantImagesJson);
 
-    <div class="container">
+    <div class="container mt-4">
 
         <div class="row">
             <div class="text-center">
@@ -233,50 +270,7 @@
 }
 
 
-@* <div class="container mt-4 w-50">
-    <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
-        <!-- Carousel içindeki göstergeler -->
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="1"></button>
-        </div>
 
-        <!-- Carousel içerikleri -->
-        <div class="carousel-inner rounded">
-            <div class="carousel-item active">
-                <img src="@item.ImageUrl class="d-block w-100">
-            </div>
-        </div>
-
-        <!-- Carousel kontrol butonları -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Önceki</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Sonraki</span>
-        </button>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Orijinal Fotoğraf</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <img src="" id="modalImage" class="img-fluid w-100 h-75" alt="Orijinal Boyutta Fotoğraf">
-                <div class="zoom-controls">
-                    <button class="zoom-button zoom-in"><i class="bi bi-zoom-in"></i></button>
-                    <button class="zoom-button zoom-out"><i class="bi bi-zoom-out"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> *@
 
 <style>
     .card-img-top {
@@ -284,6 +278,8 @@
     }
 </style>
 
+
+<script src="~/js/custom_js/plant/index/fidanburada/app.js"></script>
 
 <script>
     document.querySelectorAll('.carousel-item img').forEach(item => {
@@ -328,7 +324,8 @@
 </script> *@
 
 <script src="~/js/custom_js/plant/imageUpload.js"></script>
-
+@* <script src="~/js/custom_js/plant/index/fidanburada/app_price.js"></script>
+ *@
 @section Scripts {
 
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -356,15 +353,15 @@
             .bindPopup(loc.name);
     });
 
-                            // var parisAndIstanbulCoordinates = {
-                            //     "Paris": { lat: 48.8588897, lng: 2.3200410217200766 },
-                            //     "İstanbul": { lat: 41.006381, lng: 28.9758715 },
-                            // };
+    // var parisAndIstanbulCoordinates = {
+    //     "Paris": { lat: 48.8588897, lng: 2.3200410217200766 },
+    //     "İstanbul": { lat: 41.006381, lng: 28.9758715 },
+    // };
 
 
-                            // for (var region in parisAndIstanbulCoordinates) {
-                            //     var coords = parisAndIstanbulCoordinates[region];
-                            //     L.marker([coords.lat, coords.lng]).addTo(map)
-                            //         .bindPopup(region);
-                            // };
+    // for (var region in parisAndIstanbulCoordinates) {
+    //     var coords = parisAndIstanbulCoordinates[region];
+    //     L.marker([coords.lat, coords.lng]).addTo(map)
+    //         .bindPopup(region);
+    // };
 </script>
