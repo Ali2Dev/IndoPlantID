@@ -113,6 +113,7 @@ async function fetchContentPrice(query) {
 
                 const titleElement = item.querySelector('.product-detail-card .col-12.product-title');
                 const productTitle = titleElement ? titleElement.innerText : '';
+                const truncatedTitle = productTitle.length > 23 ? productTitle.substring(0, 20) + "..." : productTitle;
                 const productHref = titleElement ? `https://www.fidanburada.com${titleElement.getAttribute('href')}` : '';
 
                 const priceElement = item.querySelector('.current-price strong');
@@ -130,7 +131,7 @@ async function fetchContentPrice(query) {
                     }
                 }
 
-                return { imgSrc, productTitle, productHref, priceText, price };
+                return { imgSrc, truncatedTitle, productHref, priceText, price };
             });
 
             // Ürünleri fiyatlarýna göre sýralama
@@ -143,7 +144,7 @@ async function fetchContentPrice(query) {
                         <div class="border rounded border-1 border-opacity-25 border-success mb-4 opacity-hover" style="width: 18rem; cursor: pointer;">
                             <img src="${product.imgSrc}" class="card-img-top" width="100%" height="200px" loading="lazy">
                             <div class="card-body p-2">
-                                <p id="plant-name" class="text-primary">${product.productTitle}</p>
+                                <p id="plant-name" class="text-primary">${product.truncatedTitle}</p>
                                 <p class="card-text text-dark" id="price"><strong>Fiyat:</strong> ${product.priceText}</p>
                             </div>
                         </div>
@@ -171,3 +172,4 @@ async function fetchContentPrice(query) {
         document.getElementById('fidan-burada-price-result').textContent = 'Bir hata oluþtu.';
     }
 }
+
