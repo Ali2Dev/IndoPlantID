@@ -103,7 +103,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 // Model.RoboflowResponse.PlantName değerini JavaScript değişkenine atayın
-                var plantName = '@Model.RoboflowResponse.PlantName'.trim();
+                var plantName = '@TempData["PlantNetTempData"]'.trim();
                 // plantName '-' içeriyorsa, '-' görene kadar olan kısmı alın ve sonunda boşluk varsa onu atın
                 if (plantName.includes('-')) {
                     plantName = plantName.split('-')[0].trim();
