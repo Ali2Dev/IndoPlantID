@@ -126,32 +126,32 @@
 
         <div class="row">
             <div class="col-md-6">
-                <div class="ms-5 border border-success border-2 rounded text-dark" id="fidan-burada-result"></div>
+                <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin bazı özellikleri</p>
+                <div class="ms-5 border border-success border-2 rounded text-dark" id="fidan-burada-result" style="height: 600px; overflow-y: scroll;">
+                </div>
             </div>
             <div class="col-md-6">
+                <p class="fw-bold fs-3 text-success"><i class="bi bi-flower2 me-3"></i>Detaylı özellikleri</p>
                 <div class=" me-5 border border-success border-2 rounded" id="gpt-result">@TempData["GPTResponse"]</div>
             </div>
         </div>
     }
     else
     {
-        
+
         <div class="row mt-5 mb-5">
             <div class="col-md-6">
                 <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin bazı özellikleri</p>
                 <div class="ms-5 border border-success border-2 rounded text-dark" id="fidan-burada-result" style="height: 600px; overflow-y: scroll;">
-
                 </div>
             </div>
             <div class="col-md-6">
                 <p class="fw-bold fs-3 text-success"><i class="bi bi-cart-check me-3"></i>Bu bitkiyi satın almak ister misiniz?</p>
                 <div class="row d-flex justify-content-center">
                     <div class="border rounded mb-4 w-50 d-flex justify-content-center pt-3" id="price-range">
-
                     </div>
                 </div>
                 <div class="row d-flex justify-content-center me-5" id="fidan-burada-price-result" style="height: 518px; overflow-y: scroll;">
-
                 </div>
             </div>
         </div>
@@ -163,8 +163,180 @@
 
 }
 
-
 @if (TempData["PlantImages"] != null)
+{
+    var plantImagesJson = TempData["PlantImages"] as string;
+    var plantImages = JsonConvert.DeserializeObject<PlantImages>(plantImagesJson);
+
+    <style>
+        .carousel-item img {
+            max-height: 400px;
+            object-fit: cover;
+        }
+    </style>
+
+    <div class="row text-center mt-5">
+        <p class="fw-bold fs-1 text-success"><i class="bi bi-image me-3"></i>Fotoğraf Galerisi</p>
+
+    </div>
+
+    <div class="container mt-4 row d-flex justify-content-center">
+        @if (plantImages.Flower != null && plantImages.Flower.Count > 0)
+        {
+
+            <div class="col-md-6 mb-4 text-center">
+               
+                    <p class="fw-bold fs-3 text-success">Çiçekleri</p>
+               
+                <div id="flowerCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < plantImages.Flower.Count; i++)
+                        {
+                            var item = plantImages.Flower[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item.ImageUrl" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#flowerCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#flowerCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+        }
+
+        @if (plantImages.Leaf != null && plantImages.Leaf.Count > 0)
+        {
+
+            <div class="col-md-6 mb-4 text-center">
+               
+                    <p class="fw-bold fs-3 text-success">Yaprakları</p>
+              
+                <div id="leafCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < plantImages.Leaf.Count; i++)
+                        {
+                            var item = plantImages.Leaf[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item.ImageUrl" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#leafCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#leafCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+        }
+
+        @if (plantImages.Fruit != null && plantImages.Fruit.Count > 0)
+        {
+
+            <div class="col-md-6">
+                <div class="text-center">
+                    <p class="fw-bold fs-3 text-success">Meyveleri</p>
+                </div>
+                <div id="fruitCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < plantImages.Fruit.Count; i++)
+                        {
+                            var item = plantImages.Fruit[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item.ImageUrl" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#fruitCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#fruitCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+        }
+
+        @if (plantImages.Bark != null && plantImages.Bark.Count > 0)
+        {
+
+            <div class="col-md-6">
+                <div class="text-center">
+                    <p class="fw-bold fs-3 text-success">Kabukları</p>
+                </div>
+                <div id="barkCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < plantImages.Bark.Count; i++)
+                        {
+                            var item = plantImages.Bark[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item.ImageUrl" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#barkCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#barkCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+        }
+
+        @if (plantImages.Habit != null && plantImages.Habit.Count > 0)
+        {
+
+            <div class="col-md-6">
+                <div class="text-center">
+                    <p class="fw-bold fs-3 text-success">Habitleri</p>
+                </div>
+                <div id="habitCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < plantImages.Habit.Count; i++)
+                        {
+                            var item = plantImages.Habit[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item.ImageUrl" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#habitCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#habitCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+        }
+    </div>
+}
+
+
+
+
+@* @if (TempData["PlantImages"] != null)
 {
     var plantImagesJson = TempData["PlantImages"] as string;
     var plantImages = JsonConvert.DeserializeObject<PlantImages>(plantImagesJson);
@@ -268,7 +440,7 @@
 
 
 }
-
+ *@
 
 
 
