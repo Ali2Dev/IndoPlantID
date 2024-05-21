@@ -1,4 +1,4 @@
-//async function fetchContent(plantName) {
+ï»¿//async function fetchContent(plantName) {
 //    const encodedQuery = encodeURIComponent(plantName);
 //    const url = `https://www.fidanburada.com/arama?q=${encodedQuery}`;
 //    const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
@@ -15,13 +15,13 @@
 
 //        const catalogElement = doc.querySelector('#catalog335');
 //        if (catalogElement) {
-//            // 3 kere içeri gir ve <a> elemanýný bul
+//            // 3 kere iÃ§eri gir ve <a> elemanÄ±nÄ± bul
 //            let currentElement = catalogElement;
 //            for (let i = 0; i < 3; i++) {
 //                if (currentElement.children.length > 0) {
 //                    currentElement = currentElement.children[0];
 //                } else {
-//                    resultsDiv.textContent = 'Sonuç bulunamadý. catalog335';
+//                    resultsDiv.textContent = 'SonuÃ§ bulunamadÄ±. catalog335';
 //                    return;
 //                }
 //            }
@@ -31,17 +31,17 @@
 //                const fullUrl = `https://www.fidanburada.com${anchorElement.getAttribute('href')}`;
 //                resultsDiv.textContent = fullUrl;
 
-//                // Yeni sayfadan istenilen içeriði al
+//                // Yeni sayfadan istenilen iÃ§eriÄŸi al
 //                fetchNewPageContent(fullUrl);
 //            } else {
-//                resultsDiv.textContent = 'Sonuç bulunamadý. aaa';
+//                resultsDiv.textContent = 'SonuÃ§ bulunamadÄ±. aaa';
 //            }
 //        } else {
-//            resultsDiv.textContent = 'Element mevcut deðil.';
+//            resultsDiv.textContent = 'Element mevcut deÄŸil.';
 //        }
 //    } catch (error) {
 //        console.error('Fetch error:', error);
-//        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluþtu.';
+//        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluÅŸtu.';
 //    }
 //}
 
@@ -61,21 +61,21 @@
 //        if (trElement) {
 //            const tdElement = trElement.querySelector('td');
 //            if (tdElement) {
-//                // Ýlk span elementini kaldýr
+//                // Ä°lk span elementini kaldÄ±r
 //                const firstSpan = tdElement.querySelector('span');
 //                if (firstSpan) {
 //                    firstSpan.remove();
 //                }
-//                resultsDiv.innerHTML = tdElement.innerHTML; // Ýçeriði HTML olarak ekle
+//                resultsDiv.innerHTML = tdElement.innerHTML; // Ä°Ã§eriÄŸi HTML olarak ekle
 //            } else {
-//                resultsDiv.textContent = 'TD element bulunamadý.';
+//                resultsDiv.textContent = 'TD element bulunamadÄ±.';
 //            }
 //        } else {
-//            resultsDiv.textContent = 'TR element bulunamadý.';
+//            resultsDiv.textContent = 'TR element bulunamadÄ±.';
 //        }
 //    } catch (error) {
 //        console.error('Fetch error:', error);
-//        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluþtu.';
+//        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluÅŸtu.';
 //    }
 //}
 
@@ -96,7 +96,7 @@ async function fetchContentPrice(query) {
         resultsDiv.innerHTML = '';
 
         const priceRangeDiv = document.getElementById('price-range');
-        priceRangeDiv.innerHTML = 'Fiyatlar burada görünecek';
+        priceRangeDiv.innerHTML = 'Fiyatlar burada gÃ¶rÃ¼necek';
 
         const catalogElement = doc.querySelector('#catalog335');
         if (catalogElement) {
@@ -106,14 +106,14 @@ async function fetchContentPrice(query) {
             let maxPrice = 0;
             let prices = [];
 
-            // Ürün bilgilerini toplama
+            // ÃœrÃ¼n bilgilerini toplama
             const products = productItems.map(item => {
                 const imgElement = item.querySelector('picture.image-inner img');
                 const imgSrc = imgElement ? imgElement.src : '';
 
                 const titleElement = item.querySelector('.product-detail-card .col-12.product-title');
                 const productTitle = titleElement ? titleElement.innerText : '';
-                const truncatedTitle = productTitle.length > 23 ? productTitle.substring(0, 20) + "..." : productTitle;
+                const truncatedTitle = productTitle.length > 36 ? productTitle.substring(0, 33) + "..." : productTitle;
                 const productHref = titleElement ? `https://www.fidanburada.com${titleElement.getAttribute('href')}` : '';
 
                 const priceElement = item.querySelector('.current-price strong');
@@ -134,10 +134,10 @@ async function fetchContentPrice(query) {
                 return { imgSrc, truncatedTitle, productHref, priceText, price };
             });
 
-            // Ürünleri fiyatlarýna göre sýralama
+            // ÃœrÃ¼nleri fiyatlarÄ±na gÃ¶re sÄ±ralama
             products.sort((a, b) => a.price - b.price);
 
-            // Sýralanmýþ ürünleri HTML olarak ekleme
+            // SÄ±ralanmÄ±ÅŸ Ã¼rÃ¼nleri HTML olarak ekleme
             products.forEach(product => {
                 const cardHtml = `
                     <a class="col-md-2" href="${product.productHref}" style="text-decoration: none;" target="_blank">
@@ -153,7 +153,7 @@ async function fetchContentPrice(query) {
                 resultsDiv.insertAdjacentHTML('beforeend', cardHtml);
             });
 
-            // Ortalama, minimum ve maksimum fiyatlarý hesaplama ve gösterme
+            // Ortalama, minimum ve maksimum fiyatlarÄ± hesaplama ve gÃ¶sterme
             if (prices.length > 0) {
                 const averagePrice = totalPrices / prices.length;
                 priceRangeDiv.innerHTML = `
@@ -162,14 +162,135 @@ async function fetchContentPrice(query) {
                     <p><span class="text-danger">Maksimum Fiyat:</span> ${maxPrice.toFixed(2)} TL</p>
                 `;
             } else {
-                priceRangeDiv.innerHTML = 'Fiyat bilgisi bulunamadý.';
+                priceRangeDiv.innerHTML = 'Fiyat bilgisi bulunamadi.';
+                fetchContentPriceBahceMarket(query);
             }
         } else {
-            resultsDiv.textContent = 'Element mevcut deðil.';
+            resultsDiv.textContent = 'Element mevcut degil.';
+            fetchContentPriceBahceMarket(query);
         }
     } catch (error) {
         console.error('Fetch error:', error);
-        document.getElementById('fidan-burada-price-result').textContent = 'Bir hata oluþtu.';
+        document.getElementById('fidan-burada-price-result').textContent = 'Bir hata olustu.';
+        fetchContentPriceBahceMarket(query);
     }
 }
 
+
+
+async function fetchContentPriceBahceMarket(query) {
+    const encodedQuery = encodeURIComponent(query);
+    const url = `https://www.bahcemarket.com/Arama?1&kelime=${encodedQuery}`;
+    const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
+    try {
+        const response = await fetch(proxyUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const resultsDiv = document.getElementById('fidan-burada-price-result');
+        const priceRangeDiv = document.getElementById('price-range');
+        resultsDiv.innerHTML = '';
+        priceRangeDiv.innerHTML = '';
+
+        const productPageElement = doc.querySelector('#ProductPageProductList');
+        if (productPageElement) {
+            console.log('ProductPageProductList element found');
+            const allChildren = productPageElement.querySelectorAll('*');
+            console.log('All child elements:', allChildren);
+
+            const productItems = Array.from(allChildren).filter(element =>
+                element.classList.contains('ItemOrj') &&
+                (element.classList.contains('col-lg-3') ||
+                    element.classList.contains('col-md-3') ||
+                    element.classList.contains('col-sm-6') ||
+                    element.classList.contains('col-xs-6'))
+            );
+            console.log(`Found ${productItems.length} items`);
+
+            const products = [];
+
+            productItems.forEach((item, index) => {
+                console.log(`Processing item ${index + 1}/${productItems.length}`, item);
+
+                const productImageElement = item.querySelector('.productImage');
+                console.log('ProductImage element:', productImageElement);
+                const detailLinkElement = productImageElement ? productImageElement.querySelector('a.detailLink.detailUrl') : null;
+                console.log('DetailLink element:', detailLinkElement);
+                const imgElement = detailLinkElement ? detailLinkElement.querySelector('img[data-resize-target=".productImage"]') : null;
+                console.log('Img element:', imgElement);
+                const productPriceElement = item.querySelector('.productPrice .discountPrice span');
+                console.log('ProductPrice element:', productPriceElement);
+
+                if (detailLinkElement && imgElement && productPriceElement) {
+                    const productHref = `https://www.bahcemarket.com${detailLinkElement.getAttribute('href')}`;
+                    const productTitle = detailLinkElement.getAttribute('title');
+                    const imgSrc = imgElement.getAttribute('data-original');
+                    const priceText = productPriceElement.innerText.replace('â‚º', '').trim();
+
+                    // FiyatÄ± doÄŸru parse et
+                    const price = parseFloat(priceText.replace('.', '').replace(',', '.'));
+
+                    if (!isNaN(price)) {
+                        products.push({
+                            href: productHref,
+                            title: productTitle,
+                            src: imgSrc,
+                            price: price,
+                            priceText: productPriceElement.innerText
+                        });
+                    }
+
+                    console.log('Product details:', {
+                        href: productHref,
+                        title: productTitle,
+                        src: imgSrc,
+                        price: priceText
+                    });
+                } else {
+                    console.log(`Required elements not found for item ${index + 1}/${productItems.length}`);
+                }
+            });
+
+            // ÃœrÃ¼nleri fiyatlarÄ±na gÃ¶re sÄ±ralayalÄ±m
+            products.sort((a, b) => a.price - b.price);
+
+            // SÄ±ralanmÄ±ÅŸ Ã¼rÃ¼nleri ekrana yazdÄ±ralÄ±m
+            products.forEach(product => {
+                const cardHtml = `
+
+                    <a class="col-md-2" href="${product.href}" style="text-decoration: none;" target="_blank">
+    <div class="border rounded border-1 border-opacity-25 border-success mb-4 opacity-hover" style="width: 18rem; cursor: pointer;">
+        <img src="${product.src}" class="card-img-top" width="100%" height="200px" loading="lazy">
+        <div class="card-body p-2">
+            <p id="plant-name" class="text-primary">${product.title}</p>
+            <p class="card-text text-dark" id="price"><strong>Fiyat:</strong> ${product.priceText}</p>
+        </div>
+    </div>
+</a>
+                `;
+                resultsDiv.insertAdjacentHTML('beforeend', cardHtml);
+            });
+
+            // Fiyat hesaplamalarÄ±
+            const totalPrice = products.reduce((total, product) => total + product.price, 0);
+            const averagePrice = totalPrice / products.length;
+            const minPrice = Math.min(...products.map(product => product.price));
+            const maxPrice = Math.max(...products.map(product => product.price));
+
+            const priceRangeHtml = `
+                <p class="me-4"><span class="text-success">Minimum Fiyat:</span> ${minPrice.toFixed(2)} TL</p>
+                <p class="me-4"><span class="text-primary">Ortalama Fiyat:</span>  ${averagePrice.toFixed(2)} TL</p>
+                <p><span class="text-danger">Maksimum Fiyat:</span> ${maxPrice.toFixed(2)} TL</p>
+            `;
+            priceRangeDiv.insertAdjacentHTML('beforeend', priceRangeHtml);
+        } else {
+            resultsDiv.textContent = 'Fiyat bilgisi alinamadi.';
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        document.getElementById('fidan-burada-price-result').textContent = 'Bir hata olustu.';
+    }
+}
