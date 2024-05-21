@@ -92,6 +92,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("PlantChatGPTResponse")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PlantGPTResponseMaintenanceWatering")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PlantGlobalName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

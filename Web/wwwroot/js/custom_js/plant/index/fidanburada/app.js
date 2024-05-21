@@ -1,83 +1,83 @@
-async function fetchContent(plantName) {
-    const encodedQuery = encodeURIComponent(plantName);
-    const url = `https://www.fidanburada.com/arama?q=${encodedQuery}`;
-    const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
-    try {
-        const response = await fetch(proxyUrl);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const text = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        const resultsDiv = document.getElementById('fidan-burada-result');
-        resultsDiv.innerHTML = '';
+//async function fetchContent(plantName) {
+//    const encodedQuery = encodeURIComponent(plantName);
+//    const url = `https://www.fidanburada.com/arama?q=${encodedQuery}`;
+//    const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
+//    try {
+//        const response = await fetch(proxyUrl);
+//        if (!response.ok) {
+//            throw new Error('Network response was not ok');
+//        }
+//        const text = await response.text();
+//        const parser = new DOMParser();
+//        const doc = parser.parseFromString(text, 'text/html');
+//        const resultsDiv = document.getElementById('fidan-burada-result');
+//        resultsDiv.innerHTML = '';
 
-        const catalogElement = doc.querySelector('#catalog335');
-        if (catalogElement) {
-            // 3 kere içeri gir ve <a> elemanýný bul
-            let currentElement = catalogElement;
-            for (let i = 0; i < 3; i++) {
-                if (currentElement.children.length > 0) {
-                    currentElement = currentElement.children[0];
-                } else {
-                    resultsDiv.textContent = 'Sonuç bulunamadý. catalog335';
-                    return;
-                }
-            }
+//        const catalogElement = doc.querySelector('#catalog335');
+//        if (catalogElement) {
+//            // 3 kere içeri gir ve <a> elemanýný bul
+//            let currentElement = catalogElement;
+//            for (let i = 0; i < 3; i++) {
+//                if (currentElement.children.length > 0) {
+//                    currentElement = currentElement.children[0];
+//                } else {
+//                    resultsDiv.textContent = 'Sonuç bulunamadý. catalog335';
+//                    return;
+//                }
+//            }
 
-            const anchorElement = currentElement.querySelector('a');
-            if (anchorElement) {
-                const fullUrl = `https://www.fidanburada.com${anchorElement.getAttribute('href')}`;
-                resultsDiv.textContent = fullUrl;
+//            const anchorElement = currentElement.querySelector('a');
+//            if (anchorElement) {
+//                const fullUrl = `https://www.fidanburada.com${anchorElement.getAttribute('href')}`;
+//                resultsDiv.textContent = fullUrl;
 
-                // Yeni sayfadan istenilen içeriði al
-                fetchNewPageContent(fullUrl);
-            } else {
-                resultsDiv.textContent = 'Sonuç bulunamadý. aaa';
-            }
-        } else {
-            resultsDiv.textContent = 'Element mevcut deðil.';
-        }
-    } catch (error) {
-        console.error('Fetch error:', error);
-        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluþtu.';
-    }
-}
+//                // Yeni sayfadan istenilen içeriði al
+//                fetchNewPageContent(fullUrl);
+//            } else {
+//                resultsDiv.textContent = 'Sonuç bulunamadý. aaa';
+//            }
+//        } else {
+//            resultsDiv.textContent = 'Element mevcut deðil.';
+//        }
+//    } catch (error) {
+//        console.error('Fetch error:', error);
+//        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluþtu.';
+//    }
+//}
 
-async function fetchNewPageContent(url) {
-    const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
-    try {
-        const response = await fetch(proxyUrl);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const text = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        const resultsDiv = document.getElementById('fidan-burada-result');
+//async function fetchNewPageContent(url) {
+//    const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
+//    try {
+//        const response = await fetch(proxyUrl);
+//        if (!response.ok) {
+//            throw new Error('Network response was not ok');
+//        }
+//        const text = await response.text();
+//        const parser = new DOMParser();
+//        const doc = parser.parseFromString(text, 'text/html');
+//        const resultsDiv = document.getElementById('fidan-burada-result');
 
-        const trElement = doc.querySelector('tr[style="height: 53px;"]');
-        if (trElement) {
-            const tdElement = trElement.querySelector('td');
-            if (tdElement) {
-                // Ýlk span elementini kaldýr
-                const firstSpan = tdElement.querySelector('span');
-                if (firstSpan) {
-                    firstSpan.remove();
-                }
-                resultsDiv.innerHTML = tdElement.innerHTML; // Ýçeriði HTML olarak ekle
-            } else {
-                resultsDiv.textContent = 'TD element bulunamadý.';
-            }
-        } else {
-            resultsDiv.textContent = 'TR element bulunamadý.';
-        }
-    } catch (error) {
-        console.error('Fetch error:', error);
-        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluþtu.';
-    }
-}
+//        const trElement = doc.querySelector('tr[style="height: 53px;"]');
+//        if (trElement) {
+//            const tdElement = trElement.querySelector('td');
+//            if (tdElement) {
+//                // Ýlk span elementini kaldýr
+//                const firstSpan = tdElement.querySelector('span');
+//                if (firstSpan) {
+//                    firstSpan.remove();
+//                }
+//                resultsDiv.innerHTML = tdElement.innerHTML; // Ýçeriði HTML olarak ekle
+//            } else {
+//                resultsDiv.textContent = 'TD element bulunamadý.';
+//            }
+//        } else {
+//            resultsDiv.textContent = 'TR element bulunamadý.';
+//        }
+//    } catch (error) {
+//        console.error('Fetch error:', error);
+//        document.getElementById('fidan-burada-result').textContent = 'Bir hata oluþtu.';
+//    }
+//}
 
 
 async function fetchContentPrice(query) {
@@ -140,7 +140,7 @@ async function fetchContentPrice(query) {
             // Sýralanmýþ ürünleri HTML olarak ekleme
             products.forEach(product => {
                 const cardHtml = `
-                    <a class="col-md-3 me-5" href="${product.productHref}" style="text-decoration: none;" target="_blank">
+                    <a class="col-md-2" href="${product.productHref}" style="text-decoration: none;" target="_blank">
                         <div class="border rounded border-1 border-opacity-25 border-success mb-4 opacity-hover" style="width: 18rem; cursor: pointer;">
                             <img src="${product.imgSrc}" class="card-img-top" width="100%" height="200px" loading="lazy">
                             <div class="card-body p-2">
@@ -157,8 +157,8 @@ async function fetchContentPrice(query) {
             if (prices.length > 0) {
                 const averagePrice = totalPrices / prices.length;
                 priceRangeDiv.innerHTML = `
-                    <p><span class="text-primary">Ortalama Fiyat:</span>  ${averagePrice.toFixed(2)} TL</p>
-                    <p><span class="text-success">Minimum Fiyat:</span> ${minPrice.toFixed(2)} TL</p>
+                    <p class="me-4"><span class="text-success">Minimum Fiyat:</span> ${minPrice.toFixed(2)} TL</p>
+                    <p class="me-4"><span class="text-primary">Ortalama Fiyat:</span>  ${averagePrice.toFixed(2)} TL</p>
                     <p><span class="text-danger">Maksimum Fiyat:</span> ${maxPrice.toFixed(2)} TL</p>
                 `;
             } else {

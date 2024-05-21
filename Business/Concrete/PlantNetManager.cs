@@ -7,23 +7,31 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.Concrete;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Business.Concrete
 {
     public class PlantNetManager : IPlantNetService
     {
+        private readonly IConfiguration _configuration;
 
-        private readonly string API_KEY;
-        private readonly string PROJECT;
-        private readonly string apiEndpoint;
-
-        public PlantNetManager()
+        public PlantNetManager(IConfiguration configuration)
         {
-            API_KEY = "2b101b2H2uEkZSdRkot8Nncq9";
-            PROJECT = "all";
-            apiEndpoint = $"https://my-api.plantnet.org/v2/identify/{PROJECT}?api-key={API_KEY}";
+            _configuration = configuration;
+
+            Api_Key = _configuration["PlantNetService:Key"];
+            Project = _configuration["PlantNetService:Project"];
+            Url = _configuration["PlantNetService:Endpoint"];
+            ApiEndpoint = $"{Url}{Project}?api-key={Api_Key}";
+
         }
+        private readonly string Api_Key;
+        private readonly string Project;
+        private readonly string Url;
+        private readonly string ApiEndpoint;
+
+
 
         public async Task<PlantNetResponse> IdentifyPlant(byte[] image)
         {
@@ -41,7 +49,7 @@ namespace Business.Concrete
 
             try
             {
-                var httpResponse = await httpClient.PostAsync(apiEndpoint, multipartFormContent);
+                var httpResponse = await httpClient.PostAsync(ApiEndpoint, multipartFormContent);
 
                 if (httpResponse.StatusCode == HttpStatusCode.OK)
                 {

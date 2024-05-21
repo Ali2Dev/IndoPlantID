@@ -47,22 +47,61 @@
                     @* <p><strong>Bitki No:</strong> @Model.RoboflowResponse.ClassId</p> *@
                     <p><strong>Bitki Adı:</strong> @Model.RoboflowResponse.PlantName</p>
                     <p><strong>Eşleşme oranı:</strong> %@Model.RoboflowResponse.Confidence</p>
+                    <p><strong>PlantNet Cevabı: @TempData["PlantNetTempDataForJS"]</strong> </p>
                 </div>
 
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         // Model.RoboflowResponse.PlantName değerini JavaScript değişkenine atayın
-                        var plantName = '@Model.RoboflowResponse.PlantName'.trim();
+                        var plantName = '@TempData["PlantNetTempDataForJS"]'.trim();
                         // plantName '-' içeriyorsa, '-' görene kadar olan kısmı alın ve sonunda boşluk varsa onu atın
                         if (plantName.includes('-')) {
                             plantName = plantName.split('-')[0].trim();
                         }
                         // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
                         console.log('fetchContent tetiklendi:', plantName);
-                        fetchContent(plantName);
+                        //fetchContent(plantName);
                         fetchContentPrice(plantName);
                     });
                 </script>
+
+            </div>
+        }
+
+
+        @if (TempData["PlantNetTempData"] != null)
+        {
+            <div class="ms-5 mt-3 text-center">
+                <p class="fw-bold fs-3">Sonuç - PlantNet</p>
+
+                <div class="border border-success border-1 rounded">
+                    @if (TempData["PlantNetTempData"].ToString() != "Bu fotoğraf bir bitki değil!")
+                    {
+                        <p><strong>Bitki Adı:</strong> @TempData["PlantNetTempData"]</p>
+
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Model.RoboflowResponse.PlantName değerini JavaScript değişkenine atayın
+                                var plantName = '@TempData["PlantNetTempData"]'.trim();
+                                // plantName '-' içeriyorsa, '-' görene kadar olan kısmı alın ve sonunda boşluk varsa onu atın
+                                if (plantName.includes('-')) {
+                                    plantName = plantName.split('-')[0].trim();
+                                }
+                                // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
+                                console.log('fetchContent tetiklendi:', plantName);
+                                //fetchContent(plantName);
+                                fetchContentPrice(plantName);
+                            });
+                        </script>
+
+                    }
+                    else
+                    {
+                        <p><strong class="text-danger">HATA: </strong> @TempData["PlantNetTempData"]</p>
+                    }
+                </div>
+
 
             </div>
         }
@@ -85,37 +124,15 @@
 
 
 
-@if (TempData["RoboflowFailed"] != null)
+@* @if (TempData["RoboflowFailed"] != null)
 {
     <div class="text-center">
         <h1 class="display-6">:(</h1>
         <h6>@TempData["RoboflowFailed"]</h6>
     </div>
-}
-
-@if (TempData["PlantNetTempData"] != null)
-{
-    <div class="text-center">
-        <h1 class="display-6">PlantNet Sonucu</h1>
-        <h6>@TempData["PlantNetTempData"]</h6>
+} *@
 
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Model.RoboflowResponse.PlantName değerini JavaScript değişkenine atayın
-                var plantName = '@TempData["PlantNetTempData"]'.trim();
-                // plantName '-' içeriyorsa, '-' görene kadar olan kısmı alın ve sonunda boşluk varsa onu atın
-                if (plantName.includes('-')) {
-                    plantName = plantName.split('-')[0].trim();
-                }
-                // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
-                console.log('fetchContent tetiklendi:', plantName);
-                fetchContent(plantName);
-                fetchContentPrice(plantName);
-            });
-        </script>
-    </div>
-}
 
 @if (TempData["GPTResponse"] != null)
 {
@@ -126,39 +143,51 @@
 
         <div class="row">
             <div class="col-md-6">
-                <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin bazı özellikleri</p>
-                <div class="ms-5 border border-success border-2 rounded text-dark" id="fidan-burada-result" style="height: 600px; overflow-y: scroll;">
+                <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin genel özellikleri</p>
+                <div class="ms-5 border border-success border-2 rounded text-dark" style="height: 300px; overflow-y: scroll;">
+                    @TempData["GPTResponse"]
                 </div>
             </div>
-            <div class="col-md-6">
-                <p class="fw-bold fs-3 text-success"><i class="bi bi-flower2 me-3"></i>Detaylı özellikleri</p>
-                <div class=" me-5 border border-success border-2 rounded" id="gpt-result">@TempData["GPTResponse"]</div>
-            </div>
+
+            @if (TempData["GPTResponseMaintenanceWatering"].ToString() != "Servis hatası!")
+            {
+                <div class="col-md-6">
+                    <p class="fw-bold fs-3 text-success"><i class="bi bi-flower2 me-3"></i>Bakımı ve Sulaması</p>
+                    <div class=" me-5 border border-success border-2 rounded" id="gpt-result" style="height: 300px; overflow-y: scroll;">@TempData["GPTResponseMaintenanceWatering"]</div>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-6">
+                    <p class="fw-bold fs-3 text-success"><i class="bi bi-flower2 me-3"></i>Bakımı ve Sulaması</p>
+                    <div class=" me-5 border border-success border-2 rounded" id="gpt-result">Üzgünüz, şu an da size cevap veremiyoruz.</div>
+                </div>
+            }
         </div>
     }
     else
     {
+        <h1 class="display-6 text-center">Bitki Hakkında Genel Bilgi</h1>
 
-        <div class="row mt-5 mb-5">
+        <div class="row">
             <div class="col-md-6">
-                <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin bazı özellikleri</p>
-                <div class="ms-5 border border-success border-2 rounded text-dark" id="fidan-burada-result" style="height: 600px; overflow-y: scroll;">
+                <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin genel özellikleri</p>
+                <div class="ms-5 border border-success border-2 rounded text-dark" style="height: 600px; overflow-y: scroll;">
+                    Üzgünüz, şu an da size cevap veremiyoruz.
                 </div>
             </div>
             <div class="col-md-6">
-                <p class="fw-bold fs-3 text-success"><i class="bi bi-cart-check me-3"></i>Bu bitkiyi satın almak ister misiniz?</p>
-                <div class="row d-flex justify-content-center">
-                    <div class="border rounded mb-4 w-50 d-flex justify-content-center pt-3" id="price-range">
-                    </div>
-                </div>
-                <div class="row d-flex justify-content-center me-5" id="fidan-burada-price-result" style="height: 518px; overflow-y: scroll;">
-                </div>
+                <p class="fw-bold fs-3 text-success"><i class="bi bi-flower2 me-3"></i>Bakımı ve Sulaması</p>
+                <div class=" me-5 border border-success border-2 rounded" id="gpt-result">Üzgünüz, şu an da size cevap veremiyoruz.</div>
             </div>
         </div>
 
 
-
     }
+
+
+
+
 
 
 }
@@ -185,9 +214,9 @@
         {
 
             <div class="col-md-6 mb-4 text-center">
-               
-                    <p class="fw-bold fs-3 text-success">Çiçekleri</p>
-               
+
+                <p class="fw-bold fs-3 text-success">Çiçekleri</p>
+
                 <div id="flowerCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         @for (var i = 0; i < plantImages.Flower.Count; i++)
@@ -215,9 +244,9 @@
         {
 
             <div class="col-md-6 mb-4 text-center">
-               
-                    <p class="fw-bold fs-3 text-success">Yaprakları</p>
-              
+
+                <p class="fw-bold fs-3 text-success">Yaprakları</p>
+
                 <div id="leafCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         @for (var i = 0; i < plantImages.Leaf.Count; i++)
@@ -333,6 +362,28 @@
     </div>
 }
 
+
+
+@if (Model.RoboflowResponse != null || (TempData["PlantNetTempData"] != null && TempData["PlantNetTempData"].ToString() != "Bu fotoğraf bir bitki değil!"))
+{
+    <div class="row mt-5 mb-5">
+        <p class="fw-bold fs-3 text-success text-center"><i class="bi bi-cart-check me-3"></i>Bu bitkiyi satın almak ister misiniz?</p>
+        <div class="col-md-12">
+
+            <div class="row d-flex justify-content-center">
+
+                <div class="border rounded w-50 mb-4 d-flex justify-content-center pt-3" id="price-range">
+                </div>
+
+            </div>
+
+            <div class="row d-flex justify-content-center ms-4 me-4" id="fidan-burada-price-result" style="height: 518px; overflow-y: scroll;">
+            </div>
+
+        </div>
+    </div>
+
+}
 
 
 

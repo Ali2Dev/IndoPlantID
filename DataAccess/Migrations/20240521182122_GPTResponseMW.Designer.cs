@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(IndoPlantDb))]
-    [Migration("20240510155912_Local_IndoPlantDb_1")]
-    partial class Local_IndoPlantDb_1
+    [Migration("20240521182122_GPTResponseMW")]
+    partial class GPTResponseMW
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,6 +92,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PlantChatGPTResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PlantGPTResponseMaintenanceWatering")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PlantGlobalName")

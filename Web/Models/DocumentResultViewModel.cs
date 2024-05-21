@@ -13,6 +13,7 @@ namespace Web.Models
         public string PlantGlobalName { get; set; }
         public DateTime CreatedDate { get; set; }
         public string? PlantChatGPTResponse { get; set; }
+        public string? PlantGPTResponseMaintenanceWatering { get; set; }
 
 
 

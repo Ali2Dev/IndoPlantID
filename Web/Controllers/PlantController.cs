@@ -139,6 +139,7 @@ namespace Web.Controllers
                     var jsonModel = JsonSerializer.Serialize(roboflowResult);
 
                     TempData["RoboflowTempData"] = jsonModel;
+                    TempData["PlantNetTempDataForJS"] = plantNetResult.GlobalName;
 
                     var trefleIdResult = await _trefleIOService.SearchPlantIdsAsync(plantNetResult.GlobalName);
 
@@ -197,9 +198,15 @@ namespace Web.Controllers
 
                     TempData["LocationData"] = locationJson;
 
-                    var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+                    //GPT - DISABLED
+
+                    //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+                    var chatGPTResponse = "GPT disabled!";
+                    //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
+                    var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
 
                     TempData["GPTResponse"] = chatGPTResponse;
+                    TempData["GPTResponseMaintenanceWatering"] = gptResponseMaintenanceWatering;
 
 
 
@@ -215,6 +222,10 @@ namespace Web.Controllers
 
 
                     documentResult.PlantChatGPTResponse = chatGPTResponse;
+                    documentResult.PlantGPTResponseMaintenanceWatering = gptResponseMaintenanceWatering;
+
+
+
 
                     //var coordinateList = new List<PlantCoordinate>();
 
@@ -300,9 +311,14 @@ namespace Web.Controllers
 
                     TempData["LocationData"] = locationJson;
 
-                    var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+                    //GPT - DISABLED
+                    //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+                    var chatGPTResponse = "GPT disabled!";
+                    //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
+                    var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
 
                     TempData["GPTResponse"] = chatGPTResponse;
+                    TempData["GPTResponseMaintenanceWatering"] = gptResponseMaintenanceWatering;
 
 
 
@@ -316,6 +332,7 @@ namespace Web.Controllers
                     plantImages.Leaf.ForEach(x => documentResult.LeafUrl += x.ImageUrl.ToString());
 
                     documentResult.PlantChatGPTResponse = chatGPTResponse;
+                    documentResult.PlantGPTResponseMaintenanceWatering = gptResponseMaintenanceWatering;
 
                     //var coordinateList = new List<PlantCoordinate>();
 
@@ -382,6 +399,7 @@ namespace Web.Controllers
                 PlantGlobalName = documentResult.PlantGlobalName,
                 CreatedDate = documentResult.CreatedDate,
                 PlantChatGPTResponse = documentResult.PlantChatGPTResponse,
+                PlantGPTResponseMaintenanceWatering = documentResult.PlantGPTResponseMaintenanceWatering,
                 StoragePath = documentResult.StoragePath
             };
 

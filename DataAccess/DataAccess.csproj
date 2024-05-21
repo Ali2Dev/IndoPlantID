@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Concrete\EntityFramework\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

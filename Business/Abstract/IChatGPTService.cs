@@ -9,6 +9,7 @@ namespace Business.Abstract
     public interface IChatGPTService
     {
         Task<string> GetResponse(string plantName);
+        Task<string> GetMaintenanceAndWatering(string plantName);
 
 
     }

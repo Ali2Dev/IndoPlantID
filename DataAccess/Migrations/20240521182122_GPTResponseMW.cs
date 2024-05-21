@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccess.Migrations
 {
-    public partial class Local_IndoPlantDb_1 : Migration
+    public partial class GPTResponseMW : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +26,8 @@ namespace DataAccess.Migrations
                     LeafUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BarkUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FruitUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PlantChatGPTResponse = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PlantChatGPTResponse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PlantGPTResponseMaintenanceWatering = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

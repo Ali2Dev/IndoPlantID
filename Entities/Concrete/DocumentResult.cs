@@ -37,5 +37,6 @@ namespace Entities.Concrete
         //public List<PlantCoordinate> PlantCoordinates { get; set; }
 
         public string? PlantChatGPTResponse { get; set; }
+        public string? PlantGPTResponseMaintenanceWatering { get; set; }
     }
 }
