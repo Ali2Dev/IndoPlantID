@@ -6,23 +6,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Business.Concrete
 {
     public class TrefleIOManager : ITrefleIOService
     {
+        private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
 
-        public TrefleIOManager(HttpClient httpClient)
+        public TrefleIOManager(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         public async Task<List<int>> SearchPlantIdsAsync(string name)
         {
             try
             {
-                var token = "QvXKoNsAFzKj9peykXbXEChQUZf0dsL7KRuey9KRoC0";
+                var token = _configuration["TrefleIOService:Key"];
 
                 var url = $"https://trefle.io/api/v1/plants/search?token={token}&q={name}";
 
@@ -64,7 +67,7 @@ namespace Business.Concrete
         {
             try
             {
-                var token = "QvXKoNsAFzKj9peykXbXEChQUZf0dsL7KRuey9KRoC0";
+                var token = _configuration["TrefleIOService:Key"];
 
                 var url = $"https://trefle.io/api/v1/species/{plantId}?token={token}";
 
@@ -115,13 +118,13 @@ namespace Business.Concrete
                 return null;
             }
         }
-   
+
 
         public async Task<PlantImages> GetPlantImagesAsync(int plantId) //261950
         {
             try
             {
-                var token = "QvXKoNsAFzKj9peykXbXEChQUZf0dsL7KRuey9KRoC0";
+                var token = _configuration["TrefleIOService:Key"];
 
                 var url = $"https://trefle.io/api/v1/species/{plantId}?token={token}";
 
