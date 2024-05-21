@@ -32,6 +32,7 @@ namespace Entities.Concrete
         public string? LeafUrl { get; set; }
         public string? BarkUrl { get; set; }
         public string? FruitUrl { get; set; }
+        public string? HabitUrl { get; set; }
         //--
 
         //public List<PlantCoordinate> PlantCoordinates { get; set; }

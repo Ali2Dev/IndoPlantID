@@ -218,6 +218,7 @@ namespace Web.Controllers
                     plantImages.Bark.ForEach(x => documentResult.BarkUrl += x.ImageUrl.ToString());
                     plantImages.Fruit.ForEach(x => documentResult.FruitUrl += x.ImageUrl.ToString());
                     plantImages.Leaf.ForEach(x => documentResult.LeafUrl += x.ImageUrl.ToString());
+                    plantImages.Habit.ForEach(x => documentResult.HabitUrl += x.ImageUrl.ToString());
 
 
 
@@ -330,6 +331,7 @@ namespace Web.Controllers
                     plantImages.Bark.ForEach(x => documentResult.BarkUrl += x.ImageUrl.ToString());
                     plantImages.Fruit.ForEach(x => documentResult.FruitUrl += x.ImageUrl.ToString());
                     plantImages.Leaf.ForEach(x => documentResult.LeafUrl += x.ImageUrl.ToString());
+                    plantImages.Habit.ForEach(x => documentResult.HabitUrl += x.ImageUrl.ToString());
 
                     documentResult.PlantChatGPTResponse = chatGPTResponse;
                     documentResult.PlantGPTResponseMaintenanceWatering = gptResponseMaintenanceWatering;
@@ -406,14 +408,13 @@ namespace Web.Controllers
             // FlowerUrl için URL'leri ayıkla
             model.PlantFlowerImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.FlowerUrl);
 
-            // BarkUrl için URL'leri ayıkla
             model.PlantBarkImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.BarkUrl);
 
-            // LeafUrl için URL'leri ayıkla
             model.PlantLeafImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.LeafUrl);
 
-            // FruitUrl için URL'leri ayıkla
             model.PlantFruitImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.FruitUrl);
+
+            model.PlantHabitImgUrl = UrlHelper.ExtractUrlsFromString(documentResult.HabitUrl);
 
 
             var regionCoordinates = _regionCoordinateService.GetAll(x => x.UserId == userId && x.StoragePath == storagePath);

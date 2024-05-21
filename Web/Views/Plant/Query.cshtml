@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Query";
+    ViewData["Title"] = "Sorgunuz";
 }
 
 @model DocumentResultViewModel
@@ -9,119 +9,386 @@
       crossorigin="" />
 
 
-<h2>@Model.PlantGlobalName</h2>
+<style>
+    .carousel-item img {
+        max-height: 400px;
+        object-fit: cover;
+    }
+
+    .user-plant-img {
+        max-height: 600px;
+        object-fit: cover;
+    }
+</style>
 
 
-<div class="row mt-3">
-    <div class="col-md-6 offset-md-3">
-        <h2>Yüklediğiniz Fotoğraf</h2>
-        <img class="img-fluid rounded" id="preview" src="~/uploads/images/@Model.StoragePath" alt="Önizleme" loading="lazy" style="width: 50%;" />
+<div class="container mt-5">
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-success text-white">
+                    <p class="fs-3">@Model.PlantGlobalName</p>
+                   
+
+                </div>
+                <div class="card-body text-center">
+                    <span class="d-flex justify-content-center mb-3 fw-bold"> @Model.CreatedDate</span>
+                    <img class="img-fluid rounded shadow-sm user-plant-img" id="preview" src="~/uploads/images/@Model.StoragePath" alt="Önizleme" loading="lazy" style="max-width: 100%; height: auto;"/>
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <p class="fw-bold fs-3 text-success text-center"><i class="bi bi-feather me-3"></i>Bitkinin genel özellikleri</p>
+            <div class="ms-5 border border-success border-2 rounded text-dark" style="height: 624px; overflow-y: scroll;">
+                @if (Model.PlantChatGPTResponse != null)
+                {
+                    <p class="p-3">@Model.PlantChatGPTResponse</p>
+                }
+                else
+                {
+                    <p>Data bulunamadı.</p>
+                }
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <div class="row justify-content-center  mt-5 mb-5">
+        <div class="col-md-6">
+            <p class="fw-bold fs-3 text-success text-center"><i class="bi bi-pin-map-fill me-3"></i>Bitkinin Yetiştiği Bölgeler</p>
+            <div id="map" class="w-100"></div>
+        </div>
+
+        <div class="col-md-6">
+            <p class="fw-bold fs-3 text-success text-center"><i class="bi bi-feather me-3"></i>Bitkinin bakımı/sulaması</p>
+            <div class="ms-5 border border-success border-2 rounded text-dark" style="height: 400px; overflow-y: scroll;">
+                @if (Model.PlantChatGPTResponse != null)
+                {
+                    <p class="p-3">@Model.PlantGPTResponseMaintenanceWatering</p>
+                }
+                else
+                {
+                    <p>Data bulunamadı.</p>
+                }
+            </div>
+        </div>
+
     </div>
 </div>
 
 
-@if (Model.PlantChatGPTResponse != null)
-{
-    <div class="text-center">
-        <h1 class="display-6">Bitki Hakkında Genel Bilgi</h1>
-        <h6>@Model.PlantChatGPTResponse</h6>
-    </div>
-}
 
-<div class="text-center">
-    <h1 class="display-6">Bitkinin Yetiştiği Bölgeler</h1>
-    <div id="map"></div>
+
+
+<div class="row text-center mt-5">
+    <p class="fw-bold fs-1 text-success"><i class="bi bi-image me-3"></i>Fotoğraf Galerisi</p>
+
 </div>
 
-@if (Model.PlantFlowerImgUrl != null && Model.PlantFlowerImgUrl.Any())
-{
-    <div class="row">
-        <div class="text-center">
-            <h1 class="display-6">Bitkinin Diğer Fotoları</h1>
-        </div>
-        @foreach (var item in Model.PlantFlowerImgUrl)
+<div class="container mt-4">
+    <div class="row d-flex justify-content-center">
+        @if (Model.PlantFlowerImgUrl != null && Model.PlantFlowerImgUrl.Count > 0)
         {
-
-            <div class="col-md-3">
-
-                <div class="card mb-4" style="width: 18rem;">
-                    <img src="@item" class="card-img-top" width="100%" height="200px" loading="lazy">
+            <div class="col-md-6 mb-4 text-center">
+                <p class="fw-bold fs-3 text-success">Çiçekleri</p>
+                <div id="flowerCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < Model.PlantFlowerImgUrl.Count; i++)
+                        {
+                            var item = Model.PlantFlowerImgUrl[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#flowerCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#flowerCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-
             </div>
         }
 
-    </div>
-}
-
-@if (Model.PlantLeafImgUrl != null && Model.PlantLeafImgUrl.Any())
-{
-    <div class="row">
-        <div class="text-center">
-            <h1 class="display-6">Bitkinin Yaprakları</h1>
-        </div>
-        @foreach (var item in Model.PlantLeafImgUrl)
+        @if (Model.PlantLeafImgUrl != null && Model.PlantLeafImgUrl.Count > 0)
         {
-
-            <div class="col-md-3">
-
-                <div class="card mb-4" style="width: 18rem;">
-                    <img src="@item" class="card-img-top" width="100%" height="200px" loading="lazy">
+            <div class="col-md-6 mb-4 text-center">
+                <p class="fw-bold fs-3 text-success">Yaprakları</p>
+                <div id="leafCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < Model.PlantLeafImgUrl.Count; i++)
+                        {
+                            var item = Model.PlantLeafImgUrl[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#leafCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#leafCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-
             </div>
         }
 
-    </div>
-}
-
-@if (Model.PlantBarkImgUrl != null && Model.PlantBarkImgUrl.Any())
-{
-    <div class="row">
-        <div class="text-center">
-            <h1 class="display-6">Bitkinin Kabukları</h1>
-        </div>
-        @foreach (var item in Model.PlantBarkImgUrl)
+        @if (Model.PlantFruitImgUrl != null && Model.PlantFruitImgUrl.Count > 0)
         {
-
-            <div class="col-md-3">
-
-                <div class="card mb-4" style="width: 18rem;">
-                    <img src="@item" class="card-img-top" width="100%" height="200px" loading="lazy">
+            <div class="col-md-6 mb-4 text-center">
+                <p class="fw-bold fs-3 text-success">Meyveleri</p>
+                <div id="fruitCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < Model.PlantFruitImgUrl.Count; i++)
+                        {
+                            var item = Model.PlantFruitImgUrl[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#fruitCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#fruitCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-
             </div>
         }
 
-    </div>
-}
-
-@if (Model != null && Model.PlantFruitImgUrl != null && Model.PlantFruitImgUrl.Any())
-{
-    <div class="row">
-        <div class="text-center">
-            <h1 class="display-6">Bitkinin Meyveleri</h1>
-        </div>
-        @foreach (var item in Model.PlantFruitImgUrl)
+        @if (Model.PlantBarkImgUrl != null && Model.PlantBarkImgUrl.Count > 0)
         {
-
-            <div class="col-md-3">
-
-                <div class="card mb-4" style="width: 18rem;">
-                    <img src="@item" class="card-img-top" width="100%" height="200px" loading="lazy">
+            <div class="col-md-6 mb-4 text-center">
+                <p class="fw-bold fs-3 text-success">Kabukları</p>
+                <div id="barkCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < Model.PlantBarkImgUrl.Count; i++)
+                        {
+                            var item = Model.PlantBarkImgUrl[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#barkCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#barkCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-
             </div>
         }
 
+        @if (Model.PlantHabitImgUrl != null && Model.PlantHabitImgUrl.Count > 0)
+        {
+            <div class="col-md-6 mb-4 text-center">
+                <p class="fw-bold fs-3 text-success">Habitleri</p>
+                <div id="habitCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < Model.PlantHabitImgUrl.Count; i++)
+                        {
+                            var item = Model.PlantHabitImgUrl[i];
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@item" class="d-block w-100" loading="lazy">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#habitCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#habitCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        }
     </div>
-}
-
-
-<div class="text-center">
-    <h1 class="display-6">Bitkinin Yetiştiği Bölgeler</h1>
-    <div id="map"></div>
 </div>
+
+
+@* <div class="container mt-4 row d-flex justify-content-center">
+    @if (Model.PlantFlowerImgUrl != null && Model.PlantFlowerImgUrl.Count > 0)
+    {
+
+        <div class="col-md-6 mb-4 text-center">
+
+            <p class="fw-bold fs-3 text-success">Çiçekleri</p>
+
+            <div id="flowerCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (var i = 0; i < Model.PlantFlowerImgUrl.Count; i++)
+                    {
+                        var item = Model.PlantFlowerImgUrl[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@item" class="d-block w-100" loading="lazy">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#flowerCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#flowerCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+    }
+
+    @if (Model.PlantLeafImgUrl != null && Model.PlantLeafImgUrl.Count > 0)
+    {
+
+        <div class="col-md-6 mb-4 text-center">
+
+            <p class="fw-bold fs-3 text-success">Yaprakları</p>
+
+            <div id="leafCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (var i = 0; i < Model.PlantLeafImgUrl.Count; i++)
+                    {
+                        var item = Model.PlantLeafImgUrl[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@item" class="d-block w-100" loading="lazy">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#leafCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#leafCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+    }
+
+    @if (Model.PlantFruitImgUrl != null && Model.PlantFruitImgUrl.Count > 0)
+    {
+
+        <div class="col-md-6">
+            <div class="text-center">
+                <p class="fw-bold fs-3 text-success">Meyveleri</p>
+            </div>
+            <div id="fruitCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (var i = 0; i < Model.PlantFruitImgUrl.Count; i++)
+                    {
+                        var item = Model.PlantFruitImgUrl[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@item" class="d-block w-100" loading="lazy">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#fruitCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#fruitCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+    }
+
+    @if (Model.PlantBarkImgUrl != null && Model.PlantBarkImgUrl.Count > 0)
+    {
+
+        <div class="col-md-6">
+            <div class="text-center">
+                <p class="fw-bold fs-3 text-success">Kabukları</p>
+            </div>
+            <div id="barkCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (var i = 0; i < Model.PlantBarkImgUrl.Count; i++)
+                    {
+                        var item = Model.PlantBarkImgUrl[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@item" class="d-block w-100" loading="lazy">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#barkCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#barkCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+    }
+
+    @if (Model.PlantHabitImgUrl != null && Model.PlantHabitImgUrl.Count > 0)
+    {
+
+        <div class="col-md-6">
+            <div class="text-center">
+                <p class="fw-bold fs-3 text-success">Habitleri</p>
+            </div>
+            <div id="habitCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (var i = 0; i < Model.PlantHabitImgUrl.Count; i++)
+                    {
+                        var item = Model.PlantHabitImgUrl[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@item" class="d-block w-100" loading="lazy">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#habitCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#habitCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+    }
+</div> *@
+
+
+
+
+
+
+
+
+
 
 
 @* @section Scripts {

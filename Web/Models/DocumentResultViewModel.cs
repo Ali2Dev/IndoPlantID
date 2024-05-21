@@ -9,6 +9,7 @@ namespace Web.Models
         public List<string>? PlantBarkImgUrl { get; set; }
         public List<string>? PlantLeafImgUrl { get; set; }
         public List<string>? PlantFruitImgUrl { get; set; }
+        public List<string>? PlantHabitImgUrl { get; set; }
         public string StoragePath { get; set; }
         public string PlantGlobalName { get; set; }
         public DateTime CreatedDate { get; set; }
