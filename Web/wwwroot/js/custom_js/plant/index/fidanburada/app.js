@@ -181,6 +181,7 @@ async function fetchContentPrice(query) {
 
 
 
+
 async function fetchContentPriceBahceMarket(query) {
     const encodedQuery = encodeURIComponent(query);
     const url = `https://www.bahcemarket.com/Arama?1&kelime=${encodedQuery}`;

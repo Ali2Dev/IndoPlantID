@@ -2,6 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 10px; /* Kartlar arasýndaki boþluðu ayarlar */
 }
 
 .opacity-hover:hover {
@@ -13,16 +14,21 @@
 }
 
 .card {
+    flex: 1 0 21%;
+    max-width: 21%;
     margin: 10px;
 }
 
 @media (max-width: 768px) {
-    #fidan-burada-price-result {
-        flex-direction: column;
-        align-items: center;
-    }
-
     .card {
-        width: 90%;
+        flex: 1 0 46%;
+        max-width: 46%;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        flex: 1 0 96%;
+        max-width: 96%;
     }
 }
