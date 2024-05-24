@@ -140,15 +140,17 @@ async function fetchContentPrice(query) {
             // Sıralanmış ürünleri HTML olarak ekleme
             products.forEach(product => {
                 const cardHtml = `
-                    <a class="col-md-2" href="${product.productHref}" style="text-decoration: none;" target="_blank">
-                        <div class="border rounded border-1 border-opacity-25 border-success mb-4 opacity-hover" style="width: 18rem; cursor: pointer;">
-                            <img src="${product.imgSrc}" class="card-img-top" width="100%" height="200px" loading="lazy">
-                            <div class="card-body p-2">
-                                <p id="plant-name" class="text-primary">${product.truncatedTitle}</p>
-                                <p class="card-text text-dark" id="price"><strong>Fiyat:</strong> ${product.priceText}</p>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex justify-content-center">
+                        <a href="${product.productHref}" style="text-decoration: none;" target="_blank">
+                            <div class="card border rounded border-1 border-opacity-25 border-success opacity-hover" style="cursor: pointer;">
+                                <img src="${product.imgSrc}" class="card-img-top" width="100%" height="200px" loading="lazy">
+                                <div class="card-body p-2">
+                                    <p id="plant-name" class="text-primary">${product.truncatedTitle}</p>
+                                    <p class="card-text text-dark" id="price"><strong>Fiyat:</strong> ${product.priceText}</p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 `;
                 resultsDiv.insertAdjacentHTML('beforeend', cardHtml);
             });
@@ -175,6 +177,7 @@ async function fetchContentPrice(query) {
         fetchContentPriceBahceMarket(query);
     }
 }
+
 
 
 
@@ -260,16 +263,17 @@ async function fetchContentPriceBahceMarket(query) {
             // Sıralanmış ürünleri ekrana yazdıralım
             products.forEach(product => {
                 const cardHtml = `
-
-                    <a class="col-md-2" href="${product.href}" style="text-decoration: none;" target="_blank">
-    <div class="border rounded border-1 border-opacity-25 border-success mb-4 opacity-hover" style="width: 18rem; cursor: pointer;">
-        <img src="${product.src}" class="card-img-top" width="100%" height="200px" loading="lazy">
-        <div class="card-body p-2">
-            <p id="plant-name" class="text-primary">${product.title}</p>
-            <p class="card-text text-dark" id="price"><strong>Fiyat:</strong> ${product.priceText}</p>
-        </div>
-    </div>
-</a>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex justify-content-center">
+                        <a href="${product.href}" style="text-decoration: none;" target="_blank">
+                            <div class="card border rounded border-1 border-opacity-25 border-success opacity-hover" style="cursor: pointer;">
+                                <img src="${product.src}" class="card-img-top" width="100%" height="200px" loading="lazy">
+                                <div class="card-body p-2">
+                                    <p id="plant-name" class="text-primary">${product.title}</p>
+                                    <p class="card-text text-dark" id="price"><strong>Fiyat:</strong> ${product.priceText}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 `;
                 resultsDiv.insertAdjacentHTML('beforeend', cardHtml);
             });
@@ -294,3 +298,4 @@ async function fetchContentPriceBahceMarket(query) {
         document.getElementById('fidan-burada-price-result').textContent = 'Bir hata olustu.';
     }
 }
+

@@ -7,7 +7,7 @@
       crossorigin="" />
 <link href="~/css/custom_css/plant/imageUpload.css" rel="stylesheet" />
 
-
+<link href="~/css/custom_css/plant/index.css" rel="stylesheet" />
 
 
 <div class="row mt-5">
@@ -78,9 +78,9 @@
 
                         // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
                         console.log('fetchContent tetiklendi:', plantName);
-                        //fetchContent(plantName);
+
                         fetchContentPrice(plantName);
-                        
+                        //fetchContentPriceBahceMarket(plantName);
                     });
                 </script>
 
@@ -129,9 +129,9 @@
 
                                 // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
                                 console.log('fetchContent tetiklendi:', plantName);
-                                //fetchContent(plantName);
-                                fetchContentPrice(plantName);
                                 
+                                fetchContentPrice(plantName);
+                                //fetchContentPriceBahceMarket(plantName);
                             });
                         </script>
 
@@ -399,25 +399,18 @@
 
 @if (Model.RoboflowResponse != null || (TempData["PlantNetTempData"] != null && TempData["PlantNetTempData"].ToString() != "Bu fotoğraf bir bitki değil!"))
 {
-    <div class="row m-5">
+    <div class="container my-5">
         <p class="fw-bold fs-3 text-success text-center"><i class="bi bi-cart-check me-3"></i>Bu bitkiyi satın almak ister misiniz?</p>
-        <div class="col-md-12">
-
-            <div class="row d-flex justify-content-center">
-
-                <div class="border rounded w-50 mb-4 d-flex justify-content-center pt-3" id="price-range">
-                </div>
-
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-md-6 border rounded py-3 d-flex justify-content-center" id="price-range">
+                <!-- Fiyat Aralığı İçeriği -->
             </div>
-
-            <div class="row d-flex justify-content-center ms-4 me-4" id="fidan-burada-price-result" style="height: 518px; overflow-y: scroll;">
-            </div>
-
+        </div>
+        <div class="row justify-content-center" id="fidan-burada-price-result" style="max-height: 518px; overflow-y: scroll;">
+            <!-- Ürünler Buraya Gelecek -->
         </div>
     </div>
-
 }
-
 
 
 
