@@ -200,10 +200,10 @@ namespace Web.Controllers
 
                     //GPT - DISABLED
 
-                    //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
-                    var chatGPTResponse = "GPT disabled!";
-                    //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
-                    var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
+                    var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+                    //var chatGPTResponse = "GPT disabled!";
+                    var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
+                    //var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
 
                     TempData["GPTResponse"] = chatGPTResponse;
                     TempData["GPTResponseMaintenanceWatering"] = gptResponseMaintenanceWatering;
@@ -313,10 +313,10 @@ namespace Web.Controllers
                     TempData["LocationData"] = locationJson;
 
                     //GPT - DISABLED
-                    //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
-                    var chatGPTResponse = "GPT disabled!";
-                    //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
-                    var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
+                    var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+                    //var chatGPTResponse = "GPT disabled!";
+                    var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
+                    //var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
 
                     TempData["GPTResponse"] = chatGPTResponse;
                     TempData["GPTResponseMaintenanceWatering"] = gptResponseMaintenanceWatering;
