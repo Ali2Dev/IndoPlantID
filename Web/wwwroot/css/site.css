@@ -39,3 +39,7 @@ a {
     max-height: 400px;
     overflow-y: auto;
 }
+
+.z-999 {
+    z-index: 999;
+}

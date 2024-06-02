@@ -153,7 +153,7 @@ namespace Web.Identity.Services.Concrete
     <div class='container'>
         <h2>Şifreniz Başarıyla Değiştirildi</h2>
         <p>Merhaba {userName},</p>
-        <p>IdentityApp hesabınızın şifresi başarıyla değiştirildi.</p>
+        <p>IndoPlantId (Bitki Net) hesabınızın şifresi başarıyla değiştirildi.</p>
         
         <p class='footer'>Bu e-posta bilgilendirme amaçlı gönderilmiştir. Lütfen yanıtlamayınız.</p>
     </div>
