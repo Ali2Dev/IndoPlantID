@@ -27,6 +27,7 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="wwwroot\uploads\images\" />
+    <Folder Include="wwwroot\uploads\unknownPictures\" />
     <Folder Include="wwwroot\uploads\userPictures\" />
   </ItemGroup>
 
