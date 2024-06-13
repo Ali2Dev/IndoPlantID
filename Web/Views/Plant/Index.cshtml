@@ -399,23 +399,19 @@
 @if (Model.RoboflowResponse != null || (TempData["PlantNetTempData"] != null && TempData["PlantNetTempData"].ToString() != "Bu fotoğraf bir bitki değil!"))
 {
     <div class="row m-5">
-        <p class="fw-bold fs-3 text-success text-center"><i class="bi bi-cart-check me-3"></i>Bu bitkiyi satın almak ister misiniz?</p>
+        <p class="fw-bold fs-3 text-success text-center">
+            <i class="bi bi-cart-check me-3"></i>Bu bitkiyi satın almak ister misiniz?
+        </p>
         <div class="col-md-12">
-
             <div class="row d-flex justify-content-center">
-
                 <div class="border rounded w-50 mb-4 d-flex justify-content-center pt-3" id="price-range">
-
                 </div>
-
             </div>
-
             <div class="row d-flex justify-content-center ms-4 me-4" id="fidan-burada-price-result" style="height: 518px; overflow-y: scroll;">
-
             </div>
-            
         </div>
     </div>
+
 
 }
 
