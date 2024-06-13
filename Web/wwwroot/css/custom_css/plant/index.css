@@ -6,8 +6,8 @@
 }
 
     #fidan-burada-price-result .card-wrapper {
-        flex: 1 1 18rem; /* Kartlarýn minimum geniþliði 18rem, esnek geniþleme */
-        max-width: 18rem; /* Kartlarýn maksimum geniþliði 18rem */
+        flex: 1 1 calc(33.333% - 1rem); /* Kartlarýn geniþliði %33.333 - 1rem */
+        max-width: calc(33.333% - 1rem); /* Kartlarýn maksimum geniþliði %33.333 - 1rem */
         margin-bottom: 1rem; /* Alt boþluk */
     }
 
@@ -48,7 +48,14 @@
 /* 1366x768 ekran çözünürlüðü için ek düzenlemeler */
 @media (max-width: 1366px) {
     #fidan-burada-price-result .card-wrapper {
-        flex: 1 1 calc(100% / 3 - 1rem); /* Kartlarýn geniþliði %100/3 - 1rem */
-        max-width: calc(100% / 3 - 1rem); /* Kartlarýn maksimum geniþliði %100/3 - 1rem */
+        flex: 1 1 calc(50% - 1rem); /* Kartlarýn geniþliði %50 - 1rem */
+        max-width: calc(50% - 1rem); /* Kartlarýn maksimum geniþliði %50 - 1rem */
+    }
+}
+
+@media (max-width: 768px) {
+    #fidan-burada-price-result .card-wrapper {
+        flex: 1 1 100%; /* Kartlarýn geniþliði %100 */
+        max-width: 100%; /* Kartlarýn maksimum geniþliði %100 */
     }
 }
