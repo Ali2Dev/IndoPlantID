@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace Business.Concrete
 {
@@ -26,39 +30,41 @@ namespace Business.Concrete
             try
             {
                 var token = _configuration["TrefleIOService:Key"];
-
                 var url = $"https://trefle.io/api/v1/plants/search?token={token}&q={name}";
 
-                var response = await _httpClient.GetAsync(url);
+                var handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => { return true; };
 
-                if (response.IsSuccessStatusCode)
+                using (var httpClient = new HttpClient(handler))
                 {
-                    var content = await response.Content.ReadAsStringAsync();
+                    var response = await httpClient.GetAsync(url);
 
-                    var json = JObject.Parse(content);
-
-                    var plantIds = new List<int>();
-
-                    foreach (var plant in json["data"])
+                    if (response.IsSuccessStatusCode)
                     {
-                        var id = (int)plant["id"];
+                        var content = await response.Content.ReadAsStringAsync();
+                        var json = JObject.Parse(content);
 
-                        plantIds.Add(id);
+                        var plantIds = new List<int>();
+
+                        foreach (var plant in json["data"])
+                        {
+                            var id = (int)plant["id"];
+                            plantIds.Add(id);
+                        }
+
+                        return plantIds;
                     }
-
-                    return plantIds;
-                }
-                else
-                {
-                    // Handle unsuccessful response
-                    return null;
+                    else
+                    {
+                        // Handle unsuccessful response
+                        return null;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 // Handle exception
                 Console.WriteLine($"Error occurred: {ex.Message}");
-
                 return null;
             }
         }
@@ -68,47 +74,51 @@ namespace Business.Concrete
             try
             {
                 var token = _configuration["TrefleIOService:Key"];
-
                 var url = $"https://trefle.io/api/v1/species/{plantId}?token={token}";
 
-                var response = await _httpClient.GetAsync(url);
+                var handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => { return true; };
 
-                if (response.IsSuccessStatusCode)
+                using (var httpClient = new HttpClient(handler))
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var json = JObject.Parse(content);
+                    var response = await httpClient.GetAsync(url);
 
-                    // Extract regions where the plant naturally grows
-                    var regions = json["data"]["distribution"]["native"];
-
-
-                    var regionsList = new List<string>();
-
-                    if (regions == null)
+                    if (response.IsSuccessStatusCode)
                     {
-                        regionsList.Add("Bölge bilgisi bulunamadı..");
-                    }
-                    // Check if regions is an array
-                    if (regions is JArray regionArray)
-                    {
-                        foreach (var regionToken in regionArray)
+                        var content = await response.Content.ReadAsStringAsync();
+                        var json = JObject.Parse(content);
+
+                        // Extract regions where the plant naturally grows
+                        var regions = json["data"]["distribution"]["native"];
+
+                        var regionsList = new List<string>();
+
+                        if (regions == null)
                         {
-                            var regionName = (string)regionToken;
+                            regionsList.Add("Bölge bilgisi bulunamadı.");
+                        }
+                        // Check if regions is an array
+                        if (regions is JArray regionArray)
+                        {
+                            foreach (var regionToken in regionArray)
+                            {
+                                var regionName = (string)regionToken;
+                                regionsList.Add(regionName);
+                            }
+                        }
+                        else if (regions is JValue regionValue) // If it's not an array but a single value
+                        {
+                            var regionName = (string)regionValue;
                             regionsList.Add(regionName);
                         }
-                    }
-                    else if (regions is JValue regionValue) // If it's not an array but a single value
-                    {
-                        var regionName = (string)regionValue;
-                        regionsList.Add(regionName);
-                    }
 
-                    return regionsList;
-                }
-                else
-                {
-                    // Handle unsuccessful response
-                    return null;
+                        return regionsList;
+                    }
+                    else
+                    {
+                        // Handle unsuccessful response
+                        return null;
+                    }
                 }
             }
             catch (Exception ex)
@@ -119,42 +129,46 @@ namespace Business.Concrete
             }
         }
 
-
-        public async Task<PlantImages> GetPlantImagesAsync(int plantId) //261950
+        public async Task<PlantImages> GetPlantImagesAsync(int plantId)
         {
             try
             {
                 var token = _configuration["TrefleIOService:Key"];
-
                 var url = $"https://trefle.io/api/v1/species/{plantId}?token={token}";
 
-                var response = await _httpClient.GetAsync(url);
+                var handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => { return true; };
 
-                if (response.IsSuccessStatusCode)
+                using (var httpClient = new HttpClient(handler))
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var json = JObject.Parse(content);
+                    var response = await httpClient.GetAsync(url);
 
-                    // Extract images of the plant
-                    var images = json["data"]["images"];
-
-                    var plantImages = new PlantImages();
-
-                    if (images != null)
+                    if (response.IsSuccessStatusCode)
                     {
-                        plantImages.Leaf = GetImagesList(images["leaf"]);
-                        plantImages.Flower = GetImagesList(images["flower"]);
-                        plantImages.Fruit = GetImagesList(images["fruit"]);
-                        plantImages.Bark = GetImagesList(images["bark"]);
-                        plantImages.Habit = GetImagesList(images["habit"]);
-                    }
+                        var content = await response.Content.ReadAsStringAsync();
+                        var json = JObject.Parse(content);
 
-                    return plantImages;
-                }
-                else
-                {
-                    // Handle unsuccessful response
-                    return null;
+                        // Extract images of the plant
+                        var images = json["data"]["images"];
+
+                        var plantImages = new PlantImages();
+
+                        if (images != null)
+                        {
+                            plantImages.Leaf = GetImagesList(images["leaf"]);
+                            plantImages.Flower = GetImagesList(images["flower"]);
+                            plantImages.Fruit = GetImagesList(images["fruit"]);
+                            plantImages.Bark = GetImagesList(images["bark"]);
+                            plantImages.Habit = GetImagesList(images["habit"]);
+                        }
+
+                        return plantImages;
+                    }
+                    else
+                    {
+                        // Handle unsuccessful response
+                        return null;
+                    }
                 }
             }
             catch (Exception ex)

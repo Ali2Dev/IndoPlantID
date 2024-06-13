@@ -184,7 +184,7 @@
         <div class="row">
             <div class="col-md-6">
                 <p class="fw-bold fs-3 text-success"><i class="bi bi-feather me-3"></i>Bitkinin genel özellikleri</p>
-                <div class="ms-5 border border-success border-2 rounded text-dark" style="height: 300px; overflow-y: scroll;">
+                <div class="ms-5 border border-success border-2 rounded text-dark p-2" style="height: 300px; overflow-y: scroll;">
                     @TempData["GPTResponse"]
                 </div>
             </div>
@@ -193,14 +193,14 @@
             {
                 <div class="col-md-6">
                     <p class="fw-bold fs-3 text-success"><i class="bi bi-flower2 me-3"></i>Bakımı ve Sulaması</p>
-                    <div class=" me-5 border border-success border-2 rounded" id="gpt-result" style="height: 300px; overflow-y: scroll;">@TempData["GPTResponseMaintenanceWatering"]</div>
+                    <div class=" me-5 border border-success border-2 rounded p-2" id="gpt-result" style="height: 300px; overflow-y: scroll;">@TempData["GPTResponseMaintenanceWatering"]</div>
                 </div>
             }
             else
             {
                 <div class="col-md-6">
                     <p class="fw-bold fs-3 text-success"><i class="bi bi-flower2 me-3"></i>Bakımı ve Sulaması</p>
-                    <div class=" me-5 border border-success border-2 rounded" id="gpt-result">Üzgünüz, şu an da size cevap veremiyoruz.</div>
+                    <div class=" me-5 border border-success border-2 rounded p-2" id="gpt-result">Üzgünüz, şu an da size cevap veremiyoruz.</div>
                 </div>
             }
         </div>

@@ -40,7 +40,7 @@ namespace Business.Concrete
             {
                 ChatMessage.FromUser(gptRequest)
             },
-                Model = Models.Gpt_3_5_Turbo_16k_0613,
+                Model = Models.Gpt_3_5_Turbo_0125,
                 MaxTokens = 1000//optional
             });
 
