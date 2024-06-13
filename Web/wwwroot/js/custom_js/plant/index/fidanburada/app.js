@@ -140,8 +140,8 @@ async function fetchContentPrice(query) {
             // Sıralanmış ürünleri HTML olarak ekleme
             products.forEach(product => {
                 const cardHtml = `
-                    <a class="col-md-2 card-wrapper" href="${product.productHref}" style="text-decoration: none;" target="_blank">
-                        <div class="card opacity-hover" style="width: 18rem; cursor: pointer;">
+                    <a class="col-md-2" href="${product.productHref}" style="text-decoration: none;" target="_blank">
+                        <div class="border rounded border-1 border-opacity-25 border-success mb-4 opacity-hover" style="width: 18rem; cursor: pointer;">
                             <img src="${product.imgSrc}" class="card-img-top" width="100%" height="200px" loading="lazy">
                             <div class="card-body p-2">
                                 <p id="plant-name" class="text-primary">${product.truncatedTitle}</p>

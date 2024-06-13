@@ -6,8 +6,8 @@
 }
 
     #fidan-burada-price-result .card-wrapper {
-        flex: 1 1 18rem; /* Kartlarýn minimum geniþliði 18rem, esnek geniþleme */
-        max-width: 18rem; /* Kartlarýn maksimum geniþliði 18rem */
+        flex: 1 1 calc(100% / 3 - 1rem); /* Kartlarýn geniþliði %100/3 - 1rem */
+        max-width: calc(100% / 3 - 1rem); /* Kartlarýn maksimum geniþliði %100/3 - 1rem */
         margin-bottom: 1rem; /* Alt boþluk */
     }
 
@@ -41,3 +41,11 @@
     .card-body #price {
         color: #333;
     }
+
+/* 1366x768 ekran çözünürlüðü için ek düzenlemeler */
+@media (max-width: 1366px) {
+    #fidan-burada-price-result .card-wrapper {
+        flex: 1 1 calc(100% / 2 - 1rem); /* Kartlarýn geniþliði %100/2 - 1rem */
+        max-width: calc(100% / 2 - 1rem); /* Kartlarýn maksimum geniþliði %100/2 - 1rem */
+    }
+}
