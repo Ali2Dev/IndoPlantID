@@ -59,18 +59,3 @@
         max-width: 100%; /* Kartlarýn maksimum geniþliði %100 */
     }
 }
-
-
-@media (max-width: 1366px) {
-    #fidan-burada-price-result {
-        flex: 1 1 calc(50% - 1rem); /* Kartlarýn geniþliði %50 - 1rem */
-        max-width: calc(50% - 1rem); /* Kartlarýn maksimum geniþliði %50 - 1rem */
-    }
-}
-
-@media (max-width: 768px) {
-    #fidan-burada-price-result {
-        flex: 1 1 100%; /* Kartlarýn geniþliði %100 */
-        max-width: 100%; /* Kartlarýn maksimum geniþliði %100 */
-    }
-}
