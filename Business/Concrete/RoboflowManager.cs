@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Business.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Microsoft.Extensions.Configuration;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Business.Concrete
@@ -16,9 +17,20 @@ namespace Business.Concrete
     public class RoboflowManager : IRoboflowService
     {
         private readonly IRoboflowDal _roboflowDal;
+        private readonly IConfiguration _configuration;
 
-        public RoboflowManager(IRoboflowDal roboflowDal)
+        private readonly string Key;
+        private readonly string ModelEndpoint;
+        private readonly string Url;
+
+        public RoboflowManager(IConfiguration configuration, IRoboflowDal roboflowDal)
         {
+            _configuration = configuration;
+
+            Key = _configuration["RoboflowService:Key"];
+            ModelEndpoint = _configuration["RoboflowService:ModelEndpoint"];
+            Url = _configuration["RoboflowService:Url"];
+
             _roboflowDal = roboflowDal;
         }
 
@@ -48,12 +60,12 @@ namespace Business.Concrete
         {
             string encoded = Convert.ToBase64String(image);
             byte[] data = Encoding.ASCII.GetBytes(encoded);
-            string API_KEY = "5SuSzgtvAHrdfyTSBKBX"; // Your API Key
-            string MODEL_ENDPOINT = "ev-bitkisi-tanima/1"; // Set model endpoint
+            string API_KEY = Key; // API Key
+            string MODEL_ENDPOINT = ModelEndpoint; // Set model endpoint
 
             // Construct the URL
             string uploadURL =
-                "https://detect.roboflow.com/" + MODEL_ENDPOINT + "?api_key=" + API_KEY
+                Url + MODEL_ENDPOINT + "?api_key=" + API_KEY
                 + "&name=" + fileName;
 
             // Send HTTP request and get response
