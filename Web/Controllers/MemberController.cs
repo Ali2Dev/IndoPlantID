@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using NuGet.Common;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Web.Extensions;
 using Web.Identity;
 using Web.Identity.Services.Abstract;
 using Web.Identity.ViewModels;
+using static OpenAI.ObjectModels.SharedModels.IOpenAiModels;
 
 namespace Web.Controllers
 {
@@ -44,6 +46,88 @@ namespace Web.Controllers
             ViewData["PictureUrl"] = currentUser.Picture;
 
             return View(userViewModel);
+        }
+
+        public async Task<IActionResult> ChangeEmail()
+        {
+            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+
+            var changeEmailViewModel = new ChangeEmailViewModel()
+            {
+                FirstName = currentUser!.FirstName,
+                LastName = currentUser!.LastName,
+                UserName = currentUser!.UserName,
+                OldEmail = currentUser!.Email,
+            };
+            await GetUserPicture();
+            return View(changeEmailViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel request)
+        {
+
+            ViewBag.ShowNavbar = false;
+            TempData["ShowWelcomeMessage"] = false;
+
+
+
+            //bool userFound = false;
+
+            var hasUser = await _userManager.FindByEmailAsync(request.OldEmail);
+
+            if (hasUser == null)
+            {
+                //TempData["UserFound"] = userFound;
+                ModelState.AddModelError(string.Empty, "Geçerli e-posta adresi bulunamadı.");
+                return View(request);
+            }
+
+            //Check for New Email
+            var IsExist = await _userManager.FindByEmailAsync(request.NewEmail);
+
+            if (IsExist == null)
+            {
+                string emailResetToken = await _userManager.GenerateChangeEmailTokenAsync(hasUser, request.NewEmailConfirmed);
+                var callbackUrl = Url.Action("ConfirmEmailChanging", "Member", new { userId = hasUser.Id, newEmail = request.NewEmail, token = emailResetToken }, protocol: Request.Scheme);
+
+                await _emailService.SendChangeEmailAsync(request.NewEmailConfirmed, callbackUrl);
+
+                ViewBag.Message = "Yeni e-posta adresinize bir onaylama bağlantısı gönderildi.";
+                return View(request);
+            }
+            TempData["AlreadyExist"] = "Bu e-mail ile kayıtlı mevcut bir kullanıcı var. Yeni bir e-mail girin.";
+            return View(request);
+
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmailChanging(string userId, string newEmail, string token)
+        {
+            if (userId == null || newEmail == null || token == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+            if (!result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+
+            await _userManager.UpdateSecurityStampAsync(user);
+
+            TempData["ChangedEmail"] = "E-posta adresiniz başarıyla değiştirildi.";
+            return RedirectToAction("EditUser", "Member");
         }
 
         public async Task<IActionResult> ChangePassword()
@@ -126,7 +210,7 @@ namespace Web.Controllers
             var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
 
             currentUser!.UserName = request.UserName;
-            currentUser!.Email = request.Email;
+            //currentUser!.Email = request.Email;
             currentUser!.PhoneNumber = request.Phone;
             currentUser.FirstName = request.FirstName;
             currentUser.LastName = request.LastName;

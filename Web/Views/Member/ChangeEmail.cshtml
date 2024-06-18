@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Email Güncelle";
+}
+
+@model ChangeEmailViewModel
+
+
+
+
+<link href="~/css/custom_css/member/change-password.css" rel="stylesheet" />
+
+
+
+<div id="box">
+
+    @if (ViewBag.Message != null as string)
+    {
+        <div class="ui success message">
+            <i class="close icon"></i>
+            <div class="header">
+                Harika!
+            </div>
+            <div class="mt-2">
+                <p>@ViewBag.Message</p>
+            </div>
+        </div>
+        <script>
+            setTimeout(function () {
+                window.location.href = '@Url.Action("Index", "Member")';
+            }, 3000);
+        </script>
+    }
+    @if (TempData["AlreadyExist"] != null)
+    {
+        <div class="ui negative message">
+            <i class="close icon"></i>
+            <div class="header">
+                Hata!
+            </div>
+            <div class="mt-2">
+                <p>@TempData["AlreadyExist"]</p>
+            </div>
+        </div>
+       
+    }
+
+
+    <div asp-validation-summary="ModelOnly" class="alert alert-warning alert-dismissible fade show d-flex align-items-center mt-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span class="ms-4">
+        </span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <form id="myform-search" asp-controller="Member" asp-action="ChangeEmail" method="post" autocomplete="off" />
+    <h1>
+        Email Güncelle
+        <span>Yeni email adresini aşağıya girebilirsin @Model.FirstName!</span>
+    </h1>
+    
+    
+    <form>
+        <p>
+            <input type="hidden" asp-for="FirstName" value="@Model.FirstName"/>
+            <input type="hidden" asp-for="LastName" value="@Model.LastName"/>
+            <input type="hidden" asp-for="OldEmail" value="@Model.OldEmail"/>
+            <input type="hidden" asp-for="UserName" value="@Model.UserName"/>
+
+            <label class="text-start" asp-for="OldEmail"></label>
+            <input type="email" value="@Model.OldEmail" id="old-email" class="password" asp-for="OldEmail" disabled>
+        </p>
+        <p>
+            <input type="email"  placeholder="Yeni e-mail"  class="password" asp-for="NewEmail" required>
+            <div>
+                <span asp-validation-for="NewEmail" class="text-danger "></span>
+            </div>
+        </p>
+        <p>
+            <input type="email" placeholder="E-mail tekrar"  class="password" asp-for="NewEmailConfirmed" required>
+           
+            <div>
+                <span asp-validation-for="NewEmailConfirmed" class="text-danger "></span>
+            </div>
+
+        </p>
+
+        <div class="text-center">
+            <button type="submit" class="ui green button">Güncelle</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+@* ClientSide V.  *@
+
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+@* <script src="~/js/custom_js/member/change-password.js"></script>
+ *@
+

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "EditUser";
+    ViewData["Title"] = "Bilgileri Güncelle";
 }
 
 @model EditUserViewModel
@@ -10,10 +10,20 @@
         <div class="col-md-6">
             <h2 class="mb-4">Kullanıcı Bilgi Güncelleme</h2>
 
+          
+
             @if (TempData["SuccessMessage"] != null)
             {
                 <div class="alert alert-info alert-dismissible" role="alert">
                     @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+            }
+            @if (TempData["ChangedEmail"] != null)
+            {
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    @TempData["ChangedEmail"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
 
@@ -57,10 +67,14 @@
 
                 <div class="row mb-3">
                     <label class="col-md-4 col-form-label" asp-for="Email"></label>
-                    <div class="col-md-8">
+                    <div class="col-md-8 ui disabled input">
                         <input type="email" asp-for="Email" class="form-control" required>
+                        
+                        <a class="btn my-auto" asp-action="ChangeEmail"><i class="bi bi-pencil-square fs-3"></i></a>
+                       
                         <span class="text-danger" asp-validation-for="Email"></span>
                     </div>
+                   
                 </div>
 
                 <div class="row mb-3">
