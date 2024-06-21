@@ -8,6 +8,11 @@ namespace Web.Identity.ViewModels
         public string LastName { get; set; }
         public string UserName { get; set; }
 
+        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Bu kısım boş olamaz.")]
+        [Display(Name = " Şifre:")]
+        public string Password { get; set; }
+
         [Display(Name = "Eski e-mail:")]
         public string OldEmail { get; set; }
 

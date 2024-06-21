@@ -20,14 +20,7 @@
                 </div>
 
             }
-            @if (TempData["ChangedEmail"] != null)
-            {
-                <div class="alert alert-success alert-dismissible" role="alert">
-                    @TempData["ChangedEmail"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-
-            }
+            
 
             <div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
             </div>
@@ -102,10 +95,18 @@
             </form>
 
             <hr />
-            <div class="row mt-5 mb-5">
+            <div class="row mt-4 mb-4">
                 <h2>Şifre Güncelleme</h2>
                 <a asp-controller="Member" asp-action="ChangePassword">
                     <button class="ui red button">Şifre değiştir</button>
+                </a>
+            </div>
+            
+            <hr />
+            <div class="row mt-4 mb-4">
+                <h2>Güvenlik Ayarları</h2>
+                <a asp-controller="Member" asp-action="ChangePassword">
+                    <button class="ui button">Şifre değiştir</button>
                 </a>
             </div>
 

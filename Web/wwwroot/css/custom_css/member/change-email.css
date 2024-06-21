@@ -1,0 +1,16 @@
+
+.password-container {
+    position: relative;
+}
+
+    .password-container input {
+        padding-right: 2.5rem;
+    }
+
+    .password-container i {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }

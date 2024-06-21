@@ -12,6 +12,15 @@
                 <p class="fs-6"><strong>Merhaba @Model.FirstName</strong>, hesap detaylarını burada görüntüleyebilirsin.</p>
             </div>
             
+            @if (TempData["ChangedEmail"] != null)
+            {
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    @TempData["ChangedEmail"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+            }
+            
             <div class="ui form">
                 <div class="two fields ">
 
@@ -81,9 +90,9 @@
                 </div>
             </div>
 
-            <div class="mt-5 text-center" id="infoToUpdate">
-                <strong class="text-danger">*</strong> <a class="text-dark" asp-action="EditUser">Bu bilgileri değiştirmek için buraya tıklayabilirsin</a>
-            </div>
+            <a class="mt-5 text-center ui basic button  opacity-75" asp-action="EditUser" id="infoToUpdate">
+               <span class="text-danger">*</span><span class="text-dark">Bu bilgileri güncellemek istiyorum.</span>
+            </a>
         </div>
 
         <div class="col-md-6">

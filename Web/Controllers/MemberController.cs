@@ -50,6 +50,7 @@ namespace Web.Controllers
 
         public async Task<IActionResult> ChangeEmail()
         {
+            TempData["ShowWarningMsg"] = true;
             var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
 
 
@@ -68,8 +69,9 @@ namespace Web.Controllers
         public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel request)
         {
 
-            ViewBag.ShowNavbar = false;
+            //ViewBag.ShowNavbar = false;
             TempData["ShowWelcomeMessage"] = false;
+            TempData["ShowWarningMsg"] = false;
 
 
 
@@ -77,10 +79,19 @@ namespace Web.Controllers
 
             var hasUser = await _userManager.FindByEmailAsync(request.OldEmail);
 
+
             if (hasUser == null)
             {
                 //TempData["UserFound"] = userFound;
                 ModelState.AddModelError(string.Empty, "Geçerli e-posta adresi bulunamadı.");
+                return View(request);
+            }
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(hasUser, request.Password);
+
+            if (!isPasswordValid)
+            {
+                ModelState.AddModelError(string.Empty, "Şifreniz yanlış.");
                 return View(request);
             }
 
@@ -127,7 +138,7 @@ namespace Web.Controllers
             await _userManager.UpdateSecurityStampAsync(user);
 
             TempData["ChangedEmail"] = "E-posta adresiniz başarıyla değiştirildi.";
-            return RedirectToAction("EditUser", "Member");
+            return RedirectToAction("Index", "Member");
         }
 
         public async Task<IActionResult> ChangePassword()
@@ -183,6 +194,12 @@ namespace Web.Controllers
         {
             var currentUser = await _userManager.FindByNameAsync(User?.Identity?.Name!);
 
+            if (currentUser == null)
+            {
+                ModelState.AddModelError(string.Empty, "Kullanıcı bulunamadı.");
+                return View();
+            }
+
             var editUserViewModel = new EditUserViewModel()
             {
 
@@ -202,12 +219,36 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserViewModel request)
         {
+            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+            if (currentUser == null)
+            {
+                ModelState.AddModelError(string.Empty, "Kullanıcı bulunamadı.");
+                return View(request);
+            }
+            ViewData["PictureUrl"] = currentUser.Picture;
+            request.IsEmailConfirmed = currentUser.EmailConfirmed;
+
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(request);
             }
 
-            var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
+
+            if (request.UserName != currentUser.UserName)
+            {
+                var isExist = await _userManager.FindByNameAsync(request.UserName);
+
+                if (isExist != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Bu kullanıcı adı başkası tarafından kullanılıyor.");
+                    return View(request);
+                }
+
+            }
+
+
+
 
             currentUser!.UserName = request.UserName;
             //currentUser!.Email = request.Email;
@@ -251,7 +292,7 @@ namespace Web.Controllers
 
             TempData["SuccessMessage"] = "Kullanıcı bilgileri güncellendi";
 
-            return RedirectToAction("EditUser", "Member");
+            return View(request);
         }
 
         public async Task<IActionResult> LogOut()

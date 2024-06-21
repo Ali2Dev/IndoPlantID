@@ -6,10 +6,11 @@
 
 
 
-
+<link href="~/css/custom_css/member/change-email.css" rel="stylesheet" />
 <link href="~/css/custom_css/member/change-password.css" rel="stylesheet" />
-
-
+<div id="stars"></div>
+<div id="stars2"></div>
+<div id="stars3"></div>
 
 <div id="box">
 
@@ -41,7 +42,7 @@
                 <p>@TempData["AlreadyExist"]</p>
             </div>
         </div>
-       
+
     }
 
 
@@ -57,32 +58,51 @@
         Email Güncelle
         <span>Yeni email adresini aşağıya girebilirsin @Model.FirstName!</span>
     </h1>
-    
-    
+
+
     <form>
         <p>
-            <input type="hidden" asp-for="FirstName" value="@Model.FirstName"/>
-            <input type="hidden" asp-for="LastName" value="@Model.LastName"/>
-            <input type="hidden" asp-for="OldEmail" value="@Model.OldEmail"/>
-            <input type="hidden" asp-for="UserName" value="@Model.UserName"/>
+            <input type="hidden" asp-for="FirstName" value="@Model.FirstName" />
+            <input type="hidden" asp-for="LastName" value="@Model.LastName" />
+            <input type="hidden" asp-for="OldEmail" value="@Model.OldEmail" />
+            <input type="hidden" asp-for="UserName" value="@Model.UserName" />
 
             <label class="text-start" asp-for="OldEmail"></label>
-            <input type="email" value="@Model.OldEmail" id="old-email" class="password" asp-for="OldEmail" disabled>
+            <input type="email" value="@Model.OldEmail" id="old-email" class="password opacity-50 mt-2 border-danger" asp-for="OldEmail" disabled>
         </p>
         <p>
-            <input type="email"  placeholder="Yeni e-mail"  class="password" asp-for="NewEmail" required>
+            <input type="email" placeholder="Yeni e-mail" class="password" asp-for="NewEmail" required>
             <div>
                 <span asp-validation-for="NewEmail" class="text-danger "></span>
             </div>
         </p>
         <p>
-            <input type="email" placeholder="E-mail tekrar"  class="password" asp-for="NewEmailConfirmed" required>
-           
+            <input type="email" placeholder="E-mail tekrar" class="password" asp-for="NewEmailConfirmed" required>
+
             <div>
                 <span asp-validation-for="NewEmailConfirmed" class="text-danger "></span>
             </div>
 
         </p>
+
+        <p class="password-container">
+            <input type="password" placeholder="Şifre" class="password" asp-for="Password" required>
+            <i class="bi bi-lock-fill" id="togglePassword"></i>
+            
+
+            <div> <span asp-validation-for="Password" class="text-danger"></span></div>
+        </p>
+
+
+        @if ((bool)TempData["ShowWarningMsg"])
+        {
+            <div class="ui warning message mt-4 mb-4">
+                <i class="close icon"></i>
+                <div class="mt-2">
+                    <p>Yeni e-mail talebinizi kabul edebilmemiz için mevcut şifreniz gereklidir.</p>
+                </div>
+            </div>
+        }
 
         <div class="text-center">
             <button type="submit" class="ui green button">Güncelle</button>
@@ -101,6 +121,6 @@
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
 
-@* <script src="~/js/custom_js/member/change-password.js"></script>
- *@
+<script src="~/js/custom_js/member/password-lock-icon.js"></script>
+
 
