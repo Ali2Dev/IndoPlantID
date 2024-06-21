@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Identity;
 
@@ -11,9 +12,10 @@ using Web.Identity;
 namespace Web.Migrations
 {
     [DbContext(typeof(IndoPlantIdentityDb))]
-    partial class IndoPlantIdentityDbModelSnapshot : ModelSnapshot
+    [Migration("20240621111451_TwoFactorType")]
+    partial class TwoFactorType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -115,7 +115,8 @@ namespace Web.Controllers
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
                 FirstName = request.FirstName,
-                LastName = request.LastName
+                LastName = request.LastName,
+                TwoFactorType = 0
             }, request.PasswordConfirmed);
 
             if (identityResult.Succeeded)

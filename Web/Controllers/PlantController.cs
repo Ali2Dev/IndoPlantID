@@ -80,8 +80,20 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadImage([Required] IFormFile file)
         {
+
+
+
             //Get UserId
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (!user.EmailConfirmed)
+            {
+                TempData["EmailNotConfirmedMsg"] = "Bitki sorgulamak için önce e-mail adresinizi doğrulayın.";
+
+                return RedirectToAction("Index", "Plant");
+            }
+
+
             string userId = user.Id;
 
 

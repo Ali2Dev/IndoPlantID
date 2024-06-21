@@ -9,6 +9,20 @@
 
 <link href="~/css/custom_css/plant/index.css" rel="stylesheet" />
 
+@if (@TempData["EmailNotConfirmedMsg"] != null)
+{
+    <div class="container  my-3">
+        <div class="row mb-3 d-flex justify-content-center">
+            <div class="ui yellow message col-md-4"><i class="close icon"></i><i class="bi bi-exclamation-triangle-fill me-3"></i>@TempData["EmailNotConfirmedMsg"]</div>
+        </div>
+    </div>
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Action("EditUser", "Member")';
+        }, 3000);
+    </script>
+}
+
 <div class="row mt-5">
     <div class="col-md-5">
         <h2 class="mb-4">Bitkinizi yükleyin..</h2>
@@ -128,7 +142,7 @@
 
                                 // JavaScript'te fetchContent() ve fetchContentPrice() fonksiyonlarını çağırın
                                 console.log('fetchContent tetiklendi:', plantName);
-                                
+
                                 fetchContentPrice(plantName);
                                 //fetchContentPriceBahceMarket(plantName);
                             });

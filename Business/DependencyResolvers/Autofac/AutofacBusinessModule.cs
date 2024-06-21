@@ -38,6 +38,8 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<OpenStreetMapManager>().As<IOpenStreetMapService>().SingleInstance();
 
+
+            //GPT
             builder.RegisterType<ChatGPTManager>().As<IChatGPTService>().InstancePerLifetimeScope();
 
 

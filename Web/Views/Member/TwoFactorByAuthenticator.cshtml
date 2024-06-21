@@ -1,0 +1,143 @@
+﻿@model AuthenticatorViewModel
+
+@{
+    ViewData["Title"] = "2 Adımlı Doğrulama";
+}
+
+
+<div class="container">
+    <h1 class=" my-5">Authenticator'ı Aktif Etme</h1>
+
+
+    <div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
+    </div>
+
+    @if (ViewBag.TwoFactorDisabled != null)
+    {
+        @if (ViewBag.TwoFactorDisabled)
+        {
+
+            <div class="row mb-3">
+                <div class="ui yellow message col-md-4"><i class="close icon"></i><i class="bi bi-exclamation-triangle-fill me-3"></i>@TempData["TwoFactorMsg"]</div>
+            </div>
+            <script>
+                setTimeout(function () {
+                    window.location.href = '@Url.Action("Index", "Member")';
+                }, 3000);
+            </script>
+
+        }
+        else
+        {
+            <div class="row mb-3">
+                <div class="ui blue message col-md-5"><i class="close icon"></i><i class="bi bi-info-circle-fill me-3"></i>@TempData["TwoFactorMsg"]</div>
+            </div>
+            <script>
+                setTimeout(function () {
+                    window.location.href = '@Url.Action("Index", "Member")';
+                }, 3000);
+            </script>
+
+        }
+    }
+
+
+    <div class="row">
+        <div class="col-md-8 border rounded p-4 bg-secondary bg-gradient bg-opacity-10">
+
+            <div>
+                <p class="fs-5"><strong class="me-2">1.</strong>Aşağıdaki QR kodu telefonunuzdaki Authenticator uygulaması ile okutabilir veya aşağıdaki anahtarı (key) uygulamaya girebilirsiniz.</p>
+            </div>
+
+            <div class="ui items">
+                <div class="item">
+                     <div class="image">
+                    <div id="qrcode"> </div>
+                     </div>
+                    <div class="content">
+                        <p class="fs-6 fw-bolder">Key:</p>
+                        <div class="fw-normal">
+                            <span id="shared-key">@Model.SharedKey <i class="bi bi-copy ms-2" onclick="copyToClipboard('shared-key')" style="cursor: pointer"></i></span>
+                        </div>
+                        <div class="description">
+                            <p></p>
+                        </div>
+                        <div class="extra">
+                            <span class="text-danger fw-bold">*</span> Buradaki bilgileri lütfen kimseyle paylaşmayınız.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <form asp-action="TwoFactorByAuthenticator" method="post">
+                <div class="ui form">
+                    <div class="field w-25">
+                        <label asp-for="VerificationCode"></label>
+                        <input type="number" placeholder="123456" asp-for="VerificationCode" wfd-id="id23">
+                        <span asp-validation-for="VerificationCode" class="text-danger"></span>
+
+
+                        <input type="hidden" asp-for="AuthenticatorUri" />
+                        <input type="hidden" asp-for="SharedKey" />
+                    </div>
+                    <button class="ui green button my-4" type="submit">Kaydet</button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/lib/qrcode/qrcode.js"></script>
+<script src="~/lib/qrcode/qrcode.min.js"></script>
+
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+<script>
+    var uri = "@Model.AuthenticatorUri";
+    new QRCode(document.getElementById("qrcode"), 
+    { text: uri,
+        width: 150, 
+        height: 150, 
+        correctLevel: QRCode.CorrectLevel.H 
+    });
+    console.log("calisiyo")
+</script>
+
+<script>
+    function copyToClipboard(elementId) {
+        var textToCopy = document.getElementById(elementId).textContent.trim();
+
+        // Create a temporary input element to copy the text
+        var tempInput = document.createElement("input");
+        tempInput.value = textToCopy;
+        document.body.appendChild(tempInput);
+
+        // Select the text and copy it to the clipboard
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999); // For mobile devices
+        document.execCommand("copy");
+
+        // Remove the temporary input element
+        document.body.removeChild(tempInput);
+
+        //  feedback to the user
+        Swal.fire({
+            position: "bottom-end",
+            icon: "success",
+            title: "Kopyalandı!",
+            showConfirmButton: false,
+            timer: 1000
+        });
+    }
+</script>

@@ -37,5 +37,6 @@ namespace Web.Identity.ViewModels
 
         public bool IsEmailConfirmed { get; set; }
 
+        public bool TwoFactorEnabled { get; set; }
     }
 }

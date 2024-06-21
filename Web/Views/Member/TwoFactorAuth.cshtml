@@ -1,0 +1,73 @@
+﻿@model AuthenticatorViewModel
+
+@{
+    ViewData["Title"] = "2 Adımlı Doğrulama";
+}
+
+
+
+
+
+<div class="container">
+    <h1 class=" my-5">2 Adımlı Doğrulama</h1>
+
+
+    <div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
+    </div>
+
+    @if (ViewBag.TwoFactorDisabled != null)
+    {
+        @if (ViewBag.TwoFactorDisabled)
+        {
+
+            <div class="row mb-3">
+                <div class="ui yellow message col-md-4"><i class="close icon"></i><i class="bi bi-exclamation-triangle-fill me-3"></i>@TempData["TwoFactorMsg"]</div>
+            </div>
+            <script>
+                setTimeout(function () {
+                    window.location.href = '@Url.Action("Index", "Member")';
+                }, 3000);
+            </script>
+
+        }
+        else
+        {
+            <div class="row mb-3">
+                <div class="ui blue message col-md-5"><i class="close icon"></i><i class="bi bi-info-circle-fill me-3"></i>@TempData["TwoFactorMsg"]</div>
+            </div>
+            <script>
+                setTimeout(function () {
+                    window.location.href = '@Url.Action("Index", "Member")';
+                }, 3000);
+            </script>
+
+        }
+    }
+
+
+    <div class="row">
+        <div class="col-md-8">
+
+            <form asp-action="TwoFactorAuth" method="post">
+
+                
+                <div class="form-group">
+                    <label asp-for="TwoFactorType" class="form-label fw-bold"></label>
+
+                    <div class="input-group">
+                        <select class="form-select" asp-for="TwoFactorType" asp-items="Html.GetEnumSelectList<TwoFactor>()"></select>
+                        <button class="ui green button" type="submit">Kaydet</button>
+                    </div>
+                </div>
+
+            </form>
+
+
+
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

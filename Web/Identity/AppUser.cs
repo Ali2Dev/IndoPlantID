@@ -9,5 +9,6 @@ namespace Web.Identity
 
         public string FullName => $"{FirstName} {LastName}";
         public string? Picture { get; set; }
+        public SByte? TwoFactorType { get; set; }
     }
 }

@@ -56,14 +56,14 @@
             </div>
 
             <div class="ui form mt-4">
-                <div class="three fields ">
+                <div class="one field">
 
                     <div class="field">
                         <label>Telefon numarası:</label>
                         <input value="@Model.PhoneNumber" readonly="" type="tel" wfd-id="id58">
                     </div>
 
-                    <div class="field text-center">
+                  @*   <div class="field text-center">
                         <label>2 Adımlı doğrulama:</label>
                         @if (@Model.TwoFactorEnabled)
                         {
@@ -85,10 +85,58 @@
                         {
                             <button class="ui negative basic button twoFactorSituation">Onaylanmadı</button>
                         }
-                    </div>
+                    </div> *@
 
                 </div>
             </div>
+            
+
+            
+            <div class="ui ordered steps mt-4">
+                
+                @if (@Model.EmailConfirmed)
+                {
+                    <div class="completed step">
+                        <div class="content">
+                            <div class="title">E-mail</div>
+                            <div class="description">adresiniz onaylanmıştır.</div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a class="step" asp-controller="Member" asp-action="EditUser">
+                        <div class="content">
+                            <div class="title text-danger">E-mail Adresi Onaylanmadı!</div>
+                            <div class="description">Güvenliğiniz için lütfen onaylayın.</div>
+                        </div>
+                    </a>
+                }
+                
+                @if (@Model.TwoFactorEnabled)
+                {
+                    <div class="completed step">
+                        <div class="content">
+                            <div class="title">2-Adımlı Doğrulama</div>
+                            <div class="description">aktif durumdadır.</div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a class="step" asp-controller="Member" asp-action="TwoFactorAuth">
+                        <div class="content">
+                            <div class="title text-danger">2-Adımlı doğrulama devre dışı</div>
+                            <div class="description">Güvenliğiniz için etkinleştirin.</div>
+                        </div>
+                    </a>
+                }
+                
+                
+                
+                
+            </div>
+
 
             <a class="mt-5 text-center ui basic button  opacity-75" asp-action="EditUser" id="infoToUpdate">
                <span class="text-danger">*</span><span class="text-dark">Bu bilgileri güncellemek istiyorum.</span>

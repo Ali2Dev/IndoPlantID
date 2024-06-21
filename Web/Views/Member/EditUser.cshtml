@@ -93,24 +93,8 @@
                 </div>
 
             </form>
-
-            <hr />
-            <div class="row mt-4 mb-4">
-                <h2>Şifre Güncelleme</h2>
-                <a asp-controller="Member" asp-action="ChangePassword">
-                    <button class="ui red button">Şifre değiştir</button>
-                </a>
-            </div>
             
-            <hr />
-            <div class="row mt-4 mb-4">
-                <h2>Güvenlik Ayarları</h2>
-                <a asp-controller="Member" asp-action="ChangePassword">
-                    <button class="ui button">Şifre değiştir</button>
-                </a>
-            </div>
-
-
+            
             @if (!Model.IsEmailConfirmed)
             {
                 <hr />
@@ -123,6 +107,37 @@
                     </div>
                 </form>
             }
+
+            <hr />
+            <div class="row mt-4 mb-4">
+                <h2>Şifre Güncelleme</h2>
+                <a asp-controller="Member" asp-action="ChangePassword">
+                    <button class="ui red button">Şifre değiştir</button>
+                </a>
+            </div>
+            
+            <hr />
+            @if (!Model.TwoFactorEnabled)
+            {
+                <div class="row mt-4 mb-4">
+                    <h2>Güvenlik Ayarları</h2>
+                    <a asp-controller="Member" asp-action="TwoFactorAuth">
+                        <button class="ui inverted red button">2-Adımlı doğrulamayı etkinleştir</button>
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="row mt-4 mb-4">
+                    <h2>Güvenlik Ayarları</h2>
+                    <a asp-controller="Member" asp-action="TwoFactorAuth">
+                        <button class="ui inverted green button">2-Adımlı doğrulamayı düzenle</button>
+                    </a>
+                </div>
+            }
+
+
+           
         </div>
 
 

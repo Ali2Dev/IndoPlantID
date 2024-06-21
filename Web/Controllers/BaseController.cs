@@ -13,6 +13,8 @@ namespace Web.Controllers
             _userManager = userManager;
         }
 
+        protected AppUser CurrentUser => _userManager.FindByNameAsync(User.Identity.Name).Result;
+
         protected async Task GetUserPicture()
         {
             if (User.Identity.IsAuthenticated)
@@ -21,5 +23,8 @@ namespace Web.Controllers
                 ViewData["PictureUrl"] = currentUser.Picture;
             }
         }
+
+
+
     }
 }

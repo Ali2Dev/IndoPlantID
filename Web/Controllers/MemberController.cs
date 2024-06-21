@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using NuGet.Common;
 using System.Collections.Generic;
 using System.Security.Claims;
+using Web.Enums;
 using Web.Extensions;
 using Web.Identity;
 using Web.Identity.Services.Abstract;
@@ -21,12 +22,15 @@ namespace Web.Controllers
         private readonly IEmailService _emailService;
         private readonly IFileProvider _fileProvider;
 
-        public MemberController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IFileProvider fileProvider) : base(userManager)
+        private readonly ITwoFactorService _twoFactorService;
+
+        public MemberController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IFileProvider fileProvider, ITwoFactorService twoFactorService) : base(userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _emailService = emailService;
             _fileProvider = fileProvider;
+            _twoFactorService = twoFactorService;
         }
         public async Task<IActionResult> Index()
         {
@@ -208,7 +212,8 @@ namespace Web.Controllers
                 Phone = currentUser!.PhoneNumber!,
                 FirstName = currentUser!.FirstName,
                 LastName = currentUser!.LastName,
-                IsEmailConfirmed = currentUser.EmailConfirmed
+                IsEmailConfirmed = currentUser.EmailConfirmed,
+                TwoFactorEnabled = currentUser.TwoFactorEnabled
             };
 
             ViewData["PictureUrl"] = currentUser.Picture;
@@ -313,6 +318,85 @@ namespace Web.Controllers
             return RedirectToAction("EditUser", "Member");
         }
 
+
+        public async Task<IActionResult> TwoFactorAuth()
+        {
+
+
+
+            var authenticatorViewModel = new AuthenticatorViewModel
+            {
+                TwoFactorType = (TwoFactor)CurrentUser.TwoFactorType
+            };
+
+            await GetUserPicture();
+            return View(authenticatorViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorAuth(AuthenticatorViewModel authenticatorVM)
+        {
+            switch (authenticatorVM.TwoFactorType)
+            {
+                case TwoFactor.None:
+                    CurrentUser.TwoFactorEnabled = false;
+                    CurrentUser.TwoFactorType = (sbyte)TwoFactor.None;
+
+                    TempData["TwoFactorMsg"] = "2-Adımlı doğrulama devre dışı bırakıldı.";
+                    ViewBag.TwoFactorDisabled = true;
+                    break;
+
+                case TwoFactor.MicrosoftGoogle:
+                    return RedirectToAction("TwoFactorByAuthenticator");
+                    CurrentUser.TwoFactorEnabled = true;
+                    CurrentUser.TwoFactorType = (sbyte)TwoFactor.MicrosoftGoogle;
+
+                    TempData["TwoFactorMsg"] = "2-Adımlı doğrulama aktif edildi. Güvenlik tipi: Microsoft/Google";
+                    ViewBag.TwoFactorDisabled = false;
+                    break;
+
+                case TwoFactor.SMS:
+                    CurrentUser.TwoFactorEnabled = true;
+                    CurrentUser.TwoFactorType = (sbyte)TwoFactor.SMS;
+
+                    TempData["TwoFactorMsg"] = "2-Adımlı doğrulama aktif edildi. Güvenlik tipi: SMS";
+                    ViewBag.TwoFactorDisabled = false;
+                    break;
+            }
+
+            await _userManager.UpdateAsync(CurrentUser);
+            await GetUserPicture();
+            return View(authenticatorVM);
+        }
+
+        public async Task<IActionResult> TwoFactorByAuthenticator()
+        {
+            string unformattedKey = await _userManager.GetAuthenticatorKeyAsync(CurrentUser);
+
+            if (string.IsNullOrEmpty(unformattedKey))
+            {
+                await _userManager.ResetAuthenticatorKeyAsync(CurrentUser);
+
+                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(CurrentUser);
+
+            }
+
+            var authenticatorVM = new AuthenticatorViewModel
+            {
+                SharedKey = unformattedKey,
+                AuthenticatorUri = _twoFactorService.GenerateQrCodeUri(CurrentUser.Email, unformattedKey)
+            };
+
+            return View(authenticatorVM);
+
+        }
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> TwoFactorByAuthenticator(AuthenticatorViewModel request)
+        //{
+
+        //}
 
     }
 }

@@ -45,6 +45,9 @@ builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
 
+//Two Factor
+builder.Services.AddScoped<ITwoFactorService, TwoFactorService>();
+
 //AutoFac
 builder.Host.UseServiceProviderFactory
     (new AutofacServiceProviderFactory());
@@ -83,6 +86,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
