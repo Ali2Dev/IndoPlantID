@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Web.Enums;
 using Web.Extensions;
 using Web.Identity.ViewModels;
 using Web.Identity;
@@ -31,7 +32,8 @@ namespace Web.Controllers
         public async Task<ActionResult> Index()
         {
             await GetUserPicture();
-            ViewBag.ShowNavbar = false;
+            //ViewBag.ShowNavbar = false;
+            TempData["ShowNavbar"] = false;
             return View();
         }
 
@@ -43,7 +45,8 @@ namespace Web.Controllers
 
         public IActionResult SignIn()
         {
-            ViewBag.ShowNavbar = false;
+            //ViewBag.ShowNavbar = false;
+            TempData["ShowNavbar"] = false;
             return View();
         }
 
@@ -51,7 +54,7 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn(SignInViewModel request, string? returnUrl = null)
         {
-            ViewBag.ShowNavbar = false;
+            TempData["ShowNavbar"] = false;
             TempData["ShowWelcomeMessage"] = false;
 
             returnUrl = returnUrl ?? Url.Action("Index", "Home");
@@ -64,12 +67,8 @@ namespace Web.Controllers
                 return View();
             }
 
+            bool userCheck = await _userManager.CheckPasswordAsync(userResult, request.Password);
             var signInResult = await _signInManager.PasswordSignInAsync(userResult, request.Password, request.RememberMe, true);
-
-            if (signInResult.Succeeded)
-            {
-                return Redirect(returnUrl);
-            }
 
             if (signInResult.IsLockedOut)
             {
@@ -83,26 +82,106 @@ namespace Web.Controllers
                 return View();
             }
 
+            if (userCheck)
+            {
+                await _userManager.ResetAccessFailedCountAsync(userResult);
+
+                if (signInResult.RequiresTwoFactor)
+                {
+                    TempData["ShowNavbar"] = false;
+                    TempData["ShowWelcomeMessage"] = true;
+                    return RedirectToAction("TwoFactorSignIn", "Home");
+                }
+
+                if (signInResult.Succeeded)
+                {
+                    return Redirect(returnUrl);
+                }
+            }
+
+
+
+
             ModelState.AddModelErrorList(new List<string>() { "Email veya şifre yanlış!" });
 
             return View();
         }
 
+        public async Task<IActionResult> TwoFactorSignIn()
+        {
+            TempData["ShowNavbar"] = false;
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
+            switch ((TwoFactor)user.TwoFactorType)
+            {
+                case TwoFactor.MicrosoftGoogle:
+                    break;
+
+            }
+
+            var twoFactorSignInVM = new TwoFactorSignInViewModel
+            {
+                TwoFactorType = (TwoFactor)user.TwoFactorType,
+                IsRecoveryCodeRequested = false,
+                RememberMe = false,
+                VerificationCode = string.Empty
+            };
+            return View(twoFactorSignInVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorSignIn(TwoFactorSignInViewModel request, string? returnUrl = null)
+        {
+            TempData["ShowNavbar"] = false;
+            returnUrl = returnUrl ?? Url.Action("Index", "Home");
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+
+            ModelState.Clear();
+
+
+            if ((TwoFactor)user.TwoFactorType == TwoFactor.MicrosoftGoogle)
+            {
+                Microsoft.AspNetCore.Identity.SignInResult result;
+
+                if (request.IsRecoveryCodeRequested)
+                {
+                    result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(request.VerificationCode);
+
+                }
+                else
+                {
+                    result = await _signInManager.TwoFactorAuthenticatorSignInAsync(request.VerificationCode, request.RememberMe, false);
+
+                }
+
+                if (result.Succeeded)
+                {
+                    return Redirect(returnUrl);
+                }
+
+            }
+
+            request.TwoFactorType = (TwoFactor)user.TwoFactorType;
+            ModelState.AddModelError(string.Empty, "Doğrulama kodu geçersiz.");
+            return View(request);
+        }
 
 
 
         public IActionResult SignUp()
         {
             TempData["ShowWelcomeMessage"] = true;
-            ViewBag.ShowNavbar = false;
+            //ViewBag.ShowNavbar = false;
+            TempData["ShowNavbar"] = false;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpViewModel request)
         {
-            ViewBag.ShowNavbar = false;
+            //ViewBag.ShowNavbar = false;
+            TempData["ShowNavbar"] = false;
 
             if (!ModelState.IsValid)
             {
@@ -149,14 +228,16 @@ namespace Web.Controllers
 
         public IActionResult ForgotMyPassword()
         {
-            ViewBag.ShowNavbar = false;
+            //ViewBag.ShowNavbar = false;
+            TempData["ShowNavbar"] = false;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> ForgotMyPassword(ForgotMyPasswordViewModel request)
         {
-            ViewBag.ShowNavbar = false;
+            //ViewBag.ShowNavbar = false;
+            TempData["ShowNavbar"] = false;
             TempData["ShowWelcomeMessage"] = false;
 
             bool userFound = false;

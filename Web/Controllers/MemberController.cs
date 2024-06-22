@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using NuGet.Common;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Web.Enums;
 using Web.Extensions;
 using Web.Identity;
@@ -343,24 +344,18 @@ namespace Web.Controllers
                     CurrentUser.TwoFactorType = (sbyte)TwoFactor.None;
 
                     TempData["TwoFactorMsg"] = "2-Adımlı doğrulama devre dışı bırakıldı.";
-                    ViewBag.TwoFactorDisabled = true;
+                    TempData["TwoFactorDisabled"] = true;
                     break;
 
                 case TwoFactor.MicrosoftGoogle:
                     return RedirectToAction("TwoFactorByAuthenticator");
-                    CurrentUser.TwoFactorEnabled = true;
-                    CurrentUser.TwoFactorType = (sbyte)TwoFactor.MicrosoftGoogle;
-
-                    TempData["TwoFactorMsg"] = "2-Adımlı doğrulama aktif edildi. Güvenlik tipi: Microsoft/Google";
-                    ViewBag.TwoFactorDisabled = false;
-                    break;
 
                 case TwoFactor.SMS:
                     CurrentUser.TwoFactorEnabled = true;
                     CurrentUser.TwoFactorType = (sbyte)TwoFactor.SMS;
 
                     TempData["TwoFactorMsg"] = "2-Adımlı doğrulama aktif edildi. Güvenlik tipi: SMS";
-                    ViewBag.TwoFactorDisabled = false;
+
                     break;
             }
 
@@ -386,17 +381,45 @@ namespace Web.Controllers
                 SharedKey = unformattedKey,
                 AuthenticatorUri = _twoFactorService.GenerateQrCodeUri(CurrentUser.Email, unformattedKey)
             };
-
+            await GetUserPicture();
             return View(authenticatorVM);
 
         }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> TwoFactorByAuthenticator(AuthenticatorViewModel request)
-        //{
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorByAuthenticator(AuthenticatorViewModel request)
+        {
+            var verificationCode = CleanVerificationCode(request.VerificationCode);
 
-        //}
+            var is2FATokenValid = await _userManager.VerifyTwoFactorTokenAsync(CurrentUser, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+
+
+            if (is2FATokenValid)
+            {
+                CurrentUser.TwoFactorEnabled = true;
+                CurrentUser.TwoFactorType = (sbyte)TwoFactor.MicrosoftGoogle;
+
+                TempData["TwoFactorMsg"] = "2-Adımlı doğrulama aktif edildi. Güvenlik tipi: Microsoft/Google";
+                TempData["TwoFactorDisabled"] = false;
+
+
+                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(CurrentUser, 5);
+                TempData["RecoveryCodes"] = recoveryCodes;
+
+                return RedirectToAction("TwoFactorAuth");
+            }
+            ModelState.AddModelError("", "Girilen doğrulama kodu geçersiz.");
+            return View(request);
+        }
+
+
+        public static string CleanVerificationCode(string verificationCode)
+        {
+            // Boşlukları ve özel karakterleri kaldır
+            string cleanedCode = Regex.Replace(verificationCode, @"[\s\-\+]", "");
+            return cleanedCode;
+        }
 
     }
 }

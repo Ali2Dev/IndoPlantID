@@ -1,0 +1,93 @@
+﻿@model TwoFactorSignInViewModel
+
+@{
+
+    ViewData["Title"] = "2-Adımlı Doğrulama Girişi";
+}
+
+<link href="~/css/custom_css/home/signin.css" rel="stylesheet" />
+
+<link href="~/css/custom_css/animations/moving-letters/16.css" rel="stylesheet" />
+
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+
+
+
+<div>
+
+    <a class="fs-1 text-success" asp-controller="Home" asp-action="SignIn">←</a>
+
+    <div class="wrapper">
+
+        <div asp-validation-summary=ModelOnly class="alert alert-danger alert-dismissible fade show" role="alert">
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <form asp-controller="Home" asp-action="TwoFactorSignIn" asp-route-returnurl="@Context.Request.Query["returnUrl"]" method="post">
+
+
+
+            @if ((bool)(TempData["ShowWelcomeMessage"] ?? true))
+            {
+                <h1 class="ml16 fs-3">HOOOP!</h1>
+                <p class="text-center">Önce kimliğini doğrulayalım.</p>
+               @if (@Model.TwoFactorType == TwoFactor.MicrosoftGoogle)
+               {
+                    <p class="text-center"><strong>Güvenlik Tipi:</strong> Microsoft/Google Authenticator</p>
+                }
+                else if (@Model.TwoFactorType == TwoFactor.SMS)
+               {
+                    <p class="text-center"><strong>Güvenlik Tipi:</strong> SMS</p>
+               }
+            }
+
+            
+            <div class="input-box mb-5">
+                <label class="ms-2" asp-for="VerificationCode"></label>
+                <input type="text"  asp-for="VerificationCode" required>
+                <span class="text-danger ms-3" asp-validation-for="VerificationCode"></span>
+            </div>
+            <div class="remember-forgot mt-3 mb-3">
+                <label asp-for="RememberMe"><input type="checkbox" asp-for="RememberMe">Bu tarayıcıda kod sorma.</label>
+            </div>
+            
+            @if (@Model.TwoFactorType == TwoFactor.MicrosoftGoogle)
+            {
+                <div class="remember-forgot mt-3 mb-5">
+                    <label asp-for="IsRecoveryCodeRequested"><input type="checkbox" asp-for="IsRecoveryCodeRequested">Kurtarma kodu girmek istiyorum.</label>
+                </div>
+            }
+
+            <button type="submit" id="btn-signin" class="btn">Onayla</button>
+
+           @*  <div class="register-link d-flex justify-content-center mt-5">
+                <p class="text-white">Hesabım yok. <a asp-controller="Home" asp-action="SignUp"><strong>Üye ol</strong></a></p>
+            </div> *@
+
+        </form>
+
+
+
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts
+{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+
+
+    <script src="~/js/custom_js/animations/moving-letters/16.js"></script>
+}
+
+
+
+
+

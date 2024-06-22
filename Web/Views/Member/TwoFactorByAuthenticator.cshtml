@@ -9,8 +9,7 @@
     <h1 class=" my-5">Authenticator'ı Aktif Etme</h1>
 
 
-    <div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
-    </div>
+   
 
     @if (ViewBag.TwoFactorDisabled != null)
     {
@@ -43,17 +42,20 @@
 
 
     <div class="row">
-        <div class="col-md-8 border rounded p-4 bg-secondary bg-gradient bg-opacity-10">
 
+        <div class="col-md-8 border rounded p-4 bg-secondary bg-gradient bg-opacity-10">
+            <div asp-validation-summary=ModelOnly class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <div>
-                <p class="fs-5"><strong class="me-2">1.</strong>Aşağıdaki QR kodu telefonunuzdaki Authenticator uygulaması ile okutabilir veya aşağıdaki anahtarı (key) uygulamaya girebilirsiniz.</p>
+                <p class="fs-5" style="font-family: revert"><strong class="me-2">1.</strong>Aşağıdaki QR kodu telefonunuzdaki Authenticator uygulaması ile okutabilir veya aşağıdaki anahtarı (key) uygulamaya girebilirsiniz.</p>
             </div>
 
             <div class="ui items">
                 <div class="item">
-                     <div class="image">
-                    <div id="qrcode"> </div>
-                     </div>
+                    <div class="image">
+                        <div id="qrcode"> </div>
+                    </div>
                     <div class="content">
                         <p class="fs-6 fw-bolder">Key:</p>
                         <div class="fw-normal">
@@ -71,6 +73,9 @@
 
 
             <form asp-action="TwoFactorByAuthenticator" method="post">
+                <div>
+                    <p class="fs-5 mb-3" style="font-family: revert"><strong class="me-2">2.</strong>Son olarak uygulamadaki doğrulama kodunu aşağıya giriniz.</p>
+                </div>
                 <div class="ui form">
                     <div class="field w-25">
                         <label asp-for="VerificationCode"></label>
@@ -78,10 +83,10 @@
                         <span asp-validation-for="VerificationCode" class="text-danger"></span>
 
 
-                        <input type="hidden" asp-for="AuthenticatorUri" />
-                        <input type="hidden" asp-for="SharedKey" />
+                        <input type="hidden" asp-for="AuthenticatorUri"/>
+                        <input type="hidden" asp-for="SharedKey"/>
                     </div>
-                    <button class="ui green button my-4" type="submit">Kaydet</button>
+                    <button class="ui green button my-4" type="submit">Tamamla</button>
 
                 </div>
 
@@ -107,8 +112,8 @@
     var uri = "@Model.AuthenticatorUri";
     new QRCode(document.getElementById("qrcode"), 
     { text: uri,
-        width: 150, 
-        height: 150, 
+        width: 175, 
+        height: 175, 
         correctLevel: QRCode.CorrectLevel.H 
     });
     console.log("calisiyo")

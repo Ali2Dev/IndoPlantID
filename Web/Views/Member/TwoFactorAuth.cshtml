@@ -4,7 +4,11 @@
     ViewData["Title"] = "2 Adımlı Doğrulama";
 }
 
-
+<style>
+    .blurred {
+        filter: blur(5px);
+    }
+</style>
 
 
 
@@ -15,9 +19,9 @@
     <div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
     </div>
 
-    @if (ViewBag.TwoFactorDisabled != null)
+    @if (TempData["TwoFactorDisabled"] != null)
     {
-        @if (ViewBag.TwoFactorDisabled)
+        @if ((bool)TempData["TwoFactorDisabled"])
         {
 
             <div class="row mb-3">
@@ -35,22 +39,22 @@
             <div class="row mb-3">
                 <div class="ui blue message col-md-5"><i class="close icon"></i><i class="bi bi-info-circle-fill me-3"></i>@TempData["TwoFactorMsg"]</div>
             </div>
-            <script>
-                setTimeout(function () {
-                    window.location.href = '@Url.Action("Index", "Member")';
-                }, 3000);
-            </script>
+            @*  <script>
+    setTimeout(function () {
+    window.location.href = '@Url.Action("Index", "Member")';
+    }, 3000);
+    </script> *@
 
         }
     }
 
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
 
             <form asp-action="TwoFactorAuth" method="post">
 
-                
+
                 <div class="form-group">
                     <label asp-for="TwoFactorType" class="form-label fw-bold"></label>
 
@@ -64,10 +68,116 @@
 
 
 
+            @if (TempData["RecoveryCodes"] != null)
+            {
+                <div class="border rounded p-4 bg-secondary bg-gradient bg-opacity-10 mt-5">
+
+                    <div>
+                        <p class="text-danger fw-bold" style="font-family: unset">Kurtarma kodlarınız aşağıdadır. Telefonunuza ya da Authenticator uygulamasına erişemediğiniz durumlarda bu kodlar ile hesabınıza giriş yapabilirsiniz.</p>
+                    </div>
+
+                    <div class="ui items">
+                        <div class="item">
+                            <div class="content">
+                                <p class="fs-6 fw-bolder">Kurtarma kodlarınız:</p>
+                                <div class="fw-normal row  mb-4" id="recovery-codes">
+
+                                    @foreach (var code in TempData["RecoveryCodes"] as string[])
+                                    {
+                                        <div class="col-md-4">
+                                            <p id="code">@code</p>
+                                        </div>
+                                    }
+
+                                </div>
+                                <div>
+                                    <i class="bi bi-copy" onclick="copyToClipboard('recovery-codes')" style="cursor: pointer"><span class="ms-2">Hepsini kopyala</span></i>
+                                    <div class="ui toggle checkbox ms-5">
+                                        <input type="checkbox" name="public" id="toggle-visibility">
+                                        <label id="recovery-code-visible">Kodları görünür yap.</label>
+                                    </div>
+                                </div>
+                                <div class="extra mt-4">
+                                    <span class="text-danger fw-bold">*</span>Buradaki bilgileri güvenliğiniz için kimseyle paylaşmayınız.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
         </div>
     </div>
 </div>
+
+
 @section Scripts
 {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var recoveryCodesElements = document.querySelectorAll('#recovery-codes #code');
+            var toggleCheckbox = document.getElementById('toggle-visibility');
+            var visibilityLabel = document.getElementById('recovery-code-visible');
+
+            if (recoveryCodesElements.length > 0) {
+                // Bulanıklaştır
+                recoveryCodesElements.forEach((element) => {
+                    element.classList.add('blurred');
+                });
+            }
+
+            toggleCheckbox.addEventListener('change', (event) => {
+                if (event.target.checked) {
+                    // Bulanıklığı kaldır
+                    recoveryCodesElements.forEach((element) => {
+                        element.classList.remove('blurred');
+                    });
+                    visibilityLabel.textContent = 'Kodları gizle.';
+                } else {
+                    // Bulanıklaştır
+                    recoveryCodesElements.forEach((element) => {
+                        element.classList.add('blurred');
+                    });
+                    visibilityLabel.textContent = 'Kodları görünür yap.';
+                }
+            });
+        });
+
+
+        function copyToClipboard(elementId) {
+            var textToCopy = document.getElementById(elementId).textContent.trim();
+
+            // Create a temporary input element to copy the text
+            var tempInput = document.createElement("input");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+
+            // Select the text and copy it to the clipboard
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand("copy");
+
+            // Remove the temporary input element
+            document.body.removeChild(tempInput);
+
+            //  feedback to the user
+            Swal.fire({
+                position: "bottom-end",
+                icon: "success",
+                title: "Kopyalandı!",
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+    </script>
+
 }
+
+
+
