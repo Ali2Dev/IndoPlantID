@@ -90,11 +90,18 @@
                                     }
 
                                 </div>
-                                <div>
+                                <div class="d-flex justify-content-between">
                                     <i class="bi bi-copy" onclick="copyToClipboard('recovery-codes')" style="cursor: pointer"><span class="ms-2">Hepsini kopyala</span></i>
                                     <div class="ui toggle checkbox ms-5">
                                         <input type="checkbox" name="public" id="toggle-visibility">
                                         <label id="recovery-code-visible">Kodları görünür yap.</label>
+                                    </div>
+                                    @* <button class="btn" id="dw-recovery-codes"><i class="bi bi-download me-2"></i>İndir</button> *@
+                                    <div class="ui vertical animated button" id="dw-recovery-codes" tabindex="0">
+                                        <div class="hidden content">İndir</div>
+                                        <div class="visible content">
+                                            <i class="download icon"></i>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="extra mt-4">
@@ -148,6 +155,26 @@
                 }
             });
         });
+
+        document.getElementById('dw-recovery-codes').addEventListener('click', () => {
+            var codes = [];
+            var recoveryCodesElements = document.querySelectorAll('#recovery-codes #code');
+            recoveryCodesElements.forEach((element) => {
+                codes.push(element.textContent.trim());
+            });
+
+            var textContent = 'bitki.net sitesi için kurtarma kodlarınız:\n\n' + codes.join('\n') + '\n\nHer kod 1 kullanım ile sınırlıdır. Kullanılan kod tekrar kullanılamaz.';
+            var blob = new Blob([textContent], { type: 'text/plain' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'recovery-codes.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
+
 
 
         function copyToClipboard(elementId) {

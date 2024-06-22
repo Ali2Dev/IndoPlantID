@@ -350,13 +350,13 @@ namespace Web.Controllers
                 case TwoFactor.MicrosoftGoogle:
                     return RedirectToAction("TwoFactorByAuthenticator");
 
-                case TwoFactor.SMS:
-                    CurrentUser.TwoFactorEnabled = true;
-                    CurrentUser.TwoFactorType = (sbyte)TwoFactor.SMS;
+                    //case TwoFactor.SMS:
+                    //    CurrentUser.TwoFactorEnabled = true;
+                    //    CurrentUser.TwoFactorType = (sbyte)TwoFactor.SMS;
 
-                    TempData["TwoFactorMsg"] = "2-Adımlı doğrulama aktif edildi. Güvenlik tipi: SMS";
+                    //    TempData["TwoFactorMsg"] = "2-Adımlı doğrulama aktif edildi. Güvenlik tipi: SMS";
 
-                    break;
+                    //    break;
             }
 
             await _userManager.UpdateAsync(CurrentUser);

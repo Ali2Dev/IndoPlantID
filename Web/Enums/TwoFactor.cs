@@ -8,9 +8,9 @@ namespace Web.Enums
         None = 0,
 
         [Display(Name = "Microsoft/Google (Önerilen)")]
-        MicrosoftGoogle = 1,
+        MicrosoftGoogle = 1
 
-        [Display(Name = "SMS")]
-        SMS = 2
+        //[Display(Name = "SMS")]
+        //SMS = 2
     }
 }
