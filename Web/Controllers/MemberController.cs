@@ -296,6 +296,7 @@ namespace Web.Controllers
 
             await _signInManager.SignInAsync(currentUser, true);
 
+            await GetUserPicture();
             TempData["SuccessMessage"] = "Kullanıcı bilgileri güncellendi";
 
             return View(request);

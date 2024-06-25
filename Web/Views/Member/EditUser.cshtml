@@ -159,9 +159,9 @@
             {
                 <div class="text-center mt-2">
 
-                    <form asp-controller="Member" asp-action="DeleteUserPicture" method="post" onsubmit="return confirm('Profil resminiz kaldırılacaktır. Onaylıyor musunuz ?')">
+                    <form id="deleteUserPictureForm" asp-controller="Member" asp-action="DeleteUserPicture" method="post">
                         <input type="hidden" value="@Model.UserName" name="userName" />
-                        <button class="btn" asp-controller="Member" asp-action="DeleteUserPicture"><i class="bi bi-trash text-danger fs-3"></i></button>
+                        <button type="button" class="btn" onclick="confirmDeletion()"><i class="bi bi-trash text-danger fs-3"></i></button>
                     </form>
 
                 </div>
@@ -174,4 +174,33 @@
 @section Scripts
 {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmDeletion() {
+            Swal.fire({
+                title: "Emin misiniz?",
+                text: "Profil resminiz kaldırılacaktır. Onaylıyor musunuz ?",
+                icon: "UYARI",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "İptal",
+                confirmButtonText: "Evet"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteUserPictureForm').submit();
+                    // Swal.fire({
+                    //     position: "top-end",
+                    //     icon: "success",
+                    //     title: "Profil resminiz kaldırıldı.",
+                    //     showConfirmButton: false,
+                    //     timer: 1500
+                    // });
+                }
+            });
+        }
+    </script>
+
+}}
