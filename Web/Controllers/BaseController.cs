@@ -21,6 +21,15 @@ namespace Web.Controllers
             {
                 var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
                 ViewData["PictureUrl"] = currentUser.Picture;
+
+                //if (string.IsNullOrEmpty(CurrentUser.Picture))
+                //{
+                //    ViewData["PictureUrl"] = "defaultUserPhoto.jpg";
+                //}
+                //else
+                //{
+                //    ViewData["PictureUrl"] = CurrentUser.Picture;
+                //}
             }
         }
 
