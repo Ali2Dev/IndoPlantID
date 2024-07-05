@@ -8,23 +8,19 @@ namespace Web.Identity.ViewModels
         public string LastName { get; set; }
         public string UserName { get; set; }
 
-        [DataType(DataType.Password)]
-        [Required(ErrorMessage = "Bu kısım boş olamaz.")]
+
         [Display(Name = " Şifre:")]
         public string Password { get; set; }
 
         [Display(Name = "Eski e-mail:")]
         public string OldEmail { get; set; }
 
-        [DataType(DataType.EmailAddress, ErrorMessage = "Geçerli bir e-mail girin.")]
-        [Required(ErrorMessage = "Bu kısım boş olamaz.")]
+
         [Display(Name = "Yeni e-mail:")]
         public string NewEmail { get; set; }
 
 
-        [DataType(DataType.EmailAddress, ErrorMessage = "Geçerli bir e-mail girin.")]
-        [Compare(nameof(NewEmail), ErrorMessage = "E-mail uyuşmuyor.")]
-        [Required(ErrorMessage = "Bu kısım boş olamaz.")]
+
         [Display(Name = "E-mail Tekrar:")]
         public string NewEmailConfirmed { get; set; }
     }

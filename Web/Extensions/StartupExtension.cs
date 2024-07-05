@@ -2,6 +2,7 @@
 using System;
 using Web.Identity;
 using Web.Identity.CustomValidations;
+using Web.Identity.CustomValidations.ViewModelValidations;
 using Web.Identity.ModelOptions;
 using Web.Identity.Services.Abstract;
 using Web.Identity.Services.Concrete;

@@ -12,8 +12,6 @@ namespace Web.Identity.ViewModels
         public string AuthenticatorUri { get; set; }
 
         [Display(Name = "Doğrulama Kodu:")]
-        [Required(ErrorMessage = "Bu kısım boş olamaz.")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Sadece sayı girebilirsiniz.")]
         public string VerificationCode { get; set; }
 
         [Display(Name = "2 adımlı güvenlik tipi:")]

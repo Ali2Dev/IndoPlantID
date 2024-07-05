@@ -15,13 +15,12 @@ namespace Web.Identity.ViewModels
             Password = password;
         }
 
-        [EmailAddress(ErrorMessage = "Email formatı yanlış.")]
-        [Required(ErrorMessage = "Email alanı boş bırakılamaz.")]
+
         [Display(Name = "Email:")]
         public string Email { get; set; }
-        
 
-        [Required(ErrorMessage = "Şifre alanı boş bırakılamaz.")]
+
+
         [Display(Name = "Şifre:")]
         public string Password { get; set; }
 

@@ -1,14 +1,17 @@
+using System.Reflection;
 using Autofac;
 using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
 using Business.DependencyResolvers.Autofac;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Web.Extensions;
 using Web.Identity;
+using Web.Identity.CustomValidations.ViewModelValidations;
 using Web.Identity.ModelOptions;
 using Web.Identity.Services.Abstract;
 using Web.Identity.Services.Concrete;
@@ -31,6 +34,10 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 });
 
 
+//Fluent V.
+builder.Services.AddControllersWithViews()
+    .AddFluentValidation(fv =>
+        fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
 
 //Extensions
 builder.Services.ConfigureIdentityExtension();
