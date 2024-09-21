@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Entities.Dtos;
 using Microsoft.AspNetCore.Http;
+using System.Net.Mime;
 
 namespace Business.Concrete
 {
@@ -49,28 +50,21 @@ namespace Business.Concrete
             _documentDal.Update(document);
         }
 
-        public async void PostFileAsync(IFormFile fileData, string path, string userId)
+        public async void PostFileAsync(string userId,string fileName, string contentDisposition,string randomFileName)
         {
             try
             {
                 var document = new Document()
                 {
-                    StoragePath = path,
-                    Title = fileData.FileName,
-                    Content = fileData.ContentDisposition,
+                    StoragePath = randomFileName,
+                    Title = fileName,
+                    Content = contentDisposition,
                     CreatedDate = DateTime.Now,
                     UserId = userId
 
                 };
 
                 document.DocumentExtension = Path.GetExtension(document.Title);
-
-                //using (var stream = new MemoryStream())
-                //{
-                //    fileData.CopyTo(stream);
-
-                //    document.Documentfile = stream.ToArray();
-                //}
 
                 _documentDal.Add(document);
 

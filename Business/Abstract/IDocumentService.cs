@@ -19,6 +19,6 @@ namespace Business.Abstract
         void Delete(Document document);
 
         void Update(Document document);
-        void PostFileAsync(IFormFile fileData, string path, string userId);
+        void PostFileAsync(string userId, string fileName, string contentDisposition, string randomFileName);
     }
 }

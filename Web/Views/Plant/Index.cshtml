@@ -1,6 +1,6 @@
 ﻿@using Newtonsoft.Json;
 
-@model DocumentViewModel
+@model RoboflowResponse;
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -8,6 +8,7 @@
 <link href="~/css/custom_css/plant/imageUpload.css" rel="stylesheet" />
 
 <link href="~/css/custom_css/plant/index.css" rel="stylesheet" />
+
 
 @if (@TempData["EmailNotConfirmedMsg"] != null)
 {
@@ -51,15 +52,15 @@
 
         </form>
 
-        @if (Model.RoboflowResponse != null)
+        @if (Model != null)
         {
             <div class="ms-5 mt-3 text-center">
                 <p class="fw-bold fs-3">Kendi Modelimizin Cevabı</p>
 
                 <div class="border border-success border-1 rounded">
                     @* <p><strong>Bitki No:</strong> @Model.RoboflowResponse.ClassId</p> *@
-                    <p><strong>Bitki Adı:</strong> @Model.RoboflowResponse.PlantName</p>
-                    <p><strong>Eşleşme oranı:</strong> %@Model.RoboflowResponse.Confidence</p>
+                    <p><strong>Bitki Adı:</strong> @Model.PlantName</p>
+                    <p><strong>Eşleşme oranı:</strong> %@Model.Confidence</p>
                     <p><strong>PlantNet Cevabı:</strong> @TempData["PlantNetTempDataForJS"] </p>
                 </div>
 
@@ -99,6 +100,17 @@
 
 
             </div>
+        }
+        else
+        {
+            @* No Roboflow response handling *@
+            @if (TempData["RoboflowFailed"] != null && TempData["PlantNetTempDataForJS"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["RoboflowFailed"]
+                </div>
+                <p><strong>PlantNet Cevabı:</strong> @TempData["PlantNetTempDataForJS"] </p>
+            }
         }
 
 
@@ -410,7 +422,7 @@
 
 
 
-@if (Model.RoboflowResponse != null || (TempData["PlantNetTempData"] != null && TempData["PlantNetTempData"].ToString() != "Bu fotoğraf bir bitki değil!"))
+@if (Model != null || (TempData["PlantNetTempData"] != null && TempData["PlantNetTempData"].ToString() != "Bu fotoğraf bir bitki değil!"))
 {
     <div class="row m-5">
         <p class="fw-bold fs-3 text-success text-center">
@@ -499,7 +511,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 
-<script>
+@* <script>
     // MAP İŞLEMLERİ
     var map = L.map('map').setView([0, 0], 2);
 
@@ -517,15 +529,35 @@
             .bindPopup(loc.name);
     });
 
-    // var parisAndIstanbulCoordinates = {
-    //     "Paris": { lat: 48.8588897, lng: 2.3200410217200766 },
-    //     "İstanbul": { lat: 41.006381, lng: 28.9758715 },
-    // };
+</script> *@
+<script>
+    // MAP İŞLEMLERİ
+    var map = L.map('map').setView([0, 0], 2);
 
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 
-    // for (var region in parisAndIstanbulCoordinates) {
-    //     var coords = parisAndIstanbulCoordinates[region];
-    //     L.marker([coords.lat, coords.lng]).addTo(map)
-    //         .bindPopup(region);
-    // };
+    // JSON verisini al
+    var locationData = JSON.parse('@Html.Raw(TempData["LocationData"] ?? "[]")');
+
+    // JavaScript objesini kullanarak haritaya marker ekleyin
+    if (Array.isArray(locationData)) {
+        locationData.forEach(function (loc) {
+            // Koordinatları sayısal türüne dönüştür
+            var lat = parseFloat(loc.Lat);
+            var lon = parseFloat(loc.Lon);
+
+            // Koordinatlar geçerli mi kontrol edin
+            if (!isNaN(lat) && !isNaN(lon)) {
+                var marker = L.marker([lat, lon]).addTo(map)
+                    .bindPopup(loc.Name);
+            } else {
+                console.warn('Geçersiz koordinat:', loc);
+            }
+        });
+    } else {
+        console.error('locationData geçersiz formatta:', locationData);
+    }
 </script>

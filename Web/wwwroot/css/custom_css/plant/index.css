@@ -2,13 +2,13 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 4rem; /* Kartlar arasýndaki boþluk */
+    gap: 4rem; /* Kartlar arasï¿½ndaki boï¿½luk */
 }
 
     #fidan-burada-price-result .card-wrapper {
-        flex: 1 1 calc(33.333% - 1rem); /* Kartlarýn geniþliði %33.333 - 1rem */
-        max-width: calc(33.333% - 1rem); /* Kartlarýn maksimum geniþliði %33.333 - 1rem */
-        margin-bottom: 1rem; /* Alt boþluk */
+        flex: 1 1 calc(33.333% - 1rem); /* Kartlarï¿½n geniï¿½liï¿½i %33.333 - 1rem */
+        max-width: calc(33.333% - 1rem); /* Kartlarï¿½n maksimum geniï¿½liï¿½i %33.333 - 1rem */
+        margin-bottom: 1rem; /* Alt boï¿½luk */
     }
 
 .card-wrapper .card {
@@ -21,7 +21,7 @@
 }
 
     .card-wrapper .card:hover {
-        transform: scale(1.05); /* Hover durumunda büyüme efekti */
+        transform: scale(1.05); /* Hover durumunda bï¿½yï¿½me efekti */
     }
 
 .card img {
@@ -45,17 +45,17 @@
         color: #333;
     }
 
-/* 1366x768 ekran çözünürlüðü için ek düzenlemeler */
+/* 1366x768 ekran ï¿½ï¿½zï¿½nï¿½rlï¿½ï¿½ï¿½ iï¿½in ek dï¿½zenlemeler */
 @media (max-width: 1366px) {
     #fidan-burada-price-result .card-wrapper {
-        flex: 1 1 calc(50% - 1rem); /* Kartlarýn geniþliði %50 - 1rem */
-        max-width: calc(50% - 1rem); /* Kartlarýn maksimum geniþliði %50 - 1rem */
+        flex: 1 1 calc(50% - 1rem); /* Kartlarï¿½n geniï¿½liï¿½i %50 - 1rem */
+        max-width: calc(50% - 1rem); /* Kartlarï¿½n maksimum geniï¿½liï¿½i %50 - 1rem */
     }
 }
 
 @media (max-width: 768px) {
     #fidan-burada-price-result .card-wrapper {
-        flex: 1 1 100%; /* Kartlarýn geniþliði %100 */
-        max-width: 100%; /* Kartlarýn maksimum geniþliði %100 */
+        flex: 1 1 100%; /* Kartlarï¿½n geniï¿½liï¿½i %100 */
+        max-width: 100%; /* Kartlarï¿½n maksimum geniï¿½liï¿½i %100 */
     }
 }

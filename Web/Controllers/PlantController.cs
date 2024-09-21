@@ -13,6 +13,9 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Text;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Net.Mime;
+using System.Drawing;
+using System.Text.Json.Nodes;
 
 namespace Web.Controllers
 {
@@ -51,9 +54,6 @@ namespace Web.Controllers
         {
             await GetUserPicture();
 
-            var documents = _documentService.GetAll();
-
-            // RoboflowResponse tipinde response değişkenini null olarak başlat
             RoboflowResponse response = null;
 
             // Geçici veriden JSON formatındaki modeli al
@@ -66,315 +66,168 @@ namespace Web.Controllers
             }
 
             // ViewModel'i yarat ve response ile doldur
-            var viewModel = new DocumentViewModel
-            {
-                RoboflowResponse = response,
-                Documents = documents
-            };
+            //var viewModel = new DocumentResponseViewModel
+            //{
+            //    RoboflowResponse = response,
+            //};
 
 
-            return View(viewModel);
+            return View(response);
         }
 
+        private async Task<byte[]> ConvertFileToBytesAsync(IFormFile file)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
+
+        public class FileSaveResult
+        {
+            public string NewPicturePath { get; set; }
+            public string RandomFileName { get; set; }
+        }
+
+        private async Task<FileSaveResult> SaveFileAsync(IFormFile file)
+        {
+            var wwwrootFolder = _fileProvider.GetDirectoryContents("wwwroot/uploads");
+            var randomFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var newPicturePath = Path.Combine(wwwrootFolder.First(x => x.Name == "images").PhysicalPath!, randomFileName);
+
+            using var stream = new FileStream(newPicturePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return new FileSaveResult
+            {
+                NewPicturePath = newPicturePath,
+                RandomFileName = randomFileName
+            };
+        }
+
+        private async Task ProcessCoordinates(List<(string Name, string Lat, string Lon)> coordinates, string storagePath, string userId)
+        {
+            if (coordinates == null) return;
+
+            var regionCoordinateList = coordinates
+                .Select(item => new RegionCoordinate
+                {
+                    Name = item.Name,
+                    Lat = item.Lat,
+                    Lon = item.Lon,
+                    StoragePath = storagePath,
+                    UserId = userId
+                })
+                .ToList();
+
+            _regionCoordinateService.AddRange(regionCoordinateList);
+        }
+
+        private async Task<string> TranslatePlantName(string textToTranslate)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            string key = configuration["TranslatorService:Key"];
+            string endpoint = configuration["TranslatorService:Endpoint"];
+            string location = configuration["TranslatorService:Location"];
+
+            return await TranslateToTurkish(textToTranslate, key, endpoint, location);
+        }
+
+        private void BuildTempData(string jsonModel, string plantName, string roboflowFailedMessage, PlantImages plantImages, List<(string Name, string Lat, string Lon)> coordinates,string gptResponseMessage,string gptWateringMessage)
+        {
+            TempData["RoboflowTempData"] = jsonModel;
+            TempData["PlantNetTempDataForJS"] = plantName;
+            TempData["PlantImages"] = JsonConvert.SerializeObject(plantImages);
+
+            if (coordinates != null)
+            {
+                var locationJson = JsonConvert.SerializeObject(coordinates.Select(x => new { x.Name, x.Lat, x.Lon }));
+                TempData["LocationData"] = locationJson;
+            }
+
+            TempData["RoboflowFailed"] = roboflowFailedMessage;
+            TempData["GPTResponse"] = gptResponseMessage;
+            TempData["GPTResponseMaintenanceWatering"] = gptWateringMessage;
+        }
+
+        private DocumentResult GetDocumentResult(Document document, string plantFullName, string jsonModel, PlantImages plantImages, string chatGPTResponse, string gptResponseMaintenanceWatering)
+        {
+            return new DocumentResult
+            {
+                StoragePath = document.StoragePath,
+                DocumentExtension = document.DocumentExtension,
+                CreatedDate = document.CreatedDate,
+                Content = document.Content,
+                UserId = document.UserId,
+                PlantGlobalName = plantFullName,
+                RoboflowJsonModel = jsonModel,
+                FlowerUrl = string.Join("", plantImages.Flower.Select(x => x.ImageUrl)),
+                BarkUrl = string.Join("", plantImages.Bark.Select(x => x.ImageUrl)),
+                FruitUrl = string.Join("", plantImages.Fruit.Select(x => x.ImageUrl)),
+                LeafUrl = string.Join("", plantImages.Leaf.Select(x => x.ImageUrl)),
+                HabitUrl = string.Join("", plantImages.Habit.Select(x => x.ImageUrl)),
+                PlantChatGPTResponse = chatGPTResponse,
+                PlantGPTResponseMaintenanceWatering = gptResponseMaintenanceWatering
+            };
+        }
 
         [HttpPost]
         public async Task<IActionResult> UploadImage([Required] IFormFile file)
         {
-
-
-
-            //Get UserId
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (!user.EmailConfirmed)
             {
                 TempData["EmailNotConfirmedMsg"] = "Bitki sorgulamak için önce e-mail adresinizi doğrulayın.";
-
                 return RedirectToAction("Index", "Plant");
             }
 
-
-            string userId = user.Id;
-
-
-            var wwwrootFolder = _fileProvider.GetDirectoryContents("wwwroot//uploads");
-
-            var randomFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(file.FileName)}";
-            //jpg,png vs
-            var newPicturePath =
-                Path.Combine(wwwrootFolder.First(x => x.Name == "images").PhysicalPath!, randomFileName);
-
-            byte[] fileBytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                await file.CopyToAsync(memoryStream);
-                fileBytes = memoryStream.ToArray();
-            }
-
+            byte[] fileBytes = await ConvertFileToBytesAsync(file);
             var plantNetResult = await _plantNetService.IdentifyPlant(fileBytes);
 
             if (!plantNetResult.IsPlantDetected)
             {
                 TempData["PlantNetTempData"] = plantNetResult.JsonResponse;
-
                 return RedirectToAction("Index", "Plant");
             }
 
-            else
-            {
-                using (var stream = new FileStream(newPicturePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
+            var fileSaveResult = await SaveFileAsync(file);
+            byte[] imageArray = System.IO.File.ReadAllBytes(fileSaveResult.NewPicturePath);
 
-                }
+            _documentService.PostFileAsync(user.Id, file.FileName, file.ContentDisposition, fileSaveResult.RandomFileName);
+            var document = _documentService.GetAll().OrderByDescending(x => x.Id).FirstOrDefault();
 
-                byte[] imageArray = System.IO.File.ReadAllBytes(newPicturePath);
+            var roboflowResult = _roboflowService.GetResponse(imageArray, fileSaveResult.RandomFileName);
+            string jsonModel = roboflowResult != null ? JsonSerializer.Serialize(roboflowResult) : null;
 
+            var trefleIdResult = await _trefleIOService.SearchPlantIdsAsync(plantNetResult.GlobalName);
+            var firstId = trefleIdResult.First();
+            var regions = await _trefleIOService.GetPlantRegionsAsync(firstId);
+            var plantImages = await _trefleIOService.GetPlantImagesAsync(firstId);
+            var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
 
+            await ProcessCoordinates(coordinates, document.StoragePath, user.Id);
 
-                _documentService.PostFileAsync(file, randomFileName, userId);
+            string translatedText = await TranslatePlantName(plantNetResult.GlobalName);
+            string plantFullName = plantNetResult.GlobalName != translatedText
+                ? $"{plantNetResult.GlobalName} - {translatedText}"
+                : plantNetResult.GlobalName;
 
-                var document = _documentService.GetAll().OrderByDescending(x => x.Id).FirstOrDefault();
-                var documentResult = new DocumentResult
-                {
-                    StoragePath = document.StoragePath,
-                    DocumentExtension = document.DocumentExtension,
-                    CreatedDate = document.CreatedDate,
-                    Content = document.Content,
-                    UserId = document.UserId
-                };
+            var chatGPTResponse = "GPT disabled!";
+            //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
+            var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
+            //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
 
-                var roboflowResult = _roboflowService.GetResponse(imageArray, randomFileName);
+            BuildTempData(jsonModel, plantNetResult.GlobalName, roboflowResult == null ? "Üzgünüz, modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk" : null, plantImages, coordinates,chatGPTResponse,gptResponseMaintenanceWatering);
+            var documentResult = GetDocumentResult(document, plantFullName, jsonModel, plantImages, chatGPTResponse, gptResponseMaintenanceWatering);
+            _documentResultService.Add(documentResult);
 
-                if (roboflowResult != null)
-                {
-                    var jsonModel = JsonSerializer.Serialize(roboflowResult);
-
-                    TempData["RoboflowTempData"] = jsonModel;
-                    TempData["PlantNetTempDataForJS"] = plantNetResult.GlobalName;
-
-                    var trefleIdResult = await _trefleIOService.SearchPlantIdsAsync(plantNetResult.GlobalName);
-
-                    var firstId = trefleIdResult.First();
-
-                    var regions = await _trefleIOService.GetPlantRegionsAsync(firstId);
-
-                    var plantImages = await _trefleIOService.GetPlantImagesAsync(firstId);
-
-                    TempData["PlantImages"] = Newtonsoft.Json.JsonConvert.SerializeObject(plantImages);
-
-
-                    var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
-
-                    if (coordinates != null)
-                    {
-                        var regionCoordinateList = new List<RegionCoordinate>();
-                        foreach (var item in coordinates)
-                        {
-                            var regionCoordinate = new RegionCoordinate
-                            {
-                                Name = item.Name,
-                                Lat = item.Lat,
-                                Lon = item.Lon,
-                                StoragePath = document.StoragePath,
-                                UserId = userId
-                            };
-                            regionCoordinateList.Add(regionCoordinate);
-                        }
-                        _regionCoordinateService.AddRange(regionCoordinateList);
-                    }
-
-                    //- Translator
-                    var builder = new ConfigurationBuilder()
-                        .SetBasePath(AppContext.BaseDirectory)
-                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                    Configuration = builder.Build();
-
-                    string key = Configuration["TranslatorService:Key"];
-                    string endpoint = Configuration["TranslatorService:Endpoint"];
-                    string location = Configuration["TranslatorService:Location"];
-
-                    string textToTranslate = plantNetResult.GlobalName;
-                    string translatedText = await TranslateToTurkish(textToTranslate, key, endpoint, location);
-
-                    string plantFullName = plantNetResult.GlobalName;
-
-                    if (plantNetResult.GlobalName != translatedText)
-                    {
-                        plantFullName = plantNetResult.GlobalName + " - " + translatedText;
-                    }
-
-                    //Translator final
-
-                    var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
-
-                    TempData["LocationData"] = locationJson;
-
-                    //GPT - DISABLED
-
-                    //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
-                    var chatGPTResponse = "GPT disabled!";
-                    //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
-                    var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
-
-                    TempData["GPTResponse"] = chatGPTResponse;
-                    TempData["GPTResponseMaintenanceWatering"] = gptResponseMaintenanceWatering;
-
-
-
-                    //-
-                    documentResult.PlantGlobalName = plantFullName;
-                    documentResult.RoboflowJsonModel = jsonModel;
-
-                    plantImages.Flower.ForEach(x => documentResult.FlowerUrl += x.ImageUrl.ToString());
-                    plantImages.Bark.ForEach(x => documentResult.BarkUrl += x.ImageUrl.ToString());
-                    plantImages.Fruit.ForEach(x => documentResult.FruitUrl += x.ImageUrl.ToString());
-                    plantImages.Leaf.ForEach(x => documentResult.LeafUrl += x.ImageUrl.ToString());
-                    plantImages.Habit.ForEach(x => documentResult.HabitUrl += x.ImageUrl.ToString());
-
-
-
-                    documentResult.PlantChatGPTResponse = chatGPTResponse;
-                    documentResult.PlantGPTResponseMaintenanceWatering = gptResponseMaintenanceWatering;
-
-
-
-
-                    //var coordinateList = new List<PlantCoordinate>();
-
-                    //foreach (var item in coordinates)
-                    //{
-                    //    var plantCoordinate = new PlantCoordinate()
-                    //    {
-                    //        Lat = item.Lat,
-                    //        Lon = item.Lon,
-                    //        Name = item.Name
-                    //    };
-
-                    //    coordinateList.Add(plantCoordinate);
-                    //}
-
-                    //documentResult.PlantCoordinates = coordinateList;
-
-
-                    _documentResultService.Add(documentResult);
-                }
-                else
-                {
-                    //- Translator
-                    var builder = new ConfigurationBuilder()
-                        .SetBasePath(AppContext.BaseDirectory)
-                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                    Configuration = builder.Build();
-
-                    string key = Configuration["TranslatorService:Key"];
-                    string endpoint = Configuration["TranslatorService:Endpoint"];
-                    string location = Configuration["TranslatorService:Location"];
-
-                    string textToTranslate = plantNetResult.GlobalName;
-                    string translatedText = await TranslateToTurkish(textToTranslate, key, endpoint, location);
-
-
-                    string plantFullName = plantNetResult.GlobalName;
-
-                    if (plantNetResult.GlobalName != translatedText)
-                    {
-                        plantFullName = plantNetResult.GlobalName + " - " + translatedText;
-                    }
-
-                    //Translator final
-
-
-                    TempData["RoboflowFailed"] = "Üzgünüz , modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk";
-
-                    TempData["PlantNetTempData"] = plantFullName;
-
-                    var trefleIdResult = await _trefleIOService.SearchPlantIdsAsync(plantNetResult.GlobalName);
-
-                    var firstId = trefleIdResult.First();
-
-                    var regions = await _trefleIOService.GetPlantRegionsAsync(firstId);
-
-                    var plantImages = await _trefleIOService.GetPlantImagesAsync(firstId);
-
-                    TempData["PlantImages"] = Newtonsoft.Json.JsonConvert.SerializeObject(plantImages);
-
-
-                    var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
-                    if (coordinates != null)
-                    {
-                        var regionCoordinateList = new List<RegionCoordinate>();
-                        foreach (var item in coordinates)
-                        {
-                            var regionCoordinate = new RegionCoordinate
-                            {
-                                Name = item.Name,
-                                Lat = item.Lat,
-                                Lon = item.Lon,
-                                StoragePath = document.StoragePath,
-                                UserId = userId
-                            };
-                            regionCoordinateList.Add(regionCoordinate);
-                        }
-                        _regionCoordinateService.AddRange(regionCoordinateList);
-                    }
-
-
-                    var locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(coordinates.Select(x => new { name = x.Name, lat = x.Lat, lon = x.Lon }));
-
-                    TempData["LocationData"] = locationJson;
-
-                    //GPT - DISABLED
-                    //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
-                    var chatGPTResponse = "GPT disabled!";
-                    //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
-                    var gptResponseMaintenanceWatering = "GPT Maintenance and watering disabled!";
-
-                    TempData["GPTResponse"] = chatGPTResponse;
-                    TempData["GPTResponseMaintenanceWatering"] = gptResponseMaintenanceWatering;
-
-
-
-
-                    documentResult.PlantGlobalName = plantFullName;
-
-
-                    plantImages.Flower.ForEach(x => documentResult.FlowerUrl += x.ImageUrl.ToString());
-                    plantImages.Bark.ForEach(x => documentResult.BarkUrl += x.ImageUrl.ToString());
-                    plantImages.Fruit.ForEach(x => documentResult.FruitUrl += x.ImageUrl.ToString());
-                    plantImages.Leaf.ForEach(x => documentResult.LeafUrl += x.ImageUrl.ToString());
-                    plantImages.Habit.ForEach(x => documentResult.HabitUrl += x.ImageUrl.ToString());
-
-                    documentResult.PlantChatGPTResponse = chatGPTResponse;
-                    documentResult.PlantGPTResponseMaintenanceWatering = gptResponseMaintenanceWatering;
-
-                    //var coordinateList = new List<PlantCoordinate>();
-
-                    //foreach (var item in coordinates)
-                    //{
-                    //    var plantCoordinate = new PlantCoordinate()
-                    //    {
-                    //        Lat = item.Lat,
-                    //        Lon = item.Lon,
-                    //        Name = item.Name
-                    //    };
-
-                    //    coordinateList.Add(plantCoordinate);
-                    //}
-
-                    //documentResult.PlantCoordinates = coordinateList;
-
-
-                    _documentResultService.Add(documentResult);
-                }
-
-
-                return RedirectToAction("Index", "Plant");
-            }
-
-
-
+            return RedirectToAction("Index", "Plant");
         }
+
 
         [HttpGet]
         public async Task<IActionResult> PreviousDocuments()
@@ -390,12 +243,10 @@ namespace Web.Controllers
                 string userId = user.Id;
                 ViewBag.UserId = userId;
 
-
                 var documentList = _documentService.GetAll()
                     .Where(d => d.UserId == userId)
                     .OrderByDescending(d => d.CreatedDate)
                     .ToList();
-
 
                 return View(documentList);
             }

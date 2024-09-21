@@ -30,7 +30,8 @@ namespace Business.Concrete
             try
             {
                 var token = _configuration["TrefleIOService:Key"];
-                var url = $"https://trefle.io/api/v1/plants/search?token={token}&q={name}";
+                var url = $"https://trefle.io/api/v1/plants?token={token}&filter[scientific_name]={Uri.EscapeDataString(name)}";
+                //var url = $"https://trefle.io/api/v1/plants/search?token={token}&q={name}";
 
                 var handler = new HttpClientHandler();
                 handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => { return true; };
