@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Business.Abstract
 {
     public interface IPlantNetService
     {
-        Task<PlantNetResponse> IdentifyPlant(byte[] image);
+        Task<PlantNetResponse> IdentifyPlant(PlantNetImageInfo info);
     }
 }

@@ -186,7 +186,7 @@ namespace Web.Controllers
             }
 
             byte[] fileBytes = await ConvertFileToBytesAsync(file);
-            var plantNetResult = await _plantNetService.IdentifyPlant(fileBytes);
+            var plantNetResult = await _plantNetService.IdentifyPlant(new PlantNetImageInfo { FileBytes = fileBytes,Title = file.FileName});
 
             if (!plantNetResult.IsPlantDetected)
             {
@@ -197,8 +197,11 @@ namespace Web.Controllers
             var fileSaveResult = await SaveFileAsync(file);
             byte[] imageArray = System.IO.File.ReadAllBytes(fileSaveResult.NewPicturePath);
 
-            _documentService.PostFileAsync(user.Id, file.FileName, file.ContentDisposition, fileSaveResult.RandomFileName);
-            var document = _documentService.GetAll().OrderByDescending(x => x.Id).FirstOrDefault();
+            var doc = new Document { StoragePath = fileSaveResult.RandomFileName, Title = file.FileName, Content = file.ContentDisposition, CreatedDate = DateTime.Now, UserId = user.Id };
+            doc.DocumentExtension = Path.GetExtension(doc.Title);
+            _documentService.Add(doc);
+
+            var lastDocument = _documentService.GetAll().OrderByDescending(x => x.Id).FirstOrDefault();
 
             var roboflowResult = _roboflowService.GetResponse(imageArray, fileSaveResult.RandomFileName);
             string jsonModel = roboflowResult != null ? JsonSerializer.Serialize(roboflowResult) : null;
@@ -209,12 +212,12 @@ namespace Web.Controllers
             var plantImages = await _trefleIOService.GetPlantImagesAsync(firstId);
             var coordinates = await _openStreetMapService.GetCoordinatesAsync(regions);
 
-            await ProcessCoordinates(coordinates, document.StoragePath, user.Id);
+            await ProcessCoordinates(coordinates, lastDocument.StoragePath, user.Id);
 
-            string translatedText = await TranslatePlantName(plantNetResult.GlobalName);
-            string plantFullName = plantNetResult.GlobalName != translatedText
-                ? $"{plantNetResult.GlobalName} - {translatedText}"
-                : plantNetResult.GlobalName;
+            //string translatedText = await TranslatePlantName(plantNetResult.GlobalName);
+            //string plantFullName = plantNetResult.GlobalName != translatedText
+            //    ? $"{plantNetResult.GlobalName} - {translatedText}"
+            //    : plantNetResult.GlobalName;
 
             var chatGPTResponse = "GPT disabled!";
             //var chatGPTResponse = await _chatGPTService.GetResponse(plantNetResult.GlobalName);
@@ -222,7 +225,7 @@ namespace Web.Controllers
             //var gptResponseMaintenanceWatering = await _chatGPTService.GetMaintenanceAndWatering(plantNetResult.GlobalName);
 
             BuildTempData(jsonModel, plantNetResult.GlobalName, roboflowResult == null ? "Üzgünüz, modelimizde bu bitki bulunmuyor, sizin için en uygun bitkiyi bulduk" : null, plantImages, coordinates,chatGPTResponse,gptResponseMaintenanceWatering);
-            var documentResult = GetDocumentResult(document, plantFullName, jsonModel, plantImages, chatGPTResponse, gptResponseMaintenanceWatering);
+            var documentResult = GetDocumentResult(lastDocument, plantNetResult.GlobalName, jsonModel, plantImages, chatGPTResponse, gptResponseMaintenanceWatering);
             _documentResultService.Add(documentResult);
 
             return RedirectToAction("Index", "Plant");

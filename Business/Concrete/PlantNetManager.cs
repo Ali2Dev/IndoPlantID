@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using Entities.Concrete;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 
 namespace Business.Concrete
 {
@@ -31,17 +34,26 @@ namespace Business.Concrete
         private readonly string Url;
         private readonly string ApiEndpoint;
 
+        //private async Task<byte[]> ConvertFileToBytesAsync(IFormFile file)
+        //{
+        //    using var memoryStream = new MemoryStream();
+        //    await file.CopyToAsync(memoryStream);
+        //    return memoryStream.ToArray();
+        //}
 
-
-        public async Task<PlantNetResponse> IdentifyPlant(byte[] image)
+        [ValidationAspect(typeof(PlantNetValidator))]
+        public async Task<PlantNetResponse> IdentifyPlant(PlantNetImageInfo info)
         {
+
+            byte[] fileBytes = info.FileBytes;
+
             var response = new PlantNetResponse();
 
 
             using var httpClient = new HttpClient();
             using var multipartFormContent = new MultipartFormDataContent();
 
-            var imageContent = new ByteArrayContent(image);
+            var imageContent = new ByteArrayContent(fileBytes);
 
             multipartFormContent.Add(imageContent, "images", "image.jpg");
 

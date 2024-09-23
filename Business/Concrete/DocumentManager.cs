@@ -10,6 +10,8 @@ using AutoMapper;
 using Entities.Dtos;
 using Microsoft.AspNetCore.Http;
 using System.Net.Mime;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 
 namespace Business.Concrete
 {
@@ -25,6 +27,7 @@ namespace Business.Concrete
 
         }
 
+        [ValidationAspect(typeof(DocumentValidator))]
         public void Add(Document entity)
         {
             _documentDal.Add(entity);
@@ -50,6 +53,7 @@ namespace Business.Concrete
             _documentDal.Update(document);
         }
 
+       
         public async void PostFileAsync(string userId,string fileName, string contentDisposition,string randomFileName)
         {
             try
